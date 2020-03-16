@@ -5,7 +5,7 @@
             <label for="name">name</label>
             <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp">
         </div>
-        
+
         <div class="form-group">
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
@@ -17,7 +17,7 @@
         </div>
         <div class="form-group">
             <label for="joiningdate">joining date</label>
-            <input type="text" class="form-control" id="joiningdate"  name="joiningdate" aria-describedby="emailHelp">
+            <input type="text" class="form-control" id="joiningdate" name="joiningdate" aria-describedby="emailHelp">
         </div>
         <div class="form-group">
             <label for="lastdate">last date</label>
@@ -25,7 +25,8 @@
         </div>
         <div class="form-group">
             <label for="linkedinprofile">linkedin profile</label>
-            <input type="text" class="form-control" id="linkedinprofile" name="linkedinprofile" aria-describedby="emailHelp">
+            <input type="text" class="form-control" id="linkedinprofile" name="linkedinprofile"
+                aria-describedby="emailHelp">
         </div>
         <div class="form-group">
             <label for="image">image</label>
@@ -35,6 +36,15 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password">
         </div>
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Example select</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+                <%data.forEach((d)=>{%>
+                <option value="<%=d.id%>"><%=d.name%></option>
+                <%})%>
+            </select>
+        </div>
         <button type="submit" name="submitbtn" class="btn btn-primary">Submit</button>
+        
     </form>
 </div>
