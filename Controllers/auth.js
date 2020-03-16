@@ -9,7 +9,7 @@ exports.getTraineeSignup = (req,res)=>{
     res.render('trainee-signup');
 }
 exports.postTraineeSignup  = async(req,res)=>{
-    const {email,password,name,phone_no,joining_date,last_date} = req.body;
+    const {name,email,password,phone_no,joining_date,last_date} = req.body;
     console.log(req.body);
     // const role = await Role.findOne({where:{name:"trainee"}})
     // const authDetails =await Auth.create({
