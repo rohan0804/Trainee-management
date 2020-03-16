@@ -1,6 +1,7 @@
 const Auth = require('../Models/auth');
 const Role = require('../Models/role');
 const Trainee = require('../Models/trainee');
+const Mentor=require('../Models/mentor');
 
 exports.getLogin = async(req,res,next)=>{
 
@@ -19,7 +20,7 @@ exports.postTraineeSignup  = async(req,res)=>{
     // Trainee.create({
 
     // })
-}
+};
 exports.getAddMentor=async (req,res,next)=>{
     res.render('mentor-signup');
 };
