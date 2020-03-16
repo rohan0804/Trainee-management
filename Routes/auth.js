@@ -5,5 +5,5 @@ router.get('/login', getLogin);
 router.post('/add/trainee', postTraineeSignup);
 router.get('/add/trainee', getTraineeSignup);
 router.post('add/mentor',postAddMentor);
-router.get('add/mentor',getAddMentor);
+router.get('/add/mentor',getAddMentor);
 module.exports = router;

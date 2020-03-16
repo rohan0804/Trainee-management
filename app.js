@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 app.use('/',authRouter);
-app.use('/admin',adminRouter);
+app.use('/',adminRouter);
 
 const Department = require('./Models/department');
 const Trainee = require('./Models/trainee.js');
@@ -39,9 +39,6 @@ Trainee.hasMany(Timelog,{foreignKey:'trainee_id'});
 Category.hasMany(Timelog,{foreignKey:'category_id'});
 subCategory.hasMany(Category,{foreignKey:'subcategory_id'});
 
-
-
-
 sequelize
     .sync()
     .then(result => {
@@ -49,8 +46,6 @@ sequelize
     }).catch(err => {
         console.log(err);
     });
-
-
-app.listen(4000, (req, res) => {
+app.listen(3000, (req, res) => {
     console.log("server is listening");
 })

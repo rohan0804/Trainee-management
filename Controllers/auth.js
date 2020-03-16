@@ -21,6 +21,7 @@ exports.postTraineeSignup  = async(req,res)=>{
     // })
 }
 exports.getAddMentor=async (req,res,next)=>{
+    // res.send('pass');
     res.render('mentor-signup');
 };
 
