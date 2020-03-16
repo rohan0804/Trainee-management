@@ -20,7 +20,7 @@ exports.postTraineeSignup  = async(req,res)=>{
 
     // })
 }
-exports.getAddMentor=async (req,res,next)=>{
+exports.getAddMentor=async(req,res,next)=>{
     res.render('mentor-signup');
 };
 
