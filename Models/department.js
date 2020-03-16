@@ -15,6 +15,10 @@ const Department = sequelize.define('department',{
     syllabus:{
         type:Sequelize.STRING,
         allowNull:false
+    },
+    department_head:{
+        type:Sequelize.STRING,
+        allowNull:false
     }
 
 })
