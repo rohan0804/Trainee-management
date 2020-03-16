@@ -1,6 +1,18 @@
 const express = require('express');
 const app = express();
 const sequelize = require('./utils/database');
+const bodyParser=require('body-parser');
+const authRouter=require('./Routes/auth');
+const adminRouter = require('./Routes/admin');
+const expressLayouts = require('express-ejs-layouts'); 
+app.set('view engine','ejs');
+app.set('views','views');
+app.use(expressLayouts);
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+
+app.use('/',authRouter);
+app.use('/admin',adminRouter);
 
 const Department = require('./Models/department');
 const Trainee = require('./Models/trainee.js');
@@ -33,7 +45,7 @@ subCategory.hasMany(Category,{foreignKey:'subcategory_id'});
 sequelize
     .sync()
     .then(result => {
-        console.log(result);
+        // console.log(result);
     }).catch(err => {
         console.log(err);
     });
