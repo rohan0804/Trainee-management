@@ -8,29 +8,15 @@ exports.postAddRole = async (req,res,next)=>{
         name
     });
     console.log(roleStatus);
-};
-
+}
 exports.getAddDepartment=async (req,res,next)=>{
-
+    res.render('department');
 };
 
 exports.postAddDepartment=async (req,res,next)=>{
-    const {name,department_head}=req.body;
+    const {name,head,syllabus}=req.body;
     const departmentDetails=await Department.create({
-        name,department_head
+        name,department_head,syllabus
     });
-    console.log(departmentDetails);
-};
-
-exports.getAddMentor=async (req,res,next)=>{
-
-};
-
-exports.postAddMentor=async (req,res)=>{
-    const {name,email,phoneNo}=req.body;
-    const department = await Department.find({where:{name:name}});
-    const mentorDetails=await Mentor.create({
-        name,email,phoneNo,department_id:department.dataValues.id
-    });
-    console.log(mentorDetails);
+        console.log(departmentDetails);
 };
