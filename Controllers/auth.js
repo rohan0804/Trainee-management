@@ -20,3 +20,15 @@ exports.postTraineeSignup  = async(req,res)=>{
 
     // })
 }
+exports.getAddMentor=async (req,res,next)=>{
+    res.render('mentor-signup');
+};
+
+exports.postAddMentor=async (req,res)=>{
+    const {name,email,phoneNo}=req.body;
+    const department = await Department.find({where:{name:name}});
+    const mentorDetails=await Mentor.create({
+        name,email,phoneNo,department_id:department.dataValues.id
+    });
+    console.log(mentorDetails);
+};
