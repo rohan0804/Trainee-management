@@ -46,6 +46,6 @@ sequelize
     }).catch(err => {
         console.log(err);
     });
-app.listen(3000, (req, res) => {
+app.listen(8000, (req, res) => {
     console.log("server is listening");
 })
