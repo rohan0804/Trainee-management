@@ -6,3 +6,8 @@ const Department = require('../Models/department');
 exports.getLogin = async(req,res,next)=>{
     res.render('login');
 }
+
+exports.postLogin = async(req,res)=>{
+    const {email,password} = req.body;
+    
+}
