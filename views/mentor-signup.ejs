@@ -1,9 +1,9 @@
 <div class="container">
-    <form action="" method="POST">
+    <form action="/add/mentor" method="POST">
         <h1>Signup Form</h1>
         <div class="form-group">
             <label for="name">name</label>
-            <input type="text" class="form-control" id="name" aria-describedby="emailHelp">
+            <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp">
         </div>
         
         <div class="form-group">
@@ -13,26 +13,20 @@
         </div>
         <div class="form-group">
             <label for="phoneno">phoneno</label>
-            <input type="text" name="phoneno" class="form-control" id="name" aria-describedby="emailHelp">
+            <input type="text" name="phoneNo" class="form-control" id="name" aria-describedby="emailHelp">
         </div>
         <div class="form-group">
             <label for="Department">Department</label>
-            <select id="department">
-                <option value="nodejs">NodeJS</option>
-                <option value="ios">iOS</option>
-                <option value="ror">ROR</option>
-                <option value="php">PHP</option>
-                <option value="python">Python</option>
-                <option value="react">React</option>
-                <option value="android">Android</option>
-                <option value="digital_marketing">Digital Marketing</option>
-                <option value="buisness_development">Buisness Development</option>
-              </select>
+            <select id="department" name="department_id">
+                <% departments.forEach((department)=>{ %>
+                <option value="<%= department.id %>"> <%= department.name%> </option>
+                <% })  %>
+            </select>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password">
         </div>
-        <button type="submit" name="submitbtn" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

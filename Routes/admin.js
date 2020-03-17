@@ -10,4 +10,5 @@ router.get('/add/trainee', getTraineeSignup);
 router.post('/add/mentor',postAddMentor);
 router.get('/add/mentor',getAddMentor);
 
+router.get('/add/department',getAddDepartment);
 module.exports = router;
