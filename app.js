@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 app.use('/',authRouter);
-app.use('/admin',adminRouter);
+app.use('/',adminRouter);
 
 const Department = require('./Models/department');
 const Trainee = require('./Models/trainee.js');

@@ -23,9 +23,10 @@ exports.postAddDepartment=async (req,res,next)=>{
     });
         console.log(departmentDetails);
 };
+
 exports.getTraineeSignup = (req,res)=>{
     res.render('trainee-signup');
-};
+}
 exports.postTraineeSignup  = async(req,res)=>{
     const {name,email,password,phone_no,joining_date,last_date} = req.body;
     console.log(req.body);
@@ -44,7 +45,7 @@ exports.getAddMentor=async (req,res,next)=>{
 
 exports.postAddMentor=async (req,res)=>{
     const {name,email,phoneNo}=req.body;
-    const department = await Department.findAll({where:{name}});
+    const department = await Department.findOne({where:{name:name}});
     const mentorDetails=await Mentor.create({
         name,email,phoneNo,department_id:department.dataValues.id
     });
