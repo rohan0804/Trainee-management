@@ -12,20 +12,16 @@ const Trainee = sequelize.define('trainee',{
         type:Sequelize.STRING,
         allowNull:false
     },
-    email:{
-        type:Sequelize.STRING,
-        allowNull:false
-    },
     phone_no:{
         type:Sequelize.STRING,
         allowNull:false
     },
     joining_date:{
-        type:Sequelize.DATE,
-        allowNull:false
+        type:Sequelize.STRING,
+        allowNull:true
     },
     last_date:{
-        type:Sequelize.DATE,
+        type:Sequelize.STRING,
         allowNull:false
     },
     linkedin_profile:{
