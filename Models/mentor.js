@@ -12,11 +12,6 @@ const Mentor=sequelize.define('mentor',{
          type: Sequelize.STRING,
          allowNull: false,
      },
-  email:{
-      type : Sequelize.STRING,
-      allowNull:false,
-      unique:true
-  },
   phoneNo:{
       type : Sequelize.INTEGER,
       allowNull:false,
