@@ -5,16 +5,13 @@ const Timelog=require('../Models/timelog');
 
 exports.postCategory = async(req,res)=>{
     const {category,subCategory} = req.body;
-
     const category = await Category.create({
         name:category
     })
    const subCategory =  await subCategory.create({
         name:subCategory
-    })
-    
+    });   
 }
-
 exports.postTimelog=async (req,res,next)=>{
 const {start_time,end_time,date,task_memo}=req.body;
 const categoryID=await Category.findOne({where:{name:name}});
