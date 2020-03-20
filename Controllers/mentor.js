@@ -3,11 +3,19 @@ const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
-
+/**
+ * @author : Rohan
+ * @method : getaddtest
+ * @description : it helps to render the test view to mentor
+ */
 exports.getaddtest = async (req, res, next) => {
   res.render("test");
 };
-
+/**
+ * @author : Rohan
+ * @method : postaddtest
+ * @description : it helps to add test by mentor to trainees.
+ */
 exports.postaddtest = async (req, res, next) => {
   //   console.log(req.body);
   try {
@@ -26,7 +34,11 @@ exports.postaddtest = async (req, res, next) => {
     console.log(error.message);
   }
 };
-
+/**
+ * @author : Rohan
+ * @method : getcheckperformance
+ * @description : it helps to render the performance view to mentor with all trainee names.
+ */
 exports.getcheckperformance = async (req, res, next) => {
   const trainees = await Trainee.findAll();
   // console.log(trainees);
@@ -34,7 +46,12 @@ exports.getcheckperformance = async (req, res, next) => {
     trainees: trainees
   });
 };
-
+/**
+ * @author : Rohan
+ * @method : postcheckperformance
+ * @description : it helps to mentor for calculate the performance of individual trainee by
+ * their marks grade and skills.
+ */
 exports.postcheckperformance = async (req, res, next) => {
   // console.log(req.body);
   let totalmarks = 0,
@@ -80,6 +97,12 @@ exports.postcheckperformance = async (req, res, next) => {
     console.log(error);
   }
 };
+/**
+ * @author : Rohan
+ * @method : getaddperformance
+ * @description : it helps to render the addperformance view with required data from tTest
+ *  and Trainee models.
+ */
 exports.getaddperformance = async (req, res, next) => {
   try {
     const trainees = await Trainee.findAll();
@@ -92,7 +115,12 @@ exports.getaddperformance = async (req, res, next) => {
     console.log(error);
   }
 };
-
+/**
+ * @author : Rohan
+ * @method : postaddperformance
+ * @description : it helps to add the shills of a particular trainee by his mentor and
+ * create a performance of a particular trainee.
+ */
 exports.postaddperformance = async (req, res, next) => {
   try {
     const { skills, totalmarks, obtainedmarks, trainee, test } = req.body;
