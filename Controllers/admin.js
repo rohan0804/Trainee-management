@@ -108,11 +108,11 @@ exports.getEditTrainee = async (req, res, next) => {
         const data = await Department.findAll();
         const trainee = await Trainee.findOne({ where: { id: traineeId } })
         const user = await Auth.findOne({ where: { id: trainee.auth_id } })
-        await Trainee.findOne({ where: { id: traineeId } })
+        Trainee.findOne({ where: { id: traineeId } })
             .then(trainees => {
                 console.log(trainees);
                 console.log(user);
-                res.render('trainee-signup', {
+                res.json({
                     trainees: trainees,
                     trainee: user,
                     data: data,
@@ -165,10 +165,10 @@ exports.gettrainee = async (req, res, next) => {
     const data = await Department.findAll();
     const trainee = await Trainee.findOne({ where: { id: traineeId } })
     const user = await Auth.findOne({ where: { id: trainee.auth_id } })
-    await Trainee.findOne({ where: { id: traineeId } })
+    Trainee.findOne({ where: { id: traineeId } })
         .then(trainees => {
             console.log(user);
-            res.render('trainee-signup', {
+            res.json({
                 trainees: trainees,
                 trainee: user,
                 viewTitle: 'get Trainee',
@@ -203,7 +203,7 @@ exports.postDeleteTrainee = async (req, res, next) => {
 exports.getAddMentor = async (req, res, next) => {
     try {
         const departments = await Department.findAll();
-        res.render('mentor-signup', { departments: departments });
+        res.json({ departments: departments });
 
     } catch (error) {
         console.log(error);
@@ -243,27 +243,18 @@ exports.postAddMentor = async (req, res) => {
 
 
 exports.gethrDepartment = async (req, res) => {
+    const traineeId = req.query.id;
+    const departmentId = req.params.id;
     const departments = await Department.findAll();
-    res.render('hr', {
-        departments: departments,
-        viewTitle: "Hr Page",
-    })
-}
-
-exports.posthrDepartment = async (req, res) => {
-    const departmentId = req.body.id;
-    await Department.findOne({ where: { id: departmentId } })
-        .then(department => {
-            const mentors = Mentor.findAll({
-                where:
-                {
-                    department_id: department.id,
-                }
+    const department = await Department.findOne({ where: { id: departmentId } })
+    await Mentor.findAll({ where: { department_id: department.id } })
+        .then(mentor => {
+            console.log(trainee);
+            res.json({
+                departments: departments,
+                mentor: mentor,
+                viewTitle: "Hr Page",
             })
-                const trainee = Trainee.findAll({
-                    where:{
-                        department_id : mentors.department_id,
-                    }
-                }) 
         })
 }
+
