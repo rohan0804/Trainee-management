@@ -2,7 +2,6 @@ const Auth = require('../Models/auth');
 const Role = require('../Models/role');
 const Department = require('../Models/department');
 const Mentor = require('../Models/mentor');
-const Auth = require('../Models/auth');
 const Trainee = require('../Models/trainee');
 const bcrypt = require('bcryptjs');
 
@@ -45,7 +44,6 @@ exports.postAddDepartment = async (req, res, next) => {
             name:name,
             department_head : head,
             syllabus:syllabus
-            
          });
          console.log(department);
     } catch (error) {
@@ -143,9 +141,6 @@ try {
 }
  
 };
-
-
-
 /**
    * @method : postAddMentor
    * @author : Shyamal Sharma
@@ -153,8 +148,7 @@ try {
    * @return : 
    * @param : [params]
    */
-
-exports.putAddMentor=async (req,res,next)=>{
+exports.putAddMentor=async (req,res,next)=>{try{
     const updateMentor=await Mentor.update(
         {name:req.body.name,
         email:req.body.email,
@@ -162,7 +156,20 @@ exports.putAddMentor=async (req,res,next)=>{
         department_id:req.body.department_id},
         {where:{id:req.params.id}}
     );
+    const mentor=await Mentor.findOne({where:{id:req.params.id}});
+    const mentorAuth_id=await mentor.dataValues.auth_id;
+        const email=await req.body.email;
+        const password=await bcrypt.hash(req.body.password,12);
+    const updateAuth=await Auth.update({
+        email:email,
+        password:password
+    },{where:{id:mentorAuth_id}}
+    )
     console.log(updateMentor);
+    res.status(200).json(updateMentor);
+}catch(error){
+    res.status(400).json('Error');
+}
 };
 
 
@@ -173,6 +180,13 @@ exports.putAddMentor=async (req,res,next)=>{
    * @return : 
    * @param : [params]
    */
-exports.deleteMentor=async (req,res,next)=>{
+exports.deleteMentor=async (req,res,next)=>{try{
+    const mentor=await Mentor.findOne({where:{id:req.params.id}});
+    const mentoremail=await mentor.dataValues.auth_id;
     const deletementor=await Mentor.destroy({where:{id:req.params.id}});
+    const deletementorauth=await Auth.destroy({where:{id:mentoremail}});
+    res.status(200).json(deletementor);
+}catch(Error){
+    res.status(400).json('Error');
+}
 };

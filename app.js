@@ -4,6 +4,9 @@ const sequelize = require('./utils/database');
 const bodyParser=require('body-parser');
 const authRouter=require('./Routes/auth');
 const adminRouter = require('./Routes/admin');
+
+// const mentordetails=require('./Routes/mentor');
+
 const expressLayouts = require('express-ejs-layouts'); 
 app.set('view engine','ejs');
 app.set('views','views');
@@ -13,6 +16,7 @@ app.use(bodyParser.json());
 
 app.use('/',authRouter);
 app.use('/',adminRouter);
+// app.use('/',mentordetails);
 
 const Department = require('./Models/department');
 const Trainee = require('./Models/trainee.js');
@@ -40,6 +44,7 @@ Category.hasMany(Timelog,{foreignKey:'category_id'});
 subCategory.hasMany(Category,{foreignKey:'subcategory_id'});
 
 sequelize
+    // .sync({force:true})
     .sync()
     .then(result => {
         // console.log(result);
