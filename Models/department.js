@@ -7,7 +7,6 @@ const Department = sequelize.define('department',{
         primaryKey:true,
         allowNull:false,
         autoIncrement:true
-
     },
     name:{
         type:Sequelize.STRING,
