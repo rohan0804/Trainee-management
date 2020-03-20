@@ -57,3 +57,4 @@ let port = 4000;
 app.listen(4000, (req, res) => {
   console.log(`server is listening at port ${port}`);
 });
+console.log("stash example");
