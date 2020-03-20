@@ -18,12 +18,15 @@ exports.postAddRole = async (req, res, next) => {
         const roleStatus = await Role.create({
             name
         });
-        console.log(roleStatus);
+
+        res.status(200).json({
+            result:roleStatus
+        })
     } catch (error) {
-        console.log(error);
+        res.status(400).json({
+            error
+        });
     }
-
-
 }
 exports.getAddDepartment = async (req, res, next) => {
     res.render('department');
@@ -44,9 +47,13 @@ exports.postAddDepartment = async (req, res, next) => {
             syllabus: syllabus
 
         });
-        console.log(department);
+        res.status(200).json({
+            result:department
+        })
     } catch (error) {
-        console.log(error);
+        res.status(400).json({
+            error
+        })
     }
 
 };
@@ -62,15 +69,15 @@ exports.getTraineeSignup = async (req, res) => {
  * 
    * @method : postTraineeSignup(this will be modified)
    * @author : Nishit Arora
-   * @description : it is for registering new trainees.This only works for one mentor for one department
-   * not for multiple mentors for one deaprtment.
+   * @description : it is for registering new trainees.This only works for one mentor of one department
+   * not for multiple mentors of one deaprtment.
    * @return : 
    * @param : [params]
    */
 
 exports.postTraineeSignup = async (req, res) => {
     try {
-        const { name, email, password, phoneNo, joiningdate, lastdate, department_id, imgurl, linkedin_profile } = req.body;
+        const { name, email, password, phone_no, joining_date, last_date, department_id, image_url, linkedin_profile,mentor_id } = req.body;
         const hashPassword = await bcrypt.hash(password, 12);
         const role = await Role.findOne({ where: { name: "Trainee" } });
         const user = await Auth.findOne({ where: { email: email } });
@@ -82,133 +89,156 @@ exports.postTraineeSignup = async (req, res) => {
             password: hashPassword,
             role_id: role.id
         })
-        const mentors = await Mentor.findOne({ where: { department_id: department_id } });
-
+        
         const trainee = await Trainee.create({
-            name: name,
-            phone_no: phoneNo,
-            joining_date: joiningdate,
-            last_date: lastdate,
-            department_id,
-            mentor_id: mentors.id,
-            image_url: imgurl,
-            auth_id: auth.id,
-            linkedin_profile: linkedin_profile
+            name,phone_no,joining_date,last_date,phone_no,
+            department_id,mentor_id,image_url,auth_id:auth.id,linkedin_profile
+        })
+        res.status(200).json({
+            response_code:200,
+            status:"trainee created successfully",
+            result:trainee
         })
     } catch (error) {
-        console.log("error occured while registering user", error);
+        res.status(400).json({
+            response_code:400,
+            status:"error occured",
+            error:error.message
+        })
+        
     }
     console.log(req.body);
 };
 
-exports.getEditTrainee = async (req, res, next) => {
+/**
+   * @method : getUpdateTrainee
+   * @author : Taranjeet
+   * @description : Trainee to be updated. it will be used with ejs while autofilling the information.
+   * @return : 
+   * @param : [params]
+   */
+exports.getUpdateTrainee = async (req, res, next) => {
     try {
-        const editTrainee = req.query.id;
-        const traineeId = req.params.id;
-        const data = await Department.findAll();
-        const trainee = await Trainee.findOne({ where: { id: traineeId } })
-        const user = await Auth.findOne({ where: { id: trainee.auth_id } })
-        Trainee.findOne({ where: { id: traineeId } })
-            .then(trainees => {
-                console.log(trainees);
-                console.log(user);
-                res.json({
-                    trainees: trainees,
-                    trainee: user,
-                    data: data,
-                    viewTitle: "Update Trainee"
-                });
+        
+        const trainee_id = req.params.id;
+        const trainee = await Trainee.findOne({ where: { id: trainee_id } })
+        const auth = await Auth.findOne({ where: { id: trainee.auth_id } })
+        if(auth ){
+            res.status(200).json({
+                response_code:200,
+                status:"trainee to be updated",
+                result:{
+                    auth,
+                    trainee
+                },
+                
             })
-            .catch(err => console.log(err))
+        }
     }
     catch (error) {
         console.log(error);
     }
 }
+/**
+   * @method : postUpdateTrainee
+   * @author : Taranjeet
+   * @description : Update the trainee details
+   * @return : 
+   * @param : [params]
+   */
 
-
-exports.postEditTrainee = async (req, res, next) => {
+exports.postUpdateTrainee = async (req, res, next) => {
     try {
-        const traineeId = req.body.id;
-        const { name, email, password, phone_no, joining_date, last_date, department_id, image_url, linkedin_profile } = req.body;
-        const role = await Role.findOne({ where: { name: "trainee" } });
-        const trainee = await Trainee.findOne({ where: { id: traineeId } });
-        const user = await Auth.findOne({ where: { id: trainee.auth_id } });
-        const auth = await Auth.update(
-            { email: req.body.email },
-            { where: { id: user.id } },
-        );
-        const mentors = await Mentor.findOne({ where: { department_id: trainee.department_id } });
-        await Trainee.update(
-            {
-                name: name,
-                phone_no: phone_no,
-                joining_date: joining_date,
-                last_date: last_date,
-                linkedin_profile: linkedin_profile,
-                image_url: image_url,
-                department_id: department_id,
-                mentor_id: mentors.id,
-            },
-            { where: { id: traineeId } }
-        )
-    }
+        const trainee_id = req.params.id;
+        const { name, email, password, phone_no, joining_date, last_date, department_id, image_url, linkedin_profile,mentor_id } = req.body;
+        const trainee = await Trainee.findOne({ where: { id: trainee_id } });
+        const auth = await Auth.findOne({ where: { id: trainee.auth_id } });
+        await Auth.update({ email:email },{ where: { id: auth.id } });
+        const updatedTrainee = await Trainee.update({name,phone_no,joining_date,last_date,linkedin_profile,
+                image_url,department_id,mentor_id,
+                },{ where: { id: trainee_id } }
+            )
+            res.status(200).json({
+                response_code:200,
+                status:"trainee updated successfully",
+                result:updatedTrainee
+            })
+        }
     catch (error) {
-        console.log(error);
+        res.status(400).json({
+            response_code:400,
+            error:error.message
+        })
     }
 }
 
 
-exports.gettrainee = async (req, res, next) => {
-    const getTrainee = req.query.id
-    const traineeId = req.params.id;
-    const data = await Department.findAll();
-    const trainee = await Trainee.findOne({ where: { id: traineeId } })
-    const user = await Auth.findOne({ where: { id: trainee.auth_id } })
-    Trainee.findOne({ where: { id: traineeId } })
-        .then(trainees => {
-            console.log(user);
-            res.json({
-                trainees: trainees,
-                trainee: user,
-                viewTitle: 'get Trainee',
-                data: data,
-            });
-        })
-        .catch(err => console.log(err));
-};
-
+exports.getTrainee = async (req, res, next) => {
+    try {
+        const trainee_id = req.params.id;
+        const trainee = await Trainee.findOne({ where: { id: trainee_id } })
+        const auth = await Auth.findOne({ where: { id: trainee.auth_id } })
+        res.status(200).json({
+                response_code:200,
+                status:"trainee",
+                result:{
+                    auth,
+                    trainee
+                },})
+        }catch (error) {
+        console.log(error);
+    }};
+/**
+   * @method : postUpdateTrainee
+   * @author : Taranjeet
+   * @description : Delete the trainee details
+   * @return : Deleting the Trainee Record with id as Parameter
+   * @param : [params]
+   */
 exports.postDeleteTrainee = async (req, res, next) => {
     try {
-        const traineeId = req.body.id;
-        const auth = await Auth.destroy(
-            { where: { id: traineeId } },
-        );
-        await Trainee.findOne({ where: { id: traineeId } })
-            .then(trainee => {
-                return trainee.destroy();
-            })
-            .then(result => {
-                console.log('DESTROYED TRAINEE!');
-            })
-            .catch(err => console.log(err));
-    }
+        const trainee_id = req.params.id;
+        const trainee = await Trainee.findOne({where:{id:trainee_id}})
+        const deletedTrainee = await Trainee.destroy({where:{id:trainee.id}});
+        const auth = await Auth.destroy({ where: { id: trainee.auth_id } });
+                res.status(200).json({
+                    response_code:200,
+                    status:"trainee deleted successfully",
+                    result:{
+                        trainee
+                    }
+                })
+            }
+
     catch (error) {
-        console.log(error);
-    }
-};
+        res.status(200).json({
+            response_code:200,
+            status:"error occured while deleting",
+            error:error.message
+    })
+}};
 
 
 
-exports.getAddMentor = async (req, res, next) => {
+exports.getMentor = async (req, res, next) => {
     try {
-        const departments = await Department.findAll();
-        res.json({ departments: departments });
+        const mentor_id = req.params.id;
+        console.log(mentor_id);
+        const mentor = await Mentor.findOne({where:{id:mentor_id}});
+        const auth = await Auth.findOne({where:{id:mentor.auth_id}})
+        res.status(200).json({
+            response_code:200,
+            status:"Mentor details",
+            result:{
+                auth,
+                mentor
+            }
+        })
 
     } catch (error) {
         console.log(error);
     }
-};
+}
 /**
    * @method : postAddMentor
    * @author : Nishit Arora
@@ -233,28 +263,24 @@ exports.postAddMentor = async (req, res) => {
         const mentorDetails = await Mentor.create({
             name, phoneNo, department_id, auth_id: auth.id, department_id
         });
-        console.log(mentorDetails);
+        res.status(200).json({
+            response_code:200,
+            status:"Mentor created successfully",
+            result:{
+                auth,
+                mentorDetails
+            }
+        })
     } catch (error) {
-        console.log("error while registering mentor", error);
+        res.status(400).json({
+            response_code:400,
+            error:error.message
+        })
     }
 
 };
 
 
 
-exports.gethrDepartment = async (req, res) => {
-    const traineeId = req.query.id;
-    const departmentId = req.params.id;
-    const departments = await Department.findAll();
-    const department = await Department.findOne({ where: { id: departmentId } })
-    await Mentor.findAll({ where: { department_id: department.id } })
-        .then(mentor => {
-            console.log(trainee);
-            res.json({
-                departments: departments,
-                mentor: mentor,
-                viewTitle: "Hr Page",
-            })
-        })
-}
+
 
