@@ -1,0 +1,49 @@
+<div class="container">
+  <h1>Add Performance:</h1>
+  <hr />
+  <form action="/mentor/addperformance" method="POST">
+    <div class="form-group">
+      <label for="skills">Skills:</label>
+      <input type="text" class="form-control" id="skills" name="skills" />
+    </div>
+    <div class="form-group">
+      <label for="totalmarks">Total Marks:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="totalmarks"
+        name="totalmarks"
+      />
+    </div>
+    <div class="form-group">
+      <label for="obtainedmarks">Obtained Marks:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="obtainedmarks"
+        name="obtainedmarks"
+      />
+    </div>
+    <div class="form-group">
+      <label for="Trainee">Select Trainee:</label>
+      <select class="form-control" id="Trainee" name="trainee">
+        <option value="selected" selected>select trainee</option>
+        <%trainees.forEach((trainee)=>{%>
+        <option value="<%=trainee.id%>"><%=trainee.name%></option>
+        <%})%>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="Test">Select Test:</label>
+      <select class="form-control" id="Test" name="test">
+        <option value="selected" selected>select test</option>
+        <%tests.forEach((test)=>{%>
+        <option value="<%=test.id%>"><%=test.name%></option>
+        <%})%>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary mb-2" id="addtestbtn">
+      Add Performance
+    </button>
+  </form>
+</div>
