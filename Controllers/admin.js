@@ -119,7 +119,6 @@ exports.postTraineeSignup = async (req, res) => {
    */
 exports.getUpdateTrainee = async (req, res, next) => {
     try {
-        
         const trainee_id = req.params.id;
         const trainee = await Trainee.findOne({ where: { id: trainee_id } })
         const auth = await Auth.findOne({ where: { id: trainee.auth_id } })
