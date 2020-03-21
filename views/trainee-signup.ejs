@@ -1,5 +1,5 @@
 <div class="container">
-  <form method="POST" action="/add/trainee">
+  <form method="POST" action="/edit-trainee">
     <h1>Signup Form</h1>
     <div class="form-group">
       <label for="name">name</label>
@@ -9,6 +9,7 @@
         name="name"
         id="name"
         aria-describedby="emailHelp"
+        value="<%=trainees.name%>"
       />
     </div>
 
@@ -20,6 +21,7 @@
         id="email"
         name="email"
         aria-describedby="emailHelp"
+        value="<%=trainee.email%>"
       />
       <small id="emailHelp" class="form-text text-muted"
         >We'll never share your email with anyone else.</small
@@ -33,6 +35,7 @@
         class="form-control"
         id="phoneno"
         aria-describedby="emailHelp"
+        value="<%=trainees.phone_no%>"
       />
     </div>
     <div class="form-group">
@@ -43,6 +46,7 @@
         id="joiningdate"
         name="joiningdate"
         aria-describedby="emailHelp"
+        value="<%=trainees.joining_date%>"
       />
     </div>
     <div class="form-group">
@@ -53,6 +57,7 @@
         id="lastdate"
         name="lastdate"
         aria-describedby="emailHelp"
+        value="<%=trainees.last_date%>"
       />
     </div>
     <div class="form-group">
@@ -63,6 +68,7 @@
         id="linkedinprofile"
         name="linkedin_profile"
         aria-describedby="emailHelp"
+        value="<%=trainees.linkedin_profile%>"
       />
     </div>
     <div class="form-group">
@@ -73,6 +79,7 @@
         id="image"
         name="imgurl"
         aria-describedby="emailHelp"
+        value="<%=trainees.image_url%>"
       />
     </div>
     <div class="form-group">
@@ -93,6 +100,10 @@
       >
         <%data.forEach((d)=>{%>
         <option value="<%=d.id%>"><%=d.name%></option>
+        <script>
+          var data = `<%=d.name%>`;
+          console.log(data);
+        </script>
         <%})%>
       </select>
     </div>

@@ -3,21 +3,30 @@ const router = express.Router();
 const {
   postAddRole,
   postAddDepartment,
-  getAddDepartment
+  getAddDepartment,
+  getUpdateTrainee,
+  getTrainee,
+  postDeleteTrainee
 } = require("../Controllers/admin");
 const {
   postTraineeSignup,
   getTraineeSignup,
-  getAddMentor,
+  getMentor,
+  postUpdateTrainee,
   postAddMentor
 } = require("../Controllers/admin");
-
 router.post("/add/role", postAddRole);
 router.post("/add/department", postAddDepartment);
 router.get("/add/department", getAddDepartment);
 router.post("/add/trainee", postTraineeSignup);
 router.get("/add/trainee", getTraineeSignup);
+router.get("/add/mentor/:id", getMentor);
 router.post("/add/mentor", postAddMentor);
-router.get("/add/mentor", getAddMentor);
-router.get("/add/department", getAddDepartment);
+
+router.get("/update/trainee/:id", getUpdateTrainee);
+router.post("/update/trainee/:id", postUpdateTrainee);
+
+router.get("/trainee/:id", getTrainee);
+router.post("/delete/trainee/:id", postDeleteTrainee);
+
 module.exports = router;
