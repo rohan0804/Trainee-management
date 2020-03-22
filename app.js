@@ -20,6 +20,8 @@ app.use("/", adminRouter);
 app.use("/mentor", mentorRouter);
 
 const Department = require("./Models/department");
+const Announcement=require('./Models/announcement');
+const Event=require('./Models/event');
 const Trainee = require("./Models/trainee.js");
 const Mentor = require("./Models/mentor");
 const Performance = require("./Models/performance");

@@ -361,18 +361,18 @@ exports.deleteMentor=async (req,res,next)=>{try{
     res.status(400).json('Error');
 }
 };
-  try {
-    const { name, head, syllabus } = req.body;
-    const department = await Department.create({
-      name: name,
-      department_head: head,
-      syllabus: syllabus
-    });
-    res.status(200).json({
-      result: department
-    });
-  } catch (error) {
-    res.status(400).json({
-      error
-    });
-  };
+  // try {
+  //   const { name, head, syllabus } = req.body;
+  //   const department = await Department.create({
+  //     name: name,
+  //     department_head: head,
+  //     syllabus: syllabus
+  //   });
+  //   res.status(200).json({
+  //     result: department
+  //   });
+  // } catch (error) {
+  //   res.status(400).json({
+  //     error
+  //   });
+  // };
