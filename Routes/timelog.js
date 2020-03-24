@@ -1,9 +1,7 @@
-const express=require('express');
-const router=express.Router();
-const {postTimelog}=require('../Controllers/timelog');
+const express = require("express");
+const router = express.Router();
+const { postTimelog } = require("../Controllers/timelog");
 
-// router.get('/timelog',);
+router.post("/", postTimelog);
 
-router.post('/timelog',postTimelog);
-
-module.exports=router;
+module.exports = router;
