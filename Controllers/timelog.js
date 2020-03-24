@@ -60,3 +60,24 @@ exports.postTimelog = async (req, res, next) => {
     });
   }
 };
+
+/**
+ * @method : getTimelogData
+ * @author : Mehak Dhiman
+ * @description : To Retrive all data
+ * @return :
+ * @param :
+ *
+ **/
+
+exports.getTimelogData = (req, res) => {
+  Timelog.findAll()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(400).json({
+        msg: "Something Wrong"
+      });
+    });
+};
