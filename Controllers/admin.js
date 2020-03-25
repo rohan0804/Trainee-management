@@ -4,13 +4,10 @@ const Mentor = require("../Models/mentor");
 const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
-<<<<<<< HEAD
 const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
-=======
-const Event = require('../Models/events');
+const Event = require('../Models/event');
 
->>>>>>> fcaa25568507beba642f4ef8013fd5539ef01e72
 
 /**
  * @method : postAddRole
@@ -318,7 +315,6 @@ exports.postAddMentor = async (req, res) => {
     });
   }
 };
-<<<<<<< HEAD
 /**
    * @method : postAddMentor
    * @author : Shyamal Sharma
@@ -413,7 +409,6 @@ exports.deleteAddannouncement=async (req,res)=>{
     res.status(400).json({status:error.message});
   }
 }
-=======
 
 exports.getAddEvents = async(req,res)=>{
   res.render('addEvents.ejs');
@@ -440,13 +435,17 @@ exports.postAddEvents = async(req,res)=>{
 
 exports.adminDashboard = async(req,res)=>{
   const events = await Event.findAll();
+  const announcement=await Announcement.findAll();
   const result = events.map(event=>{
     return event.dataValues
-  })
- 
+  });
+  const resulta = announcement.map(event=>{
+    return announcement.dataValues
+  });
+
   res.render('traineeDashboard',{
-    events:result
+    events:result,
+    announcement:resulta
   });
 }
 
->>>>>>> fcaa25568507beba642f4ef8013fd5539ef01e72

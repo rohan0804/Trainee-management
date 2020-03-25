@@ -6,17 +6,19 @@ const Event=sequelize.define('event',{
         autoIncrement:true,
         allowNull:false,
         primaryKey:true
-    },
-    eventHeading:{
+        },
+    heading:{
         type:Sequelize.STRING,
         allowNull:false
-    },
-    eventDescription:{
+        },
+    description:{
         type:Sequelize.STRING,
         allowNull:false
-    },
-    eventDate:{
+        },
+    date:{
         type:Sequelize.DATE,
         allowNull:false
-    }
+        }
 })
+
+module.exports = Event;

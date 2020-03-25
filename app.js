@@ -37,7 +37,6 @@ const Category = require("./Models/category");
 const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
-const Event = require('./Models/events');
 
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
@@ -78,12 +77,11 @@ io.sockets.on('connection',socket=>{
       io.sockets.emit('chat',data);
     });
   });
-let port = 3000;
-const server=app.listen(3000, (req, res) => {
-  console.log(`server is listening at my port ${port}`);
-  })
+// let port = 3000;
+// const server=app.listen(3000, (req, res) => {
+//   console.log(`server is listening at my port ${port}`);
+//   })
 
 http.listen(4000, (req, res) => {
   console.log(`server is listening at my port`);
 });
-module.exports=server;
