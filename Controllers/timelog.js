@@ -2,11 +2,11 @@ const Trainee = require("../Models/trainee");
 const Category = require("../Models/category");
 const subCategory = require("../Models/sub_category");
 const Timelog = require("../Models/timelog");
-
+const { Op } = require("sequelize");
 /**
  * @method : postTimelog
  * @author : Mehak Dhiman
- * @description : Timelog api  with PostTimelog method fro insert data
+ * @description : Timelog api  with PostTimelog method for insert data[Expected DATE in UTC format]
  * @return :
  * @param :
  */
@@ -37,6 +37,7 @@ exports.postTimelog = async (req, res, next) => {
         msg: "trainee data not found"
       });
     }
+
     const Timelogg = await Timelog.create({
       start_time: req.body.start_time,
       end_time: req.body.end_time,
@@ -64,20 +65,121 @@ exports.postTimelog = async (req, res, next) => {
 /**
  * @method : getTimelogData
  * @author : Mehak Dhiman
- * @description : To Retrive all data
+ * @description : To Retrive all data by trainee id
  * @return :
- * @param :
+ * @param :[params-trainee_id]
  *
  **/
 
-exports.getTimelogData = (req, res) => {
-  Timelog.findAll()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+exports.getTimelogData = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
       res.status(400).json({
-        msg: "Something Wrong"
+        msg: "parameter not found"
       });
+    }
+    const timelogData = await Timelog.findOne({
+      where: { trainee_id: id }
     });
+    if (!timelogData) {
+      res.status(400).json({
+        msg: "Record not Exist"
+      });
+    }
+    const timelogRecords = await Timelog.findAll({ where: { trainee_id: id } });
+    if (timelogRecords) {
+      res.send(timelogRecords);
+    }
+    res.status(400).json({
+      msg: "Something went wrong"
+    });
+  } catch (err) {
+    res.status(400).json({
+      msg: "Something Wrong"
+    });
+  }
+};
+
+/**
+ * @method : deleteTimelog
+ * @author : Mehak Dhiman
+ * @description : To Delete Record
+ * @return :
+ * @param :[params- id,trainee_id]
+ **/
+
+exports.deleteTimelog = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const trainee_id = req.params.trainee_id;
+
+    const timelogData = await Timelog.findOne({
+      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
+    });
+    if (!timelogData) {
+      res.status(400).json({
+        msg: "Record not Exist"
+      });
+    }
+    const deleteTimelog = await Timelog.destroy({
+      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
+    });
+    if (deleteTimelog) {
+      res.status(200).json({
+        msg: "record deleted successfully"
+      });
+    }
+    res.status(400).json({
+      msg: "Something went wrong"
+    });
+  } catch (error) {
+    res.status(400).json({
+      msg: "Something  wrong"
+    });
+  }
+};
+
+/**
+ * @method : updateTimelogRecord
+ * @author : Mehak Dhiman
+ * @description : To Update Record BY id and trainee_id
+ * @return :
+ * @param :[params- id,trainee_id]
+ **/
+
+exports.updateTimelogRecord = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const trainee_id = req.params.trainee_id;
+
+    const timelogData = await Timelog.findOne({
+      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
+    });
+    if (!timelogData) {
+      res.status(400).json({
+        msg: "Record not found"
+      });
+    }
+    const updatedTimelog = await timelogData.update({
+      start_time: req.body.start_time,
+      end_time: req.body.end_time,
+      task_memo: req.body.task_memo,
+      category_id: req.body.category_id,
+      sub_category_id: req.body.sub_category_id
+    });
+    if (updatedTimelog) {
+      res.status(200).json({
+        msg: "timelog record updated successfully"
+      });
+    }
+    res.status(400).json({
+      msg: "Something  went wrong"
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      msg: "Something  wrong"
+    });
+  }
 };

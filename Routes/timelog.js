@@ -1,8 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { postTimelog, getTimelogData } = require("../Controllers/timelog");
+const {
+  postTimelog,
+  getTimelogData,
+  deleteTimelog,
+  updateTimelogRecord
+} = require("../Controllers/timelog");
 
-router.post("/", postTimelog);
-router.get("/List", getTimelogData);
+router.post("/add", postTimelog);
+router.get("/:id", getTimelogData);
+router.get("/:id/:trainee_id", updateTimelogRecord);
+router.delete("/:id/:trainee_id", deleteTimelog);
 
 module.exports = router;
