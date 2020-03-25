@@ -61,7 +61,7 @@ sequelize
   });
   let count=0;
 io.sockets.on('connection',socket=>{
- 
+  console.log(socket.id);
   count+=1;
   console.log("Socket connected",count);
   socket.on('disconnect',result=>{
