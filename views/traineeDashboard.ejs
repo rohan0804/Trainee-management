@@ -1,0 +1,41 @@
+<h1>Trainee Dashboard</h1>
+    <h1>events</h1>
+    <div class="list-group">
+        <% events.forEach(event=>{ %>
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1"><%= event.heading%></h5>
+            <small>3 days ago</small>
+          </div>
+          <p class="mb-1"><%= event.description%></p>
+          <small></small>
+        </a>
+        <%})%>
+        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start " id="mainEvent">
+            <div class="d-flex w-100 justify-content-between" id="heading">
+              
+            </div>
+            <p class="mb-1"></p>
+            
+          </a>
+        </div>
+        
+    <script>
+        var socket = io();
+        socket.on('getEvent',(event)=>{
+            console.log("event recived",event);
+            
+            var parent = document.getElementById('heading');
+            var helement = document.createElement("h5");
+            var heading = document.createTextNode(event.heading);
+            helement.appendChild(heading);
+            helement.classList.add("mb-1");
+            parent.appendChild(helement);
+            var eventParent = document.getElementById('mainEvent');
+            var descriptionElement=  document.createElement("p");
+            var description = document.createTextNode(event.description);
+            descriptionElement.appendChild(description);
+            descriptionElement.classList.add("mb-1");
+            eventParent.appendChild(descriptionElement);
+        })
+    </script>
