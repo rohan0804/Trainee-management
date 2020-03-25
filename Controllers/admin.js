@@ -366,13 +366,17 @@ exports.deleteMentor=async (req,res,next)=>{try{
 }
 };
 
-const server=require('../app');
-var io=socket(server)
-
 exports.getAddannouncement=async (req,res,next)=>{
   res.render('announcement');
 };
 
+/**
+   * @method : postAddannouncement
+   * @author : Shyamal Sharma
+   * @description : Add announcement by HR
+   * @return : 
+   * @param : [params]
+   */
 exports.postAddannouncement = async (req, res,next) => {
   try {
     const {heading,description} = req.body;
@@ -386,6 +390,13 @@ exports.postAddannouncement = async (req, res,next) => {
   }
 };
 
+/**
+   * @method : putAddannouncement
+   * @author : Shyamal Sharma
+   * @description : update announcement by HR
+   * @return : 
+   * @param : [params]
+   */
 // exports.putAddannouncement=async (req,res,next)=>{
 //   try{
 //     const announcementEdit= await Announcement.update(
@@ -401,6 +412,13 @@ exports.postAddannouncement = async (req, res,next) => {
 //   }
 // };
 
+/**
+   * @method : deleteAddannouncement
+   * @author : Shyamal Sharma
+   * @description : delete announcement by HR
+   * @return : 
+   * @param : [params]
+   */
 exports.deleteAddannouncement=async (req,res)=>{
   try{
     const announcementDelete=await Announcement.destroy({where:{id:req.params.id}});
@@ -412,7 +430,8 @@ exports.deleteAddannouncement=async (req,res)=>{
 
 exports.getAddEvents = async(req,res)=>{
   res.render('addEvents.ejs');
-}
+};
+
 exports.postAddEvents = async(req,res)=>{
   try {
     const {heading,description,date} = req.body;
@@ -431,21 +450,21 @@ exports.postAddEvents = async(req,res)=>{
       })
   }
   
-}
+};
 
 exports.adminDashboard = async(req,res)=>{
   const events = await Event.findAll();
-  const announcement=await Announcement.findAll();
+  const announcements=await Announcement.findAll();
   const result = events.map(event=>{
     return event.dataValues
   });
-  const resulta = announcement.map(event=>{
+  const announcementresult = announcements.map(announcement=>{
     return announcement.dataValues
   });
 
   res.render('traineeDashboard',{
     events:result,
-    announcement:resulta
+    announcements:announcementresult
   });
-}
+};
 

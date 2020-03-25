@@ -19,6 +19,26 @@
             
           </a>
         </div>
+        <h1>announcements</h1>
+        <div class="list-group">
+            <% announcements.forEach(announcement=>{ %>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><%= announcement.announcementTitle%></h5>
+                <small>3 days ago</small>
+              </div>
+              <p class="mb-1"><%= announcement.announcementDescription%></p>
+              <small></small>
+            </a>
+            <%})%>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start " id="mainEvent">
+                <div class="d-flex w-100 justify-content-between" id="heading">
+                  
+                </div>
+                <p class="mb-1"></p>
+                
+              </a>
+            </div>
         
     <script>
         var socket = io();
@@ -37,5 +57,22 @@
             descriptionElement.appendChild(description);
             descriptionElement.classList.add("mb-1");
             eventParent.appendChild(descriptionElement);
-        })
+        });
+        socket.on('getAnnouncements',(announcement)=>{
+            console.log("announcements recived",announcement);
+            
+            var parent = document.getElementById('heading');
+            var helement = document.createElement("h5");
+            var heading = document.createTextNode(announcement.announcementTitle);
+            helement.appendChild(heading);
+            helement.classList.add("mb-1");
+            parent.appendChild(helement);
+            var eventParent = document.getElementById('mainEvent');
+            var descriptionElement=  document.createElement("p");
+            var description = document.createTextNode(announcement.announcementDescription);
+            descriptionElement.appendChild(description);
+            descriptionElement.classList.add("mb-1");
+            eventParent.appendChild(descriptionElement);
+        });
+        
     </script>
