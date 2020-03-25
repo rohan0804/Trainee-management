@@ -16,4 +16,6 @@ const Announcement=sequelize.define('announcement',{
         type:Sequelize.STRING,
         allowNull:false
     }
-})
+});
+
+module.exports=Announcement;

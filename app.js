@@ -6,12 +6,15 @@ const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
 const expressLayouts = require("express-ejs-layouts");
+const socket=require('socket.io');
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// app.use(express.static('publicTrial'));
 
 app.use("/", authRouter);
 
@@ -54,8 +57,26 @@ sequelize
   .catch(err => {
     console.log(err);
   });
-
-let port = 4000;
-app.listen(4000, (req, res) => {
+  var io=socket();
+  io.sockets.on('connection',(socket)=>{
+    console.log(socket.id);
+    count+=1;
+  console.log("Socket connected",count);
+  socket.on('disconnect',result=>{
+    count-=1;
+    console.log("Socket Disconnected",count);
+  });
+  socket.on('addEvent',event=>{
+    console.log(event);
+    io.sockets.emit('getEvent',event);
+  })
+    socket.on('announcement',(announcement)=>{
+      console.log(announcement);
+      io.sockets.emit('chat',data);
+    });
+  });
+let port = 3000;
+const server=app.listen(3000, (req, res) => {
   console.log(`server is listening at my port ${port}`);
 });
+module.exports=server;

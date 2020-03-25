@@ -4,6 +4,8 @@ const Mentor = require("../Models/mentor");
 const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
+const Announcement=require('../Models/announcement');
+const socket=require('socket.io');
 
 /**
  * @method : postAddRole
@@ -361,18 +363,47 @@ exports.deleteMentor=async (req,res,next)=>{try{
     res.status(400).json('Error');
 }
 };
-  // try {
-  //   const { name, head, syllabus } = req.body;
-  //   const department = await Department.create({
-  //     name: name,
-  //     department_head: head,
-  //     syllabus: syllabus
-  //   });
-  //   res.status(200).json({
-  //     result: department
-  //   });
-  // } catch (error) {
-  //   res.status(400).json({
-  //     error
-  //   });
-  // };
+
+const server=require('../app');
+var io=socket(server)
+
+exports.getAddannouncement=async (req,res,next)=>{
+  res.render('announcement');
+};
+
+exports.postAddannouncement = async (req, res,next) => {
+  try {
+    const {heading,description} = req.body;
+    const announcementDetails = await Announcement.create({
+      announcementTitle:heading,
+      announcementDescription:description
+    });
+    res.status(200).json({status:'Announcement Created!'});
+  } catch (error) {
+    res.status(400).json({error:error.message});
+  }
+};
+
+// exports.putAddannouncement=async (req,res,next)=>{
+//   try{
+//     const announcementEdit= await Announcement.update(
+//       {
+//         announcementTitle:req.body.Title,
+//         announcementDescription:req.body.Description
+//       },
+//       {where:{id:req.params.id}}
+//     );
+//     res.status(200).json({status:'Announcement Updated!'});
+//   }catch(error){
+//     res.status(400).json({status:error.message});
+//   }
+// };
+
+exports.deleteAddannouncement=async (req,res)=>{
+  try{
+    const announcementDelete=await Announcement.destroy({where:{id:req.params.id}});
+    res.status(200).json({status:'Announcement Deleted'});
+  }catch(error){
+    res.status(400).json({status:error.message});
+  }
+}
