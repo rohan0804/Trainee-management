@@ -25,6 +25,7 @@ const {
   deleteMentor,
   deleteAddannouncement
 }=require('../Controllers/admin');
+const {getAddEvents,postAddEvents,adminDashboard} = require("../Controllers/admin");
 
 router.post("/add/role", postAddRole);
 router.post("/add/department", postAddDepartment);
@@ -47,4 +48,7 @@ router.post('/add/announcement',postAddannouncement);
 // router.put('/add/announcement/:id',putAddannouncement);
 router.delete('/add/announcement/:id',deleteAddannouncement);
 
+router.get("/add/event",getAddEvents);
+router.post("/add/event",postAddEvents);
+router.get("/dashboard",adminDashboard);
 module.exports = router;

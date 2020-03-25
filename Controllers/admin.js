@@ -4,8 +4,13 @@ const Mentor = require("../Models/mentor");
 const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
+<<<<<<< HEAD
 const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
+=======
+const Event = require('../Models/events');
+
+>>>>>>> fcaa25568507beba642f4ef8013fd5539ef01e72
 
 /**
  * @method : postAddRole
@@ -313,6 +318,7 @@ exports.postAddMentor = async (req, res) => {
     });
   }
 };
+<<<<<<< HEAD
 /**
    * @method : postAddMentor
    * @author : Shyamal Sharma
@@ -407,3 +413,40 @@ exports.deleteAddannouncement=async (req,res)=>{
     res.status(400).json({status:error.message});
   }
 }
+=======
+
+exports.getAddEvents = async(req,res)=>{
+  res.render('addEvents.ejs');
+}
+exports.postAddEvents = async(req,res)=>{
+  try {
+    const {heading,description,date} = req.body;
+    const event = await Event.create({heading,description,date});
+      res.status(200).json({
+        response_code:200,
+        status:"event created successfully",
+        result:{
+          event
+        }
+      })
+  } catch (error) {
+      res.status(400).json({
+        response_code:400,
+        error:error.message
+      })
+  }
+  
+}
+
+exports.adminDashboard = async(req,res)=>{
+  const events = await Event.findAll();
+  const result = events.map(event=>{
+    return event.dataValues
+  })
+ 
+  res.render('traineeDashboard',{
+    events:result
+  });
+}
+
+>>>>>>> fcaa25568507beba642f4ef8013fd5539ef01e72

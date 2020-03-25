@@ -6,7 +6,10 @@ const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
 const expressLayouts = require("express-ejs-layouts");
-const socket=require('socket.io');
+
+var http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
@@ -14,7 +17,6 @@ app.use(expressLayouts);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// app.use(express.static('publicTrial'));
 
 app.use("/", authRouter);
 
@@ -35,6 +37,7 @@ const Category = require("./Models/category");
 const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
+const Event = require('./Models/events');
 
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
@@ -57,10 +60,10 @@ sequelize
   .catch(err => {
     console.log(err);
   });
-  var io=socket();
-  io.sockets.on('connection',(socket)=>{
-    console.log(socket.id);
-    count+=1;
+  let count=0;
+io.sockets.on('connection',socket=>{
+ 
+  count+=1;
   console.log("Socket connected",count);
   socket.on('disconnect',result=>{
     count-=1;
@@ -78,5 +81,9 @@ sequelize
 let port = 3000;
 const server=app.listen(3000, (req, res) => {
   console.log(`server is listening at my port ${port}`);
+  })
+
+http.listen(4000, (req, res) => {
+  console.log(`server is listening at my port`);
 });
 module.exports=server;
