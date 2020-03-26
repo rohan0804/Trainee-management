@@ -17,6 +17,10 @@ const Timelog = sequelize.define("timelog", {
     type: Sequelize.DATE,
     allowNull: false
   },
+  date: {
+    type: Sequelize.DATEONLY,
+    allowNull: false
+  },
 
   task_memo: {
     type: Sequelize.STRING,

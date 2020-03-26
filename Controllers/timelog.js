@@ -6,59 +6,124 @@ const { Op } = require("sequelize");
 /**
  * @method : postTimelog
  * @author : Mehak Dhiman
- * @description : Timelog api  with PostTimelog method for insert data[Expected DATE in UTC format]
+ * @description : Timelog api with PostTimelog method for insert data [Expected DATE in UTC format]
  * @return :
  * @param :
  */
 
-exports.postTimelog = async (req, res, next) => {
+exports.postTimelog = async data => {
   try {
     const categoryData = await Category.findOne({
-      where: { id: req.body.category_id }
+      where: { id: data.category_id }
     });
     if (!categoryData) {
-      res.status(400).json({
-        msg: "category not found"
-      });
+      return {
+        status: 400,
+        data: {
+          msg: "category not found"
+        }
+      };
     }
     const subCategoryData = await subCategory.findOne({
-      where: { id: req.body.sub_category_id }
+      where: { id: data.sub_category_id }
     });
     if (!subCategoryData) {
-      res.status(400).json({
-        msg: "sub category not found"
-      });
+      return {
+        status: 400,
+        data: {
+          msg: " sub category not found"
+        }
+      };
     }
     const traineeData = await Trainee.findOne({
-      where: { id: req.body.trainee_id }
+      where: { id: data.trainee_id }
     });
     if (!traineeData) {
-      res.status(400).json({
-        msg: "trainee data not found"
-      });
+      return {
+        status: 400,
+        data: {
+          msg: "trainee data not found"
+        }
+      };
+    }
+    // Time slot check on time
+    const startTimeCheck = await Timelog.findOne({
+      where: {
+        trainee_id: data.trainee_id,
+        date: data.date,
+        [Op.or]: [
+          {
+            [Op.and]: {
+              start_time: { [Op.eq]: data.start_time },
+              end_time: { [Op.eq]: data.end_time }
+            }
+          },
+          {
+            [Op.and]: {
+              start_time: { [Op.gt]: data.start_time },
+              end_time: { [Op.lt]: data.end_time }
+            }
+          },
+          {
+            [Op.and]: {
+              end_time: { [Op.gt]: data.start_time, [Op.lt]: data.end_time }
+            }
+          },
+          {
+            [Op.and]: {
+              start_time: { [Op.lt]: data.start_time },
+              end_time: { [Op.gt]: data.start_time }
+            }
+          },
+          {
+            [Op.and]: {
+              start_time: { [Op.lt]: data.end_time },
+              end_time: { [Op.gt]: data.end_time }
+            }
+          }
+        ]
+      }
+    });
+    if (startTimeCheck) {
+      return {
+        status: 400,
+        data: {
+          msg: "time slot already exist"
+        }
+      };
     }
 
     const Timelogg = await Timelog.create({
-      start_time: req.body.start_time,
-      end_time: req.body.end_time,
-      task_memo: req.body.task_memo,
+      start_time: data.start_time,
+      end_time: data.end_time,
+      date: data.date,
+      task_memo: data.task_memo,
       trainee_id: traineeData.id,
       category_id: categoryData.id,
       sub_category_id: subCategoryData.id
     });
     if (Timelogg) {
-      res.status(200).json({
-        msg: "record added successfully"
-      });
+      return {
+        status: 200,
+        data: {
+          msg: "Record added successfully"
+        }
+      };
     }
-    res.status(400).json({
-      msg: "Something went wrong"
-    });
+    return {
+      status: 400,
+      data: {
+        msg: "something went wrong"
+      }
+    };
   } catch (e) {
     console.log(e);
-    res.status(400).json({
-      msg: "Something Wrong"
-    });
+    return {
+      status: 400,
+      data: {
+        msg: "Something went wrong!"
+      }
+    };
   }
 };
 
@@ -164,6 +229,7 @@ exports.updateTimelogRecord = async (req, res, next) => {
     const updatedTimelog = await timelogData.update({
       start_time: req.body.start_time,
       end_time: req.body.end_time,
+      date: req.body.date,
       task_memo: req.body.task_memo,
       category_id: req.body.category_id,
       sub_category_id: req.body.sub_category_id
