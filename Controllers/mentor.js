@@ -3,24 +3,18 @@ const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
-/**
- * @author : Rohan
- * @method : getaddtest
- * @description : it helps to render the test view to mentor
- */
-exports.getaddtest = async (req, res, next) => {
-  res.render("test");
-};
+const { Op } = require("sequelize");
 /**
  * @author : Rohan
  * @method : postaddtest
- * @description : it helps to add test by mentor to trainees.
+ * @description : To add a test by mentor.
+ * @return :
+ * @param :[name, date, description, duration, totalmarks]
  */
 exports.postaddtest = async (req, res, next) => {
-  //   console.log(req.body);
   try {
+    console.log(req.body);
     const { name, date, description, duration, totalmarks } = req.body;
-    // console.log(description);
     const createdtest = await Test.create({
       name: name,
       date: date,
@@ -28,32 +22,29 @@ exports.postaddtest = async (req, res, next) => {
       duration: duration,
       totalmarks: totalmarks
     });
-    // console.log(createdtest);
-    res.send("pass");
+    res.status(201).json({
+      status: true,
+      statusCode: res.statusCode,
+      createdtest
+    });
   } catch (error) {
-    console.log(error.message);
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not create test",
+      error
+    });
   }
-};
-/**
- * @author : Rohan
- * @method : getcheckperformance
- * @description : it helps to render the performance view to mentor with all trainee names.
- */
-exports.getcheckperformance = async (req, res, next) => {
-  const trainees = await Trainee.findAll();
-  // console.log(trainees);
-  res.render("performance", {
-    trainees: trainees
-  });
 };
 /**
  * @author : Rohan
  * @method : postcheckperformance
  * @description : it helps to mentor for calculate the performance of individual trainee by
  * their marks grade and skills.
+ * @return :
+ * @param :[trainee]
  */
 exports.postcheckperformance = async (req, res, next) => {
-  // console.log(req.body);
   let totalmarks = 0,
     skills = [],
     percentage = 0,
@@ -66,7 +57,6 @@ exports.postcheckperformance = async (req, res, next) => {
         trainee_id: trainee
       }
     });
-    // console.log(traineeRecords);
     traineeRecords.forEach(traineeRecord => {
       totalmarks += traineeRecord.totalmarks;
       scoredmarks += traineeRecord.marks_obtained;
@@ -87,39 +77,54 @@ exports.postcheckperformance = async (req, res, next) => {
     else if (percentage >= 63 && percentage <= 66) grade = "D";
     else if (percentage >= 60 && percentage <= 62) grade = "D-";
     else if (percentage >= 0 && percentage <= 59) grade = "F";
-    console.log("per " + percentage + "%");
-    console.log("grade=" + grade);
-    console.log("totalmarks=" + totalmarks);
-    console.log("scoredmarks=" + scoredmarks);
-    console.log("extra skills=" + skills);
-    res.send("pass");
+    res.status(200).json({
+      status: true,
+      statusCode: res.statusCode,
+      percentage,
+      grade,
+      totalmarks,
+      scoredmarks,
+      skills
+    });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not find the trainee",
+      error: err
+    });
   }
 };
 /**
  * @author : Rohan
  * @method : getaddperformance
- * @description : it helps to render the addperformance view with required data from tTest
- *  and Trainee models.
+ * @description : To fetch all the previous tests taken by mentor.
+ * @return :
+ * @param :[]
  */
-exports.getaddperformance = async (req, res, next) => {
+exports.getAllTests = async (req, res, next) => {
   try {
-    const trainees = await Trainee.findAll();
     const tests = await Test.findAll();
-    res.render("addperformance", {
-      trainees: trainees,
-      tests: tests
+    res.status(200).json({
+      status: true,
+      statusCode: res.statusCode,
+      tests
     });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not fetch tests",
+      error
+    });
   }
 };
 /**
  * @author : Rohan
  * @method : postaddperformance
- * @description : it helps to add the shills of a particular trainee by his mentor and
- * create a performance of a particular trainee.
+ * @description : To create a performance of a particular trainee.
+ * @return :
+ * @param :[skills, totalmarks, obtainedmarks, trainee, test]
  */
 exports.postaddperformance = async (req, res, next) => {
   try {
@@ -131,8 +136,73 @@ exports.postaddperformance = async (req, res, next) => {
       test_id: test,
       trainee_id: trainee
     });
-    res.send("performance added successfully");
+    res.status(201).json({
+      status: true,
+      statusCode: res.statusCode,
+      newperformance
+    });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "not created performance",
+      error
+    });
+  }
+};
+/**
+ * @method : listOfTrainees
+ * @author : Rohan
+ * @description : To fetch all the trainees with particular department
+ * @return :
+ * @param :[departmentId]
+ **/
+exports.listOfTrainees = async (req, res, next) => {
+  try {
+    const trainees = await Trainee.findAll({
+      where: { department_id: req.params.departmentId }
+    });
+    // console.log(trainees);
+    res.status(200).json({
+      status: true,
+      statusCode: res.statusCode,
+      trainees
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not find trainees",
+      error: err
+    });
+  }
+};
+/**
+ * @method : findByName
+ * @author : Rohan
+ * @description : To fetch the trainee details by his/her name
+ * @return :
+ * @param :[name]
+ **/
+exports.findByName = async (req, res, next) => {
+  try {
+    const name = req.params.name;
+    // console.log(name);
+    const trainee = await Trainee.findAll({
+      where: { name: { [Op.like]: `${name}%` } }
+    });
+    // console.log(trainee);
+    res.status(200).json({
+      status: true,
+      statusCode: res.statusCode,
+      trainee
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not find trainee",
+      error: err
+    });
   }
 };
