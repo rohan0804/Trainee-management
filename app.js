@@ -1,51 +1,88 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const sequelize = require('./utils/database');
-const bodyParser=require('body-parser');
-const authRouter=require('./Routes/auth');
-const adminRouter = require('./Routes/admin');
-const expressLayouts = require('express-ejs-layouts'); 
-app.set('view engine','ejs');
-app.set('views','views');
+const http = require("http").Server(app);
+const io = require("socket.io")(http);
+const port = process.env.PORT || 4000
+const cors = require('cors');
+
+const sequelize = require("./utils/database");
+const bodyParser = require("body-parser");
+const authRouter = require("./Routes/auth");
+const adminRouter = require("./Routes/admin");
+const mentorRouter = require("./Routes/mentor");
+const traineeRouter = require("./Routes/trainee")
+const expressLayouts = require("express-ejs-layouts");
+app.set("view engine", "ejs");
+app.set("views", "views");
 app.use(expressLayouts);
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.static('Routes'));
 
-app.use('/',authRouter);
-app.use('/',adminRouter);
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+})
+app.use("/", authRouter);
 
-const Department = require('./Models/department');
-const Trainee = require('./Models/trainee.js');
-const Mentor = require('./Models/mentor');
-const Performance = require('./Models/performance');
-const Role = require('./Models/role');
-const Leave = require('./Models/leave');
-const Timelog = require('./Models/timelog');
-const Category = require('./Models/category');
-const subCategory = require('./Models/sub_category');
-const Test = require('./Models/test');
-const Auth = require('./Models/auth');
+app.use("/", adminRouter);
 
-Department.hasMany(Trainee, { foreignKey: 'department_id' });
-Mentor.hasMany(Trainee,{foreignKey:'mentor_id'});
-Auth.belongsTo(Role,{foreignKey:'role_id'});
-Trainee.hasMany(Leave,{foreignKey:'trainee_id'});
-Department.hasMany(Mentor,{foreignKey:'department_id'});
-Test.hasMany(Performance,{foreignKey:'test_id'});
-Performance.belongsTo(Trainee,{foreignKey:'trainee_id'});
-Trainee.belongsTo(Auth,{foreignKey:'auth_id'});
-Mentor.belongsTo(Auth,{foreignKey:'auth_id'});
-Trainee.hasMany(Timelog,{foreignKey:'trainee_id'});
-Category.hasMany(Timelog,{foreignKey:'category_id'});
-subCategory.hasMany(Category,{foreignKey:'subcategory_id'});
+app.use("/", traineeRouter);
+
+app.use("/", mentorRouter);
+
+const Department = require("./Models/department");
+const Trainee = require("./Models/trainee.js");
+const Mentor = require("./Models/mentor");
+const Performance = require("./Models/performance");
+const Role = require("./Models/role");
+const Leave = require("./Models/leave");
+const Timelog = require("./Models/timelog");
+const Category = require("./Models/category");
+const subCategory = require("./Models/sub_category");
+const Test = require("./Models/test");
+const Auth = require("./Models/auth");
+const traineeDoubt = require("./Models/traineedoubt");
+
+Trainee.hasMany(traineeDoubt, { foreignKey: "trainee_id" });
+Department.hasMany(Trainee, { foreignKey: "department_id" });
+Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
+Auth.belongsTo(Role, { foreignKey: "role_id" });
+Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
+Department.hasMany(Mentor, { foreignKey: "department_id" });
+Test.hasMany(Performance, { foreignKey: "test_id" });
+Performance.belongsTo(Trainee, { foreignKey: "trainee_id" });
+Trainee.belongsTo(Auth, { foreignKey: "auth_id" });
+Mentor.belongsTo(Auth, { foreignKey: "auth_id" });
+Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
+Category.hasMany(Timelog, { foreignKey: "category_id" });
+subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
+
+// make connection with user from server side 
+io.on("connection", function (socket) {
+  console.log("New user connected " + socket.id);
+
+  // listen for message from user 
+  socket.on('createMessage', function (message) {
+    console.log('newMessage', message);
+    io.sockets.emit('createMessage', message);
+
+    const doubt = traineeDoubt.create({
+      questions: message,
+    });
+  });
+});
 
 sequelize
-    .sync()
-    .then(result => {
-        // console.log(result);
-    }).catch(err => {
-        console.log(err);
-    });
-app.listen(4000, (req, res) => {
-    console.log("server is listening");
-})
+  .sync()
+  .then(result => {
+    // console.log(result);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+
+http.listen(port, (req, res) => {
+  console.log(`server is listening at port ${port}`);
+});
