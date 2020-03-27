@@ -91,7 +91,7 @@ exports.postcheckperformance = async (req, res, next) => {
       status: false,
       statusCode: res.statusCode,
       message: "could not find the trainee",
-      error: err
+      error
     });
   }
 };
@@ -168,12 +168,12 @@ exports.listOfTrainees = async (req, res, next) => {
       statusCode: res.statusCode,
       trainees
     });
-  } catch (err) {
+  } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not find trainees",
-      error: err
+      error
     });
   }
 };
@@ -197,12 +197,12 @@ exports.findByName = async (req, res, next) => {
       statusCode: res.statusCode,
       trainee
     });
-  } catch (err) {
+  } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not find trainee",
-      error: err
+      error
     });
   }
 };
