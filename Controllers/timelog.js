@@ -11,6 +11,9 @@ const { Op } = require("sequelize");
  * @param :
  */
 
+// Date validation while inserting upadating  and deleting Record
+// date.setDate(date.getDate() + 1);
+
 exports.postTimelog = async data => {
   try {
     const categoryData = await Category.findOne({
@@ -20,7 +23,7 @@ exports.postTimelog = async data => {
       return {
         status: 400,
         data: {
-          msg: "category not found"
+          msg: "Category not found"
         }
       };
     }
@@ -31,7 +34,7 @@ exports.postTimelog = async data => {
       return {
         status: 400,
         data: {
-          msg: " sub category not found"
+          msg: " Sub category not found"
         }
       };
     }
@@ -42,7 +45,7 @@ exports.postTimelog = async data => {
       return {
         status: 400,
         data: {
-          msg: "trainee data not found"
+          msg: "Trainee data not found"
         }
       };
     }
@@ -88,7 +91,7 @@ exports.postTimelog = async data => {
       return {
         status: 400,
         data: {
-          msg: "time slot already exist"
+          msg: "Time slot already exist"
         }
       };
     }
@@ -113,7 +116,7 @@ exports.postTimelog = async data => {
     return {
       status: 400,
       data: {
-        msg: "something went wrong"
+        msg: "Something went wrong"
       }
     };
   } catch (e) {
@@ -141,7 +144,7 @@ exports.getTimelogData = async (req, res) => {
     const id = req.params.id;
     if (!id) {
       res.status(400).json({
-        msg: "parameter not found"
+        msg: "Parameter not found"
       });
     }
     const timelogData = await Timelog.findOne({
@@ -161,7 +164,7 @@ exports.getTimelogData = async (req, res) => {
     });
   } catch (err) {
     res.status(400).json({
-      msg: "Something Wrong"
+      msg: "Something Wrong!"
     });
   }
 };
@@ -192,7 +195,7 @@ exports.deleteTimelog = async (req, res, next) => {
     });
     if (deleteTimelog) {
       res.status(200).json({
-        msg: "record deleted successfully"
+        msg: "Record deleted successfully"
       });
     }
     res.status(400).json({
@@ -200,7 +203,7 @@ exports.deleteTimelog = async (req, res, next) => {
     });
   } catch (error) {
     res.status(400).json({
-      msg: "Something  wrong"
+      msg: "Something  wrong!"
     });
   }
 };
@@ -219,13 +222,16 @@ exports.updateTimelogRecord = async (req, res, next) => {
     const trainee_id = req.params.trainee_id;
 
     const timelogData = await Timelog.findOne({
-      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
+      where: {
+        [Op.and]: [{ trainee_id: trainee_id }, { id: id }]
+      }
     });
     if (!timelogData) {
       res.status(400).json({
         msg: "Record not found"
       });
     }
+
     const updatedTimelog = await timelogData.update({
       start_time: req.body.start_time,
       end_time: req.body.end_time,
@@ -236,7 +242,7 @@ exports.updateTimelogRecord = async (req, res, next) => {
     });
     if (updatedTimelog) {
       res.status(200).json({
-        msg: "timelog record updated successfully"
+        msg: "Timelog record updated successfully"
       });
     }
     res.status(400).json({
@@ -245,7 +251,7 @@ exports.updateTimelogRecord = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({
-      msg: "Something  wrong"
+      msg: "Something  wrong!"
     });
   }
 };

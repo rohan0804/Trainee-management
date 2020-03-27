@@ -7,7 +7,7 @@ const {
   updateTimelogRecord
 } = require("../Controllers/timelog");
 
-router.post("/add", function(req, res, next) {
+router.post("/add", (req, res, next) => {
   postTimelog(req.body)
     .then(data => {
       res.status(data.status).json(data.data);
