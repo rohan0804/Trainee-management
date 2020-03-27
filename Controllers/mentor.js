@@ -3,7 +3,10 @@ const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
+const Auth = require("../Models/auth");
 const { Op } = require("sequelize");
+const nodemailer = require("nodemailer");
+
 /**
  * @author : Rohan
  * @method : postaddtest
@@ -11,7 +14,7 @@ const { Op } = require("sequelize");
  * @return :
  * @param :[name, date, description, duration, totalmarks]
  */
-exports.postaddtest = async (req, res, next) => {
+exports.postAddTest = async (req, res, next) => {
   try {
     console.log(req.body);
     const { name, date, description, duration, totalmarks } = req.body;
@@ -39,7 +42,7 @@ exports.postaddtest = async (req, res, next) => {
 /**
  * @author : Rohan
  * @method : postcheckperformance
- * @description : it helps to mentor for calculate the performance of individual trainee by
+ * @description : To calculate the performance of individual trainee by
  * their marks grade and skills.
  * @return :
  * @param :[trainee]
@@ -126,7 +129,7 @@ exports.getAllTests = async (req, res, next) => {
  * @return :
  * @param :[skills, totalmarks, obtainedmarks, trainee, test]
  */
-exports.postaddperformance = async (req, res, next) => {
+exports.postAddPerformance = async (req, res, next) => {
   try {
     const { skills, totalmarks, obtainedmarks, trainee, test } = req.body;
     const newperformance = await Performance.create({
@@ -202,6 +205,74 @@ exports.findByName = async (req, res, next) => {
       status: false,
       statusCode: res.statusCode,
       message: "could not find trainee",
+      error
+    });
+  }
+};
+/**
+ * @method : sendMailToAllTrainees
+ * @author : Rohan
+ * @description : To send mail to all the trainees
+ * @return :
+ * @param :[text,mentorId]
+ **/
+exports.sendMailToAllTrainees = async (req, res, next) => {
+  try {
+    const emails = [],
+      text = req.body.text,
+      mentorId = parseInt(req.params.mentorId);
+    let getmailoptions = require("../mail/mailoptions");
+    const mentor = await Auth.findAll({
+      attributes: ["email"],
+      where: { id: mentorId }
+    });
+    let mentor_email = mentor[0].dataValues.email;
+    // console.log(mentor_email);
+    const trainees = await Trainee.findAll({
+      where: { mentor_id: mentorId }
+    });
+    trainees.forEach(async trainee => {
+      let authdata = await Auth.findAll({
+        attributes: ["email"],
+        where: { id: trainee.auth_id }
+      });
+      let email = authdata[0].dataValues.email;
+      // console.log(authdata[0].dataValues.email);
+      emails.push(email);
+      mailOptions = getmailoptions(email, text);
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        secure: true,
+        auth: {
+          //user:mentor_email,
+          user: "rohanshrivastav1999@gmail.com",
+          pass: "rohan0804" //mentor passsword
+        }
+      });
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          res.status(400).json({
+            status: false,
+            statusCode: res.statusCode,
+            message: "could not send email to all trainees",
+            error
+          });
+        } else {
+          console.log(info.response);
+          console.log("mail send successfullly");
+        }
+      });
+    });
+    res.status(200).json({
+      status: true,
+      statusCode: res.statusCode,
+      trainees
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not send mail to all trainees",
       error
     });
   }
