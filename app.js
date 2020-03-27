@@ -55,10 +55,5 @@ sequelize
 
 let port = 4000;
 app.listen(4000, (req, res) => {
-<<<<<<< HEAD
-  console.log(`server is listening at port ${port}`);
-  // console.log("check");
-=======
   console.log(`server is listening at my port ${port}`);
->>>>>>> ee162117b15ecf1d682c3e8d8a7ac7f30300f656
 });
