@@ -232,6 +232,54 @@ exports.updateTimelogRecord = async (req, res, next) => {
       });
     }
 
+    // Time slot check on time
+    const startTimeCheck = await Timelog.findOne({
+      where: {
+        trainee_id: req.params.trainee_id,
+        id: req.params.id,
+        [Op.or]: [
+          {
+            [Op.and]: {
+              start_time: { [Op.eq]: req.body.start_time },
+              end_time: { [Op.eq]: req.body.end_time }
+            }
+          },
+          {
+            [Op.and]: {
+              start_time: { [Op.gt]: req.body.start_time },
+              end_time: { [Op.lt]: req.body.end_time }
+            }
+          },
+          {
+            [Op.and]: {
+              end_time: {
+                [Op.gt]: req.body.start_time,
+                [Op.lt]: req.body.end_time
+              }
+            }
+          },
+          {
+            [Op.and]: {
+              start_time: { [Op.lt]: req.body.start_time },
+              end_time: { [Op.gt]: req.body.start_time }
+            }
+          },
+          {
+            [Op.and]: {
+              start_time: { [Op.lt]: req.body.end_time },
+              end_time: { [Op.gt]: req.body.end_time }
+            }
+          }
+        ]
+      }
+    });
+    if (startTimeCheck) {
+      console.log("error");
+      res.status(400).json({
+        msg: "Time slot already exist."
+      });
+    }
+
     const updatedTimelog = await timelogData.update({
       start_time: req.body.start_time,
       end_time: req.body.end_time,
