@@ -213,13 +213,13 @@ exports.deleteTimelog = async (req, res, next) => {
  * @author : Mehak Dhiman
  * @description : To Update Record BY id and trainee_id
  * @return :
- * @param :[params- id,trainee_id]
+ * @param :[params- id,trainee_id,date]
  **/
 
-exports.updateTimelogRecord = async (req, res, next) => {
+exports.updateTimelogRecord = async (params, data) => {
   try {
-    const id = req.params.id;
-    const trainee_id = req.params.trainee_id;
+    const id = params.id;
+    const trainee_id = params.trainee_id;
 
     const timelogData = await Timelog.findOne({
       where: {
@@ -227,47 +227,53 @@ exports.updateTimelogRecord = async (req, res, next) => {
       }
     });
     if (!timelogData) {
-      res.status(400).json({
-        msg: "Record not found"
-      });
+      return {
+        status: 400,
+        data: {
+          msg: "Record not found"
+        }
+      };
     }
 
     // Time slot check on time
     const startTimeCheck = await Timelog.findOne({
       where: {
-        trainee_id: req.params.trainee_id,
-        id: req.params.id,
+        id: { [Op.ne]: params.id },
+        trainee_id: params.trainee_id,
+
+        date: params.date,
+
         [Op.or]: [
           {
             [Op.and]: {
-              start_time: { [Op.eq]: req.body.start_time },
-              end_time: { [Op.eq]: req.body.end_time }
+              start_time: { [Op.eq]: data.start_time },
+              end_time: { [Op.eq]: data.end_time }
             }
           },
           {
             [Op.and]: {
-              start_time: { [Op.gt]: req.body.start_time },
-              end_time: { [Op.lt]: req.body.end_time }
+              start_time: { [Op.gt]: data.start_time },
+              end_time: { [Op.lt]: data.end_time }
             }
           },
           {
             [Op.and]: {
               end_time: {
-                [Op.gt]: req.body.start_time,
-                [Op.lt]: req.body.end_time
+                [Op.gt]: data.start_time,
+                [Op.lt]: data.end_time
               }
             }
           },
           {
             [Op.and]: {
-              start_time: { [Op.lt]: req.body.start_time },
-              end_time: { [Op.gt]: req.body.start_time }
+              start_time: { [Op.lt]: data.start_time },
+              end_time: { [Op.gt]: data.start_time }
             }
           },
           {
             [Op.and]: {
-              start_time: { [Op.lt]: req.body.end_time },
-              end_time: { [Op.gt]: req.body.end_time }
+              start_time: { [Op.lt]: data.end_time },
+              end_time: { [Op.gt]: data.end_time }
             }
           }
         ]
@@ -275,31 +281,43 @@ exports.updateTimelogRecord = async (req, res, next) => {
     });
     if (startTimeCheck) {
       console.log("error");
-      res.status(400).json({
-        msg: "Time slot already exist."
-      });
+      return {
+        status: 400,
+        data: {
+          msg: "Time slot already exist"
+        }
+      };
     }
 
     const updatedTimelog = await timelogData.update({
-      start_time: req.body.start_time,
-      end_time: req.body.end_time,
-      date: req.body.date,
-      task_memo: req.body.task_memo,
-      category_id: req.body.category_id,
-      sub_category_id: req.body.sub_category_id
+      start_time: data.start_time,
+      end_time: data.end_time,
+      date: data.date,
+      task_memo: data.task_memo,
+      category_id: data.category_id,
+      sub_category_id: data.sub_category_id
     });
     if (updatedTimelog) {
-      res.status(200).json({
-        msg: "Timelog record updated successfully"
-      });
+      return {
+        status: 200,
+        data: {
+          msg: "Record updated successfully"
+        }
+      };
     }
-    res.status(400).json({
-      msg: "Something  went wrong"
-    });
+    return {
+      status: 400,
+      data: {
+        msg: "Something went wrong"
+      }
+    };
   } catch (error) {
     console.log(error);
-    res.status(400).json({
-      msg: "Something  wrong!"
-    });
+    return {
+      status: 400,
+      data: {
+        msg: "Something went worng!"
+      }
+    };
   }
 };
