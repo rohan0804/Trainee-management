@@ -1,0 +1,14 @@
+<div class="container">
+    <form method="POST" action="/hr">
+        <h1> <%= viewTitle %></h1>
+        <div class="form-group">
+            <label for="Department">Department</label>
+            <select id="department" name="department_id">
+                <% departments.forEach((department)=>{ %>
+                <option value="<%= department.id %>"> <%= department.name%> </option>
+                <% })  %>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

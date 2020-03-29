@@ -1,0 +1,17 @@
+<div class="container">
+  <h1>Calculate Performance:</h1>
+  <hr />
+  <form action="/mentor/calculateperformance" method="POST">
+    <div class="form-group">
+      <label for="Trainee">Select Trainee:</label>
+      <select class="form-control" id="Trainee" name="trainee">
+        <%trainees.forEach((trainee)=>{%>
+        <option value="<%=trainee.id%>"><%=trainee.name%></option>
+        <%})%>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary mb-2" id="addtestbtn">
+      Calculate Performance
+    </button>
+  </form>
+</div>
