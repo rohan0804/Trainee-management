@@ -9,13 +9,5 @@
 
   <script>
       var socket = io();
-      console.log("hello");
-      document.querySelector('.submitEvent').addEventListener('click',()=>{
-      console.log("inside event listner")
-      var heading = document.getElementById('heading').value;
-      var description = document.getElementById('description').value;
-      var event  = {heading,description};
-      console.log(event);
-      socket.emit('addEvent',event);
-  })
+     
   </script>

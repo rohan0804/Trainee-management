@@ -25,8 +25,8 @@ const {
   deleteMentor,
   deleteAddannouncement
 }=require('../Controllers/admin');
-const {getAddEvents,postAddEvents,adminDashboard} = require("../Controllers/admin");
-
+const {getAddEvents,postAddEvents,adminDashboard,authorization} = require("../Controllers/admin");
+router.use(authorization);
 router.post("/add/role", postAddRole);
 router.post("/add/department", postAddDepartment);
 router.get("/add/department", getAddDepartment);

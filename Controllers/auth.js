@@ -4,7 +4,8 @@ const Trainee = require("../Models/trainee");
 const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
 const bcrypt = require("bcryptjs");
-
+const jwt = require('jsonwebtoken');
+const config = require('config');
 exports.getLogin = async (req, res, next) => {
   res.render("login");
 };
@@ -28,11 +29,20 @@ exports.postLogin = async (req, res) => {
     if (!comparePassword) {
       throw new Error("incorrect password");
     }
-    console.log(user);
+    
     const role = await Role.findByPk(user.role_id);
-    console.log(role);
-    res.send(`<h1>Welcome ${role.name}<h1>`);
+    const token = jwt.sign({role_id:role.id},config.get('jwtSecret'),{expiresIn:"1h"});
+    if(!token) throw new Error("token cannot be generated");
+    
+    res.status(200).json({
+      status:"loggedIn successfully",
+      user,
+      token
+    })
   } catch (error) {
-    console.log(error);
+    res.status(400).json({
+      error:error.message
+    })
   }
 };
+

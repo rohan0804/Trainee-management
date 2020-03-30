@@ -6,9 +6,9 @@ const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
 const expressLayouts = require("express-ejs-layouts");
-
+const {auth} = require('./middleware/auth');
 var http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('./socket').init(http);
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -16,9 +16,10 @@ app.use(expressLayouts);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-
 app.use("/", authRouter);
+app.use(auth);
+
+
 
 app.use("/", adminRouter);
 
@@ -52,32 +53,25 @@ Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
 
 sequelize
-  .sync()
+  .sync({alter:true})
   .then(result => {
-    // console.log(result);
+    let count=0;
+    io.on('connection',socket=>{
+    count+=1;
+    console.log("Active sockets",count);
+    socket.on('disconnect',result=>{
+      count-=1;
+      console.log("Active sockets",count);
+    });
+    });
+    http.listen(4000, (req, res) => {
+      console.log(`server is listening at my port`);
+    });
   })
   .catch(err => {
     console.log(err);
   });
-  let count=0;
-io.sockets.on('connection',socket=>{
-  console.log(socket.id);
-  count+=1;
-  console.log("Socket connected",count);
-  socket.on('disconnect',result=>{
-    count-=1;
-    console.log("Socket Disconnected",count);
-  });
-  socket.on('addEvent',event=>{
-    console.log(event);
-    io.sockets.emit('getEvent',event);
-  })
-    socket.on('announcement',(announcement)=>{
-      console.log(announcement);
-      io.sockets.emit('chat',data);
-    });
-  });
+
   
-http.listen(4000, (req, res) => {
-  console.log(`server is listening at my port`);
-});
+ 
+  

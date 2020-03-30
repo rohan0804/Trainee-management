@@ -13,9 +13,12 @@ const Mentor=sequelize.define('mentor',{
          allowNull: false,
      },
   phoneNo:{
-      type : Sequelize.INTEGER,
+      type : Sequelize.STRING,
       allowNull:false,
-      unique: true
+      validate:{
+          len:[5,11]
+      }
+      
   }
 });
 module.exports = Mentor;

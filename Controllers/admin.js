@@ -5,7 +5,7 @@ const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
 const Announcement=require('../Models/announcement');
-const socket=require('socket.io');
+const io = require('../socket');
 const Event = require('../Models/event');
 
 
@@ -16,6 +16,21 @@ const Event = require('../Models/event');
  * @return :
  * @param : [params]
  */
+
+exports.authorization = async(req,res,next)=>{
+  try {
+    const role =await Role.findOne({where:{id:req.role}});
+    if(role.name!="admin") throw new Error("you are not allowed to access this route");
+    next();
+  } catch (error) {
+    res.status(403).json({
+      error:error.message
+    })
+  }
+  
+}
+
+
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -281,6 +296,7 @@ exports.getMentor = async (req, res, next) => {
  */
 exports.postAddMentor = async (req, res) => {
   try {
+    console.log(req.body);
     const { name, email, phoneNo, department_id, password } = req.body;
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
@@ -384,6 +400,7 @@ exports.postAddannouncement = async (req, res,next) => {
       announcementTitle:heading,
       announcementDescription:description
     });
+    io.getio().emit('getAnnouncements',announcementDetails);
     res.status(200).json({status:'Announcement Created!'});
   } catch (error) {
     res.status(400).json({error:error.message});
@@ -429,14 +446,15 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  res.render('addEvents.ejs');
+  res.render('addEvents');
 };
 
 exports.postAddEvents = async(req,res)=>{
   try {
     const {heading,description,date} = req.body;
     const event = await Event.create({heading,description,date});
-      res.status(200).json({
+    io.getio().emit('getEvent',event);
+    res.status(200).json({
         response_code:200,
         status:"event created successfully",
         result:{
@@ -467,4 +485,8 @@ exports.adminDashboard = async(req,res)=>{
     announcements:announcementresult
   });
 };
+
+
+
+
 
