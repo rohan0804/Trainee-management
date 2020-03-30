@@ -1,22 +1,26 @@
-const Sequelize=require('sequelize');
+const Sequelize = require("sequelize");
 
-const sequelize=require('../utils/database');
+const sequelize = require("../utils/database");
 
-const Leave =sequelize.define('leave',{
-    id:{
-        type:Sequelize.INTEGER,
-        autoIncrement:true,
-        allowNull:true,
-        primaryKey:true
-    },
-    date:{
-        type:Sequelize.DATE,
-        allowNull:true
-    },
-    reason:{
-        type:Sequelize.STRING,
-        allowNull:true
-    }
+const Leave = sequelize.define("leave", {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true
+  },
+  start_date: {
+    type: Sequelize.DATE,
+    allowNull: false
+  },
+  end_date: {
+    type: Sequelize.DATE,
+    allowNull: false
+  },
+  reason: {
+    type: Sequelize.STRING,
+    allowNull: false
+  }
 });
 
-module.exports=Leave;
+module.exports = Leave;

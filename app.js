@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const timelogRoute = require("./Routes/timelog");
+const leaveRoute = require("./Routes/leave");
 const expressLayouts = require("express-ejs-layouts");
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use("/", authRouter);
 app.use("/", adminRouter);
 app.use("/timelog", timelogRoute);
+app.use("/leave", leaveRoute);
 
 const Department = require("./Models/department");
 const Trainee = require("./Models/trainee.js");
@@ -41,6 +43,7 @@ Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
+Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 
 sequelize
   .sync()
