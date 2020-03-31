@@ -1,7 +1,9 @@
 const Trainee = require("../Models/trainee");
 const Leave = require("../Models/leave");
-const Timelog = require("../Models/timelog");
+const Mentor = require("../Models/mentor");
 const { Op } = require("sequelize");
+const transporter = require("../utils/mailConfigration");
+const nodemailer = require("nodemailer");
 /**
  * @method : postLeave
  * @author : Mehak Dhiman
@@ -23,9 +25,37 @@ exports.postLeave = async data => {
         }
       };
     }
+    const mentorData = await Mentor.findOne({
+      where: { id: traineeData.mentor_id }
+    });
+    if (!mentorData) {
+      return {
+        status: 400,
+        data: {
+          msg: "Mentor data not found"
+        }
+      };
+    }
+
+    let mailOptions = {
+      from: "example@gmail.com",
+      to: mentorData.mail_id,
+      subject: data.subject,
+      text: data.reason
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
+
     const LeaveRecord = await Leave.create({
       start_date: data.start_date,
       end_date: data.end_date,
+      subject: data.subject,
       reason: data.reason,
       trainee_id: traineeData.id
     });
@@ -161,6 +191,7 @@ exports.updateLeaveRecord = async (params, data) => {
     const updatedLeave = await leaveData.update({
       start_date: data.start_date,
       end_date: data.end_date,
+      subject: data.subject,
       reason: data.reason
     });
     if (updatedLeave) {

@@ -17,6 +17,10 @@ const Leave = sequelize.define("leave", {
     type: Sequelize.DATE,
     allowNull: false
   },
+  subject: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
   reason: {
     type: Sequelize.STRING,
     allowNull: false
