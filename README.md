@@ -9,7 +9,7 @@ This Project is all about Trainee HRM
 # Steps To Application Setup
 1) Clone the application from https://github.com/rohan0804/Trainee-management.git by running the following command:
     
-     git clone https://github.com/rohan0804/Trainee-management.git
+    git clone https://github.com/rohan0804/Trainee-management.git
 
 2) Install npm module  
 
@@ -17,9 +17,11 @@ This Project is all about Trainee HRM
 
 3) Application integrate with mysql Database.
 
-4) Sequelize automatically create database with name : zapbuildhrm
+4) Configure util/database file.Change username,password according to your own mysql database.
 
-5) Run this command to run application
+5) create database with name : zapbuildhrm. Sequelize automatically create tables.
+
+6) Run this command to run application
 
    node app.js
 
