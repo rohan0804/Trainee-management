@@ -2,6 +2,7 @@ const Trainee = require("../Models/trainee");
 const Category = require("../Models/category");
 const subCategory = require("../Models/sub_category");
 const Timelog = require("../Models/timelog");
+const Leave = require("../Models/leave");
 const { Op } = require("sequelize");
 /**
  * @method : postTimelog
@@ -49,6 +50,29 @@ exports.postTimelog = async data => {
         }
       };
     }
+
+    const leaveRecord = await Leave.findOne({
+      where: {
+        [Op.and]: [
+          { trainee_id: trainee_id },
+          {
+            [Op.or]: {
+              start_date: { [Op.eq]: data.date },
+              end_date: { [Op.eq]: data.date }
+            }
+          }
+        ]
+      }
+    });
+    if (!leaveRecord) {
+      return {
+        status: 200,
+        data: {
+          msg: "Leave exist on this date."
+        }
+      };
+    }
+
     // Time slot check on time
     const startTimeCheck = await Timelog.findOne({
       where: {

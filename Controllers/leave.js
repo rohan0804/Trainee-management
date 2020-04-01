@@ -3,7 +3,7 @@ const Leave = require("../Models/leave");
 const Mentor = require("../Models/mentor");
 const { Op } = require("sequelize");
 const transporter = require("../utils/mailConfigration");
-const nodemailer = require("nodemailer");
+const config = require("../utils/mailConf");
 /**
  * @method : postLeave
  * @author : Mehak Dhiman
@@ -25,32 +25,61 @@ exports.postLeave = async data => {
         }
       };
     }
+
     const mentorData = await Mentor.findOne({
       where: { id: traineeData.mentor_id }
     });
-    if (!mentorData) {
+
+    const dateRecord = await Leave.findOne({
+      where: {
+        id: traineeData.id,
+        [Op.or]: [
+          {
+            [Op.and]: {
+              start_date: { [Op.eq]: data.start_date },
+              end_date: { [Op.eq]: data.end_date }
+            }
+          },
+          {
+            [Op.and]: {
+              start_date: { [Op.gt]: data.start_date },
+              end_date: { [Op.lt]: data.end_date }
+            }
+          },
+          {
+            [Op.and]: {
+              end_date: { [Op.gt]: data.start_date, [Op.lt]: data.end_date }
+            }
+          },
+          {
+            [Op.and]: {
+              start_date: { [Op.lt]: data.start_date },
+              end_date: { [Op.gt]: data.start_date }
+            }
+          },
+          {
+            [Op.and]: {
+              start_date: { [Op.lt]: data.end_date },
+              end_date: { [Op.gt]: data.end_date }
+            }
+          }
+        ]
+      }
+    });
+    if (dateRecord) {
       return {
-        status: 400,
+        status: 200,
         data: {
-          msg: "Mentor data not found"
+          msg: "Leave already exist."
         }
       };
     }
-
     let mailOptions = {
-      from: "example@gmail.com",
+      from: config.from,
       to: mentorData.mail_id,
       subject: data.subject,
       text: data.reason
     };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
 
     const LeaveRecord = await Leave.create({
       start_date: data.start_date,
@@ -60,6 +89,8 @@ exports.postLeave = async data => {
       trainee_id: traineeData.id
     });
     if (LeaveRecord) {
+      await transporter.sendMail(mailOptions);
+
       return {
         status: 200,
         data: {
