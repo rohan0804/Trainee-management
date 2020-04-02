@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../utils/database");
+
 const Mentor = sequelize.define("mentor", {
   id: {
     type: Sequelize.INTEGER,
@@ -15,6 +16,10 @@ const Mentor = sequelize.define("mentor", {
     type: Sequelize.INTEGER,
     allowNull: false,
     unique: true
+  },
+  mail_id: {
+    type: Sequelize.STRING,
+    allowNull: false
   }
 });
 module.exports = Mentor;
