@@ -32,7 +32,7 @@ exports.postLeave = async data => {
 
     const dateRecord = await Leave.findOne({
       where: {
-        id: traineeData.id,
+        trainee_id: traineeData.id,
         [Op.or]: [
           {
             [Op.and]: {
@@ -89,7 +89,7 @@ exports.postLeave = async data => {
       trainee_id: traineeData.id
     });
     if (LeaveRecord) {
-      await transporter.sendMail(mailOptions);
+      //await transporter.sendMail(mailOptions);
 
       return {
         status: 200,
