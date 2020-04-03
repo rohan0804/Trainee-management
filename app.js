@@ -9,13 +9,15 @@ const expressLayouts = require("express-ejs-layouts");
 const {auth} = require('./middleware/auth');
 var http = require('http').createServer(app);
 const io = require('./socket').init(http);
-
+const cookieParser = require('cookie-parser');
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
+app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use("/", authRouter);
 app.use(auth);
 
@@ -51,9 +53,8 @@ Mentor.belongsTo(Auth, { foreignKey: "auth_id" });
 Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
-
 sequelize
-  .sync({alter:true})
+  .sync()
   .then(result => {
     let count=0;
     io.on('connection',socket=>{
@@ -71,6 +72,7 @@ sequelize
   .catch(err => {
     console.log(err);
   });
+  
 
   
  

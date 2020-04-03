@@ -5,10 +5,11 @@ const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
 const Announcement=require('../Models/announcement');
+
 const io = require('../socket');
 const Event = require('../Models/event');
-
-
+const jwt = require('jsonwebtoken');
+const config = require('config');
 /**
  * @method : postAddRole
  * @author : Nishit Arora
@@ -107,11 +108,12 @@ exports.postTraineeSignup = async (req, res) => {
       mentor_id
     } = req.body;
     const hashPassword = await bcrypt.hash(password, 12);
-    const role = await Role.findOne({ where: { name: "Trainee" } });
+    const role = await Role.findOne({ where: { name: "trainee" } });
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
       throw new Error("user already exists");
     }
+    
     const auth = await Auth.create({
       email: email,
       password: hashPassword,
@@ -130,16 +132,18 @@ exports.postTraineeSignup = async (req, res) => {
       auth_id: auth.id,
       linkedin_profile
     });
+    
     res.status(200).json({
       response_code: 200,
       status: "trainee created successfully",
-      result: trainee
+      result: auth,trainee,
+
     });
   } catch (error) {
     res.status(400).json({
       response_code: 400,
       status: "error occured",
-      error: error.message
+      error: error.stack
     });
   }
   console.log(req.body);
@@ -309,6 +313,7 @@ exports.postAddMentor = async (req, res) => {
       password: hashPassword,
       role_id: role.id
     });
+    
     const mentorDetails = await Mentor.create({
       name,
       phoneNo,
@@ -316,12 +321,14 @@ exports.postAddMentor = async (req, res) => {
       auth_id: auth.id,
       department_id
     });
+    
     res.status(200).json({
       response_code: 200,
       status: "Mentor created successfully",
       result: {
         auth,
-        mentorDetails
+        mentorDetails,
+        
       }
     });
   } catch (error) {
@@ -446,6 +453,7 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
+  console.log({role_id:req.auth,auth_id:req.role})
   res.render('addEvents');
 };
 

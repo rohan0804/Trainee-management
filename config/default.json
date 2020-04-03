@@ -1,3 +1,4 @@
 {
-    "jwtSecret":"zapbuild-technologies"
+    "jwtSecret":"zapbuild-technologies",
+    "refreshTokenSecret":"aodeibrnfkeaaprkofnmnakfjb"
 }

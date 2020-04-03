@@ -1,11 +1,11 @@
 const Auth = require("../Models/auth");
 const Role = require("../Models/role");
-const Trainee = require("../Models/trainee");
-const Mentor = require("../Models/mentor");
-const Department = require("../Models/department");
+
+
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const config = require('config');
+
 exports.getLogin = async (req, res, next) => {
   res.render("login");
 };
@@ -20,6 +20,7 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res) => {
   try {
+    console.log("secret key="+config.get('jwtSecret'),config.get('refreshTokenSecret'))
     const { email, password } = req.body;
     const user = await Auth.findOne({ where: { email: email } });
     if (!user) {
@@ -31,17 +32,19 @@ exports.postLogin = async (req, res) => {
     }
     
     const role = await Role.findByPk(user.role_id);
-    const token = jwt.sign({role_id:role.id},config.get('jwtSecret'),{expiresIn:"1h"});
-    if(!token) throw new Error("token cannot be generated");
+    const accessToken = jwt.sign({role_id:role.id,auth_id:user.id},config.get('jwtSecret'),{expiresIn:30*60});
+
+      const accessDecode = jwt.verify(accessToken,config.get('jwtSecret'));
+      const refreshToken = jwt.sign({role_id:role.id,auth_id:user.id,accessExp:accessDecode.exp},config.get('refreshTokenSecret'),{expiresIn:"7d"});
+      res.cookie('Token',accessToken,{httpOnly:true});
+      res.cookie('refreshToken',refreshToken,{httpOnly:true});
+
+      
     
-    res.status(200).json({
-      status:"loggedIn successfully",
-      user,
-      token
-    })
+    res.send('hello')
   } catch (error) {
     res.status(400).json({
-      error:error.message
+      error:error.stack
     })
   }
 };
