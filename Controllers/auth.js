@@ -32,16 +32,11 @@ exports.postLogin = async (req, res) => {
     }
     
     const role = await Role.findByPk(user.role_id);
+    const refreshToken = jwt.sign({role_id:role.id,auth_id:user.id},config.get('refreshTokenSecret'),{expiresIn:"7d"});
     const accessToken = jwt.sign({role_id:role.id,auth_id:user.id},config.get('jwtSecret'),{expiresIn:30*60});
-
-      const accessDecode = jwt.verify(accessToken,config.get('jwtSecret'));
-      const refreshToken = jwt.sign({role_id:role.id,auth_id:user.id,accessExp:accessDecode.exp},config.get('refreshTokenSecret'),{expiresIn:"7d"});
-      res.cookie('Token',accessToken,{httpOnly:true});
-      res.cookie('refreshToken',refreshToken,{httpOnly:true});
-
-      
-    
-    res.send('hello')
+    res.cookie('Token',accessToken,{httpOnly:true});
+    res.cookie('refreshToken',refreshToken,{httpOnly:true});
+    res.send('hello');
   } catch (error) {
     res.status(400).json({
       error:error.stack
