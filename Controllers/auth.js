@@ -39,7 +39,7 @@ exports.postLogin = async (req, res) => {
     res.send('hello');
   } catch (error) {
     res.status(400).json({
-      error:error.stack
+      error:error.message
     })
   }
 };
