@@ -37,6 +37,7 @@ const Category = require("./Models/category");
 const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
+const Record = require('./Models/csv');
 
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
@@ -52,7 +53,7 @@ Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
 
 sequelize
-  .sync()
+  .sync({alter:true})
   .then(result => {
     // console.log(result);
   })

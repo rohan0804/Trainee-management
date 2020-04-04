@@ -1,3 +1,7 @@
+const path = require('path');
+var csvParser = require('csv-parser');
+var fs = require('fs');
+const Record = require('../Models/csv');
 const Role = require("../Models/role");
 const Department = require("../Models/department");
 const Mentor = require("../Models/mentor");
@@ -7,7 +11,7 @@ const bcrypt = require("bcryptjs");
 const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
 const Event = require('../Models/event');
-
+message = '';
 
 /**
  * @method : postAddRole
@@ -451,6 +455,47 @@ exports.postAddEvents = async(req,res)=>{
   }
   
 };
+
+exports.getRecord =async (req,res)=>{
+  res.render('index',message);
+};
+
+exports.postRecord =async (req,res)=>{
+  try{
+    if(path.extname(req.file.originalname)!=='.csv'){
+      message='Only csv files allowed!';
+      res.render('index',{message:message,status:'Not Valid'});
+      res.status(403).json('Wrong File Type');
+    }else if(!req.file){
+      console.log('No file received');
+      message='Error! in csv upload.';
+      res.render('index',{message:message,status:'Not received'});
+      res.status(404).json('CSV Not Found');
+    }else{
+      const csvfile =await req.file.filename;
+      const filepath =await path.join(__dirname,'../uploads/'+csvfile);
+      const record = await fs.createReadStream(filepath)
+      .pipe(csvParser())
+      .on('data',(row)=>{
+        var results={
+          id:row['id'],
+          name:row['name'],
+          description:row['description']
+        };
+        Record.create(results);
+      })
+      .on('end',()=>{
+        //end
+      });
+      message='Successfully! uploaded';
+      res.render('index',{message:message,status:'success'});
+      res.status(200).json('CSV uploaded');
+    }
+  }catch(err){
+    res.status(400).json({message:err.message});
+  }
+};
+
 
 exports.adminDashboard = async(req,res)=>{
   const events = await Event.findAll();
