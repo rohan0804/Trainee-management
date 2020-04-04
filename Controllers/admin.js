@@ -328,6 +328,10 @@ exports.postAddMentor = async (req, res) => {
    */
 
   exports.putAddMentor=async (req,res,next)=>{try{
+    if(!req.body){
+      res.status(403).send('Not found any information');
+    }
+    else{
     const updateMentor=await Mentor.update(
         {name:req.body.name,
         email:req.body.email,
@@ -346,7 +350,7 @@ exports.postAddMentor = async (req, res) => {
     )
     console.log(updateMentor);
     res.status(200).json(updateMentor);
-}catch(error){
+}}catch(error){
     res.status(400).json('Error');
 }
 };
@@ -360,11 +364,15 @@ exports.postAddMentor = async (req, res) => {
    * @param : [params]
    */
 exports.deleteMentor=async (req,res,next)=>{try{
+  if(!req.params.id){
+    res.status(403).send('id not found');
+  }
+  else{
     const mentor=await Mentor.findOne({where:{id:req.params.id}});
     const mentoremail=await mentor.dataValues.auth_id;
     const deletementor=await Mentor.destroy({where:{id:req.params.id}});
     const deletementorauth=await Auth.destroy({where:{id:mentoremail}});
-    res.status(200).json(deletementor);
+    res.status(200).json(deletementor);}
 }catch(Error){
     res.status(400).json('Error');
 }
@@ -383,12 +391,16 @@ exports.getAddannouncement=async (req,res,next)=>{
    */
 exports.postAddannouncement = async (req, res,next) => {
   try {
-    const {heading,description} = req.body;
+    if(!req.body){
+      res.status(403).send('NOT Filled');
+    }
+    else{
+      const {heading,description} = req.body;
     const announcementDetails = await Announcement.create({
       announcementTitle:heading,
       announcementDescription:description
     });
-    res.status(200).json({status:'Announcement Created!'});
+    res.status(200).json({status:'Announcement Created!'});}
   } catch (error) {
     res.status(400).json({error:error.message});
   }
