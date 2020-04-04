@@ -6,7 +6,7 @@ const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
 const expressLayouts = require("express-ejs-layouts");
-const {auth} = require('./middleware/auth');
+const {auth,roleBasedControl} = require('./middleware/auth');
 var http = require('http').createServer(app);
 const io = require('./socket').init(http);
 const cookieParser = require('cookie-parser');
@@ -21,9 +21,9 @@ app.use(bodyParser.json());
 app.use("/", authRouter);
 app.use(auth);
 
+app.use(roleBasedControl);
 
-
-app.use("/", adminRouter);
+app.use("/admin", adminRouter);
 
 app.use("/mentor", mentorRouter);
 

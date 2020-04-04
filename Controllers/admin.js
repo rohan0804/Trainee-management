@@ -18,18 +18,6 @@ const config = require('config');
  * @param : [params]
  */
 
-exports.authorization = async(req,res,next)=>{
-  try {
-    const role =await Role.findOne({where:{id:req.role}});
-    if(role.name!="admin") throw new Error("you are not allowed to access this route");
-    next();
-  } catch (error) {
-    res.status(403).json({
-      error:error.message
-    })
-  }
-  
-}
 
 
 exports.postAddRole = async (req, res, next) => {
@@ -453,7 +441,7 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  console.log({role_id:req.auth,auth_id:req.role})
+  console.log({role_id:req.roleId,auth_id:req.authId})
   res.render('addEvents');
 };
 

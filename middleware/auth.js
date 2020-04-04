@@ -1,6 +1,15 @@
 const app = require('express')();
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const Role = require('../Models/role');
+
+/**
+ * @method : postLogin
+ * @author : Nishit Arora
+ * @description : Middleware to refresh Access Tokens using Refresh Token
+ * @return :
+ * @param : [params]
+ */
 exports.auth = async (req,res,next)=>{
     try {
         
@@ -19,14 +28,14 @@ exports.auth = async (req,res,next)=>{
                     res.clearCookie('Token');
                     req.cookies['Token'] = newAccesstoken;
                     res.cookie('Token',newAccesstoken,{httpOnly:true});
-                    req.role = decode.role_id;
-                    req.auth = decode.auth_id;
+                    req.roleId = decode.role_id;
+                    req.authId = decode.auth_id;
                     return next(); 
                     }
                     console.log("token not updated");
                     const accessTokenDecode = jwt.verify(accessToken,config.get('jwtSecret'));
-                    req.role = accessTokenDecode.role_id,
-                    req.auth = accessTokenDecode.auth_id
+                    req.roleId = accessTokenDecode.role_id,
+                    req.authId = accessTokenDecode.auth_id
                     return next();
                 })
                 
@@ -44,5 +53,18 @@ exports.auth = async (req,res,next)=>{
     
 }
 
+exports.roleBasedControl = async(req,res,next)=>{
+    try {
+        const url = req.originalUrl.split('/')[1];
+        const role = await Role.findByPk(req.roleId);
+        console.log(role.dataValues.name);
+        
+        if(role.dataValues.name.toLowerCase()==url.toLowerCase()){
+            next();
+        }
+        res.redirect('/login');
 
-
+    } catch (error) {
+        console.log(error.message);
+    }
+   }
