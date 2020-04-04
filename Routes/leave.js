@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const {
-  postTimelog,
-  getTimelogData,
-  deleteTimelog,
-  updateTimelogRecord
-} = require("../Controllers/timelog");
-
+  postLeave,
+  getLeaveRecords,
+  deleteLeave,
+  updateLeaveRecord
+} = require("../Controllers/leave");
+//route for insertion
 router.post("/add", (req, res, next) => {
-  postTimelog(req.body)
+  postLeave(req.body)
     .then(data => {
       res.status(data.status).json(data.data);
     })
@@ -16,9 +16,13 @@ router.post("/add", (req, res, next) => {
       res.status(err.status).json(err.data);
     });
 });
-router.get("/:id", getTimelogData);
-router.get("/:id/:trainee_id/:date", (req, res, next) => {
-  updateTimelogRecord(req.params, req.body)
+
+//route for listing
+router.get("/:id", getLeaveRecords);
+
+//route for updation
+router.get("/:id/:trainee_id", (req, res, next) => {
+  updateLeaveRecord(req.params, req.body)
     .then(data => {
       res.status(data.status).json(data.data);
     })
@@ -26,6 +30,7 @@ router.get("/:id/:trainee_id/:date", (req, res, next) => {
       res.status(err.status).json(err.data);
     });
 });
-router.delete("/:id/:trainee_id", deleteTimelog);
+//route for deletion
+router.delete("/:id/:trainee_id", deleteLeave);
 
 module.exports = router;

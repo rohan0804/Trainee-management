@@ -1,7 +1,5 @@
 const Auth = require("../Models/auth");
 const Role = require("../Models/role");
-
-
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -20,7 +18,6 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res) => {
   try {
-    console.log("secret key="+config.get('jwtSecret'),config.get('refreshTokenSecret'))
     const { email, password } = req.body;
     const user = await Auth.findOne({ where: { email: email } });
     if (!user) {
