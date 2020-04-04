@@ -3,26 +3,6 @@ const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
-<<<<<<< HEAD
-/**
- * @author : Rohan
- * @method : getaddtest
- * @description : it helps to render the test view to mentor
- */
-exports.getaddtest = async (req, res, next) => {
-  res.render("test");
-};
-/**
- * @author : Rohan
- * @method : postaddtest
- * @description : it helps to add test by mentor to trainees.
- */
-exports.postaddtest = async (req, res, next) => {
-  //   console.log(req.body);
-  try {
-    const { name, date, description, duration, totalmarks } = req.body;
-    // console.log(description);
-=======
 const { Op } = require("sequelize");
 /**
  * @author : Rohan
@@ -35,7 +15,6 @@ exports.postaddtest = async (req, res, next) => {
   try {
     console.log(req.body);
     const { name, date, description, duration, totalmarks } = req.body;
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
     const createdtest = await Test.create({
       name: name,
       date: date,
@@ -43,12 +22,6 @@ exports.postaddtest = async (req, res, next) => {
       duration: duration,
       totalmarks: totalmarks
     });
-<<<<<<< HEAD
-    // console.log(createdtest);
-    res.send("pass");
-  } catch (error) {
-    console.log(error.message);
-=======
     res.status(201).json({
       status: true,
       statusCode: res.statusCode,
@@ -61,31 +34,10 @@ exports.postaddtest = async (req, res, next) => {
       message: "could not create test",
       error
     });
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
   }
 };
 /**
  * @author : Rohan
-<<<<<<< HEAD
- * @method : getcheckperformance
- * @description : it helps to render the performance view to mentor with all trainee names.
- */
-exports.getcheckperformance = async (req, res, next) => {
-  const trainees = await Trainee.findAll();
-  // console.log(trainees);
-  res.render("performance", {
-    trainees: trainees
-  });
-};
-/**
- * @author : Rohan
- * @method : postcheckperformance
- * @description : it helps to mentor for calculate the performance of individual trainee by
- * their marks grade and skills.
- */
-exports.postcheckperformance = async (req, res, next) => {
-  // console.log(req.body);
-=======
  * @method : postcheckperformance
  * @description : it helps to mentor for calculate the performance of individual trainee by
  * their marks grade and skills.
@@ -93,7 +45,6 @@ exports.postcheckperformance = async (req, res, next) => {
  * @param :[trainee]
  */
 exports.postcheckperformance = async (req, res, next) => {
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
   let totalmarks = 0,
     skills = [],
     percentage = 0,
@@ -106,10 +57,6 @@ exports.postcheckperformance = async (req, res, next) => {
         trainee_id: trainee
       }
     });
-<<<<<<< HEAD
-    // console.log(traineeRecords);
-=======
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
     traineeRecords.forEach(traineeRecord => {
       totalmarks += traineeRecord.totalmarks;
       scoredmarks += traineeRecord.marks_obtained;
@@ -130,16 +77,6 @@ exports.postcheckperformance = async (req, res, next) => {
     else if (percentage >= 63 && percentage <= 66) grade = "D";
     else if (percentage >= 60 && percentage <= 62) grade = "D-";
     else if (percentage >= 0 && percentage <= 59) grade = "F";
-<<<<<<< HEAD
-    console.log("per " + percentage + "%");
-    console.log("grade=" + grade);
-    console.log("totalmarks=" + totalmarks);
-    console.log("scoredmarks=" + scoredmarks);
-    console.log("extra skills=" + skills);
-    res.send("pass");
-  } catch (error) {
-    console.log(error);
-=======
     res.status(200).json({
       status: true,
       statusCode: res.statusCode,
@@ -156,27 +93,11 @@ exports.postcheckperformance = async (req, res, next) => {
       message: "could not find the trainee",
       error
     });
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
   }
 };
 /**
  * @author : Rohan
  * @method : getaddperformance
-<<<<<<< HEAD
- * @description : it helps to render the addperformance view with required data from tTest
- *  and Trainee models.
- */
-exports.getaddperformance = async (req, res, next) => {
-  try {
-    const trainees = await Trainee.findAll();
-    const tests = await Test.findAll();
-    res.render("addperformance", {
-      trainees: trainees,
-      tests: tests
-    });
-  } catch (error) {
-    console.log(error);
-=======
  * @description : To fetch all the previous tests taken by mentor.
  * @return :
  * @param :[]
@@ -196,20 +117,14 @@ exports.getAllTests = async (req, res, next) => {
       message: "could not fetch tests",
       error
     });
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
   }
 };
 /**
  * @author : Rohan
  * @method : postaddperformance
-<<<<<<< HEAD
- * @description : it helps to add the shills of a particular trainee by his mentor and
- * create a performance of a particular trainee.
-=======
  * @description : To create a performance of a particular trainee.
  * @return :
  * @param :[skills, totalmarks, obtainedmarks, trainee, test]
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
  */
 exports.postaddperformance = async (req, res, next) => {
   try {
@@ -221,11 +136,6 @@ exports.postaddperformance = async (req, res, next) => {
       test_id: test,
       trainee_id: trainee
     });
-<<<<<<< HEAD
-    res.send("performance added successfully");
-  } catch (error) {
-    console.log(error);
-=======
     res.status(201).json({
       status: true,
       statusCode: res.statusCode,
@@ -294,6 +204,5 @@ exports.findByName = async (req, res, next) => {
       message: "could not find trainee",
       error
     });
->>>>>>> 31108d227dce1bcf2298d46e1fcb2f2f502e9826
   }
 };
