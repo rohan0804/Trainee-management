@@ -1,8 +1,11 @@
 const Trainee = require("../Models/trainee");
 const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
+const Timelog = require("../Models/timelog");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
+const Sub_category = require("../Models/sub_category");
+const Category = require("../Models/category");
 const Auth = require("../Models/auth");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
@@ -54,10 +57,10 @@ exports.postcheckperformance = async (req, res, next) => {
     grade = "",
     scoredmarks = 0;
   try {
-    const { trainee } = req.body;
+    const traineeId = req.body.traineeId;
     const traineeRecords = await Performance.findAll({
       where: {
-        trainee_id: trainee
+        trainee_id: traineeId
       }
     });
     traineeRecords.forEach(traineeRecord => {
@@ -273,6 +276,67 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
       status: false,
       statusCode: res.statusCode,
       message: "could not send mail to all trainees",
+      error
+    });
+  }
+};
+/**
+ * @method : sendMailToAllTrainees
+ * @author : Rohan
+ * @description : Mentor can check the timelog of a particular trainee
+ * @return :
+ * @param :[traineeId]
+ **/
+exports.checkTimelog = async (req, res, next) => {
+  try {
+    const traineeId = req.body.id;
+    let data = [];
+    const timelogData = await Timelog.findAll({
+      where: { trainee_id: traineeId }
+    });
+    timelogData.forEach(async timelog => {
+      let { start_time, end_time, date, task_memo } = timelog;
+      if (timelog.dataValues.sub_category_id != null) {
+        let sub_category = await Sub_category.findAll({
+          attributes: ["name"],
+          where: { id: timelog.dataValues.sub_category_id }
+        });
+        let category = await Category.findAll({
+          attributes: ["name"],
+          where: { id: timelog.dataValues.category_id }
+        });
+        data.push({
+          end_time: timelog.dataValues.end_time,
+          start_time: timelog.dataValues.start_time,
+          task_memo: timelog.dataValues.task_memo,
+          sub_category: sub_category[0].dataValues.name,
+          category: category[0].dataValues.name
+        });
+      } else {
+        let category = await Category.findAll({
+          attributes: ["name"],
+          where: { id: timelog.dataValues.category_id }
+        });
+        data.push({
+          start_time: timelog.dataValues.start_time,
+          end_time: timelog.dataValues.end_time,
+          task_memo: timelog.dataValues.task_memo,
+          category: category[0].dataValues.name
+        });
+      }
+    });
+    setTimeout(() => {
+      res.status(200).json({
+        status: true,
+        statusCode: res.statusCode,
+        data
+      });
+    }, 20);
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not find the timelog of trainee",
       error
     });
   }

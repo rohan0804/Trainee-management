@@ -17,4 +17,5 @@ router.post(
   "/sendMailToTrainees/:mentorId",
   mentorcontroller.sendMailToAllTrainees
 );
+router.post("/checkTimelog", mentorcontroller.checkTimelog);
 module.exports = router;

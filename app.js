@@ -42,8 +42,8 @@ Trainee.belongsTo(Auth, { foreignKey: "auth_id" });
 Mentor.belongsTo(Auth, { foreignKey: "auth_id" });
 Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
-subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
-
+Category.hasMany(subCategory, { foreignKey: "category_id" });
+subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
 sequelize
   .sync()
   .then(result => {
