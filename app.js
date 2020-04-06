@@ -6,6 +6,7 @@ const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const timelogRoute = require("./Routes/timelog");
 const leaveRoute = require("./Routes/leave");
+const testRoute = require("./Routes/test");
 const expressLayouts = require("express-ejs-layouts");
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -17,6 +18,7 @@ app.use("/", authRouter);
 app.use("/", adminRouter);
 app.use("/timelog", timelogRoute);
 app.use("/leave", leaveRoute);
+app.use("/test", testRoute);
 
 const Department = require("./Models/department");
 const Trainee = require("./Models/trainee.js");
@@ -44,13 +46,15 @@ Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
 Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
+Trainee.hasMany(Test, { foreignKey: "trainee_id" });
+Mentor.hasMany(Test, { foreignKey: "mentor_id" });
 
 sequelize
   .sync()
-  .then(result => {
+  .then((result) => {
     // console.log(result);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log(err);
   });
 app.listen(4000, (req, res) => {
