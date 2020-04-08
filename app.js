@@ -1,5 +1,7 @@
 const express = require("express");
+
 const app = express();
+
 const sequelize = require("./utils/database");
 const bodyParser = require("body-parser");
 const authRouter = require("./Routes/auth");
@@ -8,6 +10,7 @@ const timelogRoute = require("./Routes/timelog");
 const leaveRoute = require("./Routes/leave");
 const testRoute = require("./Routes/test");
 const expressLayouts = require("express-ejs-layouts");
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);

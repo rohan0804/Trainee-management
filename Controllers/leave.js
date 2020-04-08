@@ -4,6 +4,7 @@ const Mentor = require("../Models/mentor");
 const { Op } = require("sequelize");
 const transporter = require("../utils/mailConfigration");
 const config = require("../utils/mailConf");
+
 /**
  * @method : postLeave
  * @author : Mehak Dhiman
@@ -12,22 +13,22 @@ const config = require("../utils/mailConf");
  * @param :
  */
 
-exports.postLeave = async data => {
+exports.postLeave = async (data) => {
   try {
     const traineeData = await Trainee.findOne({
-      where: { id: data.trainee_id }
+      where: { id: data.trainee_id },
     });
     if (!traineeData) {
       return {
         status: 400,
         data: {
-          msg: "Trainee data not found"
-        }
+          msg: "Trainee data not found",
+        },
       };
     }
 
     const mentorData = await Mentor.findOne({
-      where: { id: traineeData.mentor_id }
+      where: { id: traineeData.mentor_id },
     });
 
     const dateRecord = await Leave.findOne({
@@ -37,48 +38,48 @@ exports.postLeave = async data => {
           {
             [Op.and]: {
               start_date: { [Op.eq]: data.start_date },
-              end_date: { [Op.eq]: data.end_date }
-            }
+              end_date: { [Op.eq]: data.end_date },
+            },
           },
           {
             [Op.and]: {
               start_date: { [Op.gt]: data.start_date },
-              end_date: { [Op.lt]: data.end_date }
-            }
+              end_date: { [Op.lt]: data.end_date },
+            },
           },
           {
             [Op.and]: {
-              end_date: { [Op.gt]: data.start_date, [Op.lt]: data.end_date }
-            }
+              end_date: { [Op.gt]: data.start_date, [Op.lt]: data.end_date },
+            },
           },
           {
             [Op.and]: {
               start_date: { [Op.lt]: data.start_date },
-              end_date: { [Op.gt]: data.start_date }
-            }
+              end_date: { [Op.gt]: data.start_date },
+            },
           },
           {
             [Op.and]: {
               start_date: { [Op.lt]: data.end_date },
-              end_date: { [Op.gt]: data.end_date }
-            }
-          }
-        ]
-      }
+              end_date: { [Op.gt]: data.end_date },
+            },
+          },
+        ],
+      },
     });
     if (dateRecord) {
       return {
         status: 200,
         data: {
-          msg: "Leave already exist."
-        }
+          msg: "Leave already exist.",
+        },
       };
     }
     let mailOptions = {
       from: config.from,
       to: mentorData.mail_id,
       subject: data.subject,
-      text: data.reason
+      text: data.reason,
     };
 
     const LeaveRecord = await Leave.create({
@@ -86,7 +87,7 @@ exports.postLeave = async data => {
       end_date: data.end_date,
       subject: data.subject,
       reason: data.reason,
-      trainee_id: traineeData.id
+      trainee_id: traineeData.id,
     });
     if (LeaveRecord) {
       //await transporter.sendMail(mailOptions);
@@ -94,23 +95,23 @@ exports.postLeave = async data => {
       return {
         status: 200,
         data: {
-          msg: "Record added successfully"
-        }
+          msg: "Record added successfully",
+        },
       };
     }
     return {
       status: 400,
       data: {
-        msg: "Something went wrong"
-      }
+        msg: "Something went wrong",
+      },
     };
   } catch (e) {
     console.log(e);
     return {
       status: 400,
       data: {
-        msg: "Something went wrong!"
-      }
+        msg: "Something went wrong!",
+      },
     };
   }
 };
@@ -128,15 +129,15 @@ exports.getLeaveRecords = async (req, res) => {
     const id = req.params.id;
     if (!id) {
       res.status(400).json({
-        msg: "Parameter not found"
+        msg: "Parameter not found",
       });
     }
     const traineegData = await Trainee.findOne({
-      where: { id: id }
+      where: { id: id },
     });
     if (!traineegData) {
       res.status(400).json({
-        msg: "Record not Exist"
+        msg: "Record not Exist",
       });
     }
     const leaveRecords = await Leave.findAll({ where: { trainee_id: id } });
@@ -144,11 +145,11 @@ exports.getLeaveRecords = async (req, res) => {
       res.send(leaveRecords);
     }
     res.status(400).json({
-      msg: "Something went wrong"
+      msg: "Something went wrong",
     });
   } catch (err) {
     res.status(400).json({
-      msg: "Something Wrong!"
+      msg: "Something Wrong!",
     });
   }
 };
@@ -167,27 +168,27 @@ exports.deleteLeave = async (req, res, next) => {
     const trainee_id = req.params.trainee_id;
 
     const leaveData = await Leave.findOne({
-      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
+      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] },
     });
     if (!leaveData) {
       res.status(400).json({
-        msg: "Record not Exist"
+        msg: "Record not Exist",
       });
     }
     const deleteLeaveRecord = await Leave.destroy({
-      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
+      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] },
     });
     if (deleteLeaveRecord) {
       res.status(200).json({
-        msg: "Record deleted successfully"
+        msg: "Record deleted successfully",
       });
     }
     res.status(400).json({
-      msg: "Something went wrong"
+      msg: "Something went wrong",
     });
   } catch (error) {
     res.status(400).json({
-      msg: "Something  wrong!"
+      msg: "Something  wrong!",
     });
   }
 };
@@ -207,15 +208,15 @@ exports.updateLeaveRecord = async (params, data) => {
 
     const leaveData = await Leave.findOne({
       where: {
-        [Op.and]: [{ trainee_id: trainee_id }, { id: id }]
-      }
+        [Op.and]: [{ trainee_id: trainee_id }, { id: id }],
+      },
     });
     if (!leaveData) {
       return {
         status: 400,
         data: {
-          msg: "Record not found"
-        }
+          msg: "Record not found",
+        },
       };
     }
 
@@ -223,29 +224,29 @@ exports.updateLeaveRecord = async (params, data) => {
       start_date: data.start_date,
       end_date: data.end_date,
       subject: data.subject,
-      reason: data.reason
+      reason: data.reason,
     });
     if (updatedLeave) {
       return {
         status: 200,
         data: {
-          msg: "Record updated successfully"
-        }
+          msg: "Record updated successfully",
+        },
       };
     }
     return {
       status: 400,
       data: {
-        msg: "Something went wrong"
-      }
+        msg: "Something went wrong",
+      },
     };
   } catch (error) {
     console.log(error);
     return {
       status: 400,
       data: {
-        msg: "Something went worng!"
-      }
+        msg: "Something went worng!",
+      },
     };
   }
 };

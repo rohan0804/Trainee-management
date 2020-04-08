@@ -2,7 +2,7 @@ const Trainee = require("../Models/trainee");
 const Mentor = require("../Models/mentor");
 const Test = require("../Models/test");
 const { Op } = require("sequelize");
-
+const { check, validationResult } = require("express-validator");
 /**
  * @method : postTest
  * @author : Mehak Dhiman
