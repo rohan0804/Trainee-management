@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
-
 const traineeDoubt = sequelize.define('traineeDoubt', {
     id: {
         type: Sequelize.INTEGER,
@@ -16,11 +15,7 @@ const traineeDoubt = sequelize.define('traineeDoubt', {
         type: Sequelize.STRING,
         allowNull: true
     },
-    trainee_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true
-    },
-
+    
 });
 
 module.exports = traineeDoubt;

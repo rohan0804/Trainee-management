@@ -3,6 +3,8 @@ const Mentor = require("../Models/mentor");
 const Department = require("../Models/department");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
+const io = require('../socket');
+
 /**
  * @author : Rohan
  * @method : getaddtest
@@ -164,3 +166,15 @@ exports.postaddperformance = async (req, res, next) => {
     });
   }
 };
+
+exports.gettraineeDoubts = async (req, res, next) => {
+  const mentorId = req.params.mentorId;
+  io.getio().on('getTraineeDoubt',function(data){
+  console.log(data);
+  });
+  res.render('doubt');
+}
+
+exports.posttraineeDoubts = async (req , res , next) => {
+ 
+}

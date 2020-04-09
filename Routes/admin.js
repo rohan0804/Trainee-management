@@ -29,6 +29,4 @@ router.post("/update/trainee/:id", postUpdateTrainee);
 router.get("/trainee/:id", getTrainee);
 router.post("/delete/trainee/:id", postDeleteTrainee);
 
-
-
 module.exports = router;

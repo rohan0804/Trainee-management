@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
-const http = require("http").Server(app);
-const io = require("socket.io")(http);
-const port = process.env.PORT || 4000
+
+var http = require('http').createServer(app);
+const io = require('./socket').init(http);
+
 const cors = require('cors');
 
 const sequelize = require("./utils/database");
@@ -11,6 +12,7 @@ const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
 const traineeRouter = require("./Routes/trainee")
+const timelogRoute = require("./Routes/timelog");
 const expressLayouts = require("express-ejs-layouts");
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -22,7 +24,7 @@ app.use(express.static('Routes'));
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   next();
-})
+});
 app.use("/", authRouter);
 
 app.use("/", adminRouter);
@@ -58,31 +60,26 @@ Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
 
-// make connection with user from server side 
-io.on("connection", function (socket) {
-  console.log("New user connected " + socket.id);
-
-  // listen for message from user 
-  socket.on('createMessage', function (message) {
-    console.log('newMessage', message);
-    io.sockets.emit('createMessage', message);
-
-    const doubt = traineeDoubt.create({
-      questions: message,
-    });
-  });
-});
+app.use("/", authRouter);
+app.use("/", adminRouter);
+app.use("/timelog", timelogRoute);
 
 sequelize
   .sync()
   .then(result => {
-    // console.log(result);
+    let count = 0;
+    io.on('connection', socket => {
+      count += 1;
+      console.log("Active sockets", count);
+      socket.on('disconnect', result => {
+        count -= 1;
+        console.log("Active sockets", count);
+      });
+    });
+    http.listen(4000, (req, res) => {
+      console.log(`server is listening at my port`);
+    });
   })
   .catch(err => {
     console.log(err);
   });
-
-
-http.listen(port, (req, res) => {
-  console.log(`server is listening at port ${port}`);
-});
