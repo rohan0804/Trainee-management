@@ -18,4 +18,6 @@ router.post(
   mentorcontroller.sendMailToAllTrainees
 );
 router.post("/checkTimelog", mentorcontroller.checkTimelog);
+router.get("/addDepartment", mentorcontroller.getAddDepartment);
+router.post("/addDepartment", mentorcontroller.postAddDeprtment);
 module.exports = router;

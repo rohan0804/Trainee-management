@@ -26,19 +26,19 @@ exports.postAddTest = async (req, res, next) => {
       date: date,
       test_description: description,
       duration: duration,
-      totalmarks: totalmarks
+      totalmarks: totalmarks,
     });
     res.status(201).json({
       status: true,
       statusCode: res.statusCode,
-      createdtest
+      createdtest,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not create test",
-      error
+      error,
     });
   }
 };
@@ -60,10 +60,10 @@ exports.postcheckperformance = async (req, res, next) => {
     const traineeId = req.body.traineeId;
     const traineeRecords = await Performance.findAll({
       where: {
-        trainee_id: traineeId
-      }
+        trainee_id: traineeId,
+      },
     });
-    traineeRecords.forEach(traineeRecord => {
+    traineeRecords.forEach((traineeRecord) => {
       totalmarks += traineeRecord.totalmarks;
       scoredmarks += traineeRecord.marks_obtained;
       skills.push(traineeRecord.extra_skills);
@@ -90,14 +90,14 @@ exports.postcheckperformance = async (req, res, next) => {
       grade,
       totalmarks,
       scoredmarks,
-      skills
+      skills,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not find the trainee",
-      error
+      error,
     });
   }
 };
@@ -114,14 +114,14 @@ exports.getAllTests = async (req, res, next) => {
     res.status(200).json({
       status: true,
       statusCode: res.statusCode,
-      tests
+      tests,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not fetch tests",
-      error
+      error,
     });
   }
 };
@@ -140,19 +140,19 @@ exports.postAddPerformance = async (req, res, next) => {
       totalmarks: totalmarks,
       marks_obtained: obtainedmarks,
       test_id: test,
-      trainee_id: trainee
+      trainee_id: trainee,
     });
     res.status(201).json({
       status: true,
       statusCode: res.statusCode,
-      newperformance
+      newperformance,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "not created performance",
-      error
+      error,
     });
   }
 };
@@ -166,20 +166,20 @@ exports.postAddPerformance = async (req, res, next) => {
 exports.listOfTrainees = async (req, res, next) => {
   try {
     const trainees = await Trainee.findAll({
-      where: { department_id: req.params.departmentId }
+      where: { department_id: req.params.departmentId },
     });
     // console.log(trainees);
     res.status(200).json({
       status: true,
       statusCode: res.statusCode,
-      trainees
+      trainees,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not find trainees",
-      error
+      error,
     });
   }
 };
@@ -195,20 +195,20 @@ exports.findByName = async (req, res, next) => {
     const name = req.params.name;
     // console.log(name);
     const trainee = await Trainee.findAll({
-      where: { name: { [Op.like]: `${name}%` } }
+      where: { name: { [Op.like]: `${name}%` } },
     });
     // console.log(trainee);
     res.status(200).json({
       status: true,
       statusCode: res.statusCode,
-      trainee
+      trainee,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not find trainee",
-      error
+      error,
     });
   }
 };
@@ -227,17 +227,17 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
     let getmailoptions = require("../mail/mailoptions");
     const mentor = await Auth.findAll({
       attributes: ["email"],
-      where: { id: mentorId }
+      where: { id: mentorId },
     });
     let mentor_email = mentor[0].dataValues.email;
     // console.log(mentor_email);
     const trainees = await Trainee.findAll({
-      where: { mentor_id: mentorId }
+      where: { mentor_id: mentorId },
     });
-    trainees.forEach(async trainee => {
+    trainees.forEach(async (trainee) => {
       let authdata = await Auth.findAll({
         attributes: ["email"],
-        where: { id: trainee.auth_id }
+        where: { id: trainee.auth_id },
       });
       let email = authdata[0].dataValues.email;
       // console.log(authdata[0].dataValues.email);
@@ -249,8 +249,8 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
         auth: {
           //user:mentor_email,
           user: "rohanshrivastav1999@gmail.com",
-          pass: "rohan0804" //mentor passsword
-        }
+          pass: "rohan0804", //mentor passsword
+        },
       });
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -258,7 +258,7 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
             status: false,
             statusCode: res.statusCode,
             message: "could not send email to all trainees",
-            error
+            error,
           });
         } else {
           console.log(info.response);
@@ -269,14 +269,14 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
     res.status(200).json({
       status: true,
       statusCode: res.statusCode,
-      trainees
+      trainees,
     });
   } catch (error) {
     res.status(400).json({
       status: false,
       statusCode: res.statusCode,
       message: "could not send mail to all trainees",
-      error
+      error,
     });
   }
 };
@@ -292,36 +292,36 @@ exports.checkTimelog = async (req, res, next) => {
     const traineeId = req.body.id;
     let data = [];
     const timelogData = await Timelog.findAll({
-      where: { trainee_id: traineeId }
+      where: { trainee_id: traineeId },
     });
-    timelogData.forEach(async timelog => {
+    timelogData.forEach(async (timelog) => {
       let { start_time, end_time, date, task_memo } = timelog;
       if (timelog.dataValues.sub_category_id != null) {
         let sub_category = await Sub_category.findAll({
           attributes: ["name"],
-          where: { id: timelog.dataValues.sub_category_id }
+          where: { id: timelog.dataValues.sub_category_id },
         });
         let category = await Category.findAll({
           attributes: ["name"],
-          where: { id: timelog.dataValues.category_id }
+          where: { id: timelog.dataValues.category_id },
         });
         data.push({
           end_time: timelog.dataValues.end_time,
           start_time: timelog.dataValues.start_time,
           task_memo: timelog.dataValues.task_memo,
           sub_category: sub_category[0].dataValues.name,
-          category: category[0].dataValues.name
+          category: category[0].dataValues.name,
         });
       } else {
         let category = await Category.findAll({
           attributes: ["name"],
-          where: { id: timelog.dataValues.category_id }
+          where: { id: timelog.dataValues.category_id },
         });
         data.push({
           start_time: timelog.dataValues.start_time,
           end_time: timelog.dataValues.end_time,
           task_memo: timelog.dataValues.task_memo,
-          category: category[0].dataValues.name
+          category: category[0].dataValues.name,
         });
       }
     });
@@ -329,7 +329,7 @@ exports.checkTimelog = async (req, res, next) => {
       res.status(200).json({
         status: true,
         statusCode: res.statusCode,
-        data
+        data,
       });
     }, 20);
   } catch (error) {
@@ -337,7 +337,56 @@ exports.checkTimelog = async (req, res, next) => {
       status: false,
       statusCode: res.statusCode,
       message: "could not find the timelog of trainee",
-      error
+      error,
+    });
+  }
+};
+/**
+ * @method : getAddDepartment
+ * @author : Rohan
+ * @description : To render the form for adding a department
+ * @return :
+ * @param :[]
+ **/
+exports.getAddDepartment = async (req, res, next) => {
+  res.render("department");
+};
+/**
+ * @method : postAddDeprtment
+ * @author : Rohan
+ * @description : To add a department
+ * @return :
+ * @param :[traineeId]
+ **/
+exports.postAddDeprtment = async (req, res, next) => {
+  try {
+    const { name, head } = req.body;
+    const syllabuss = req.file;
+    const syllabussurl = syllabuss.path;
+    if (!syllabuss) {
+      res.status(400).json({
+        status: false,
+        statusCode: res.statusCode,
+        message: "format of file is not correct",
+      });
+    }
+    const department = await Department.create({
+      // id: 6,
+      name: name,
+      syllabus: syllabussurl,
+      department_head: head,
+    });
+    res.status(201).json({
+      status: true,
+      statusCode: res.statusCode,
+      department,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not add a department",
+      error,
     });
   }
 };
