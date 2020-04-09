@@ -14,7 +14,7 @@ const timelogRoute = require("./Routes/timelog");
 const leaveRoute = require("./Routes/leave");
 app.use(cookieParser());
 
-const expressLayouts = require("express-ejs-layouts");
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
