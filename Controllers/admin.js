@@ -525,3 +525,42 @@ exports.adminDashboard = async(req,res)=>{
   });
 };
 
+exports.list=async (req,res)=>{
+  var departmentname,mentorname,departmentid,mentorid;
+  var count =await Trainee.count();
+  var trainees =await Trainee.findAll({});
+  var traineerecord=await [];
+  var pagesize=2;
+  var pagecount=await Math.ceil(count/pagesize);
+  var currentPage=1;
+  var List=[];
+  var result = await trainees.map(res=>{
+    return res.dataValues;
+  });
+  console.log(result[1]['mentor_id']);
+  for (let i = 0; i < result.length; i++) {
+    mentorid=await result[i]['mentor_id'];
+    departmentid=await result[i]['department_id'];
+    console.log(mentorid,' ',departmentid);
+    mentorname=await Mentor.findOne({where:{id:mentorid}});
+    departmentname=await Department.findAll({where:{id:departmentid}});
+    console.log(mentorname.dataValues.name,' \n',departmentname[0].dataValues.name);
+    result[i]['mentorname']=mentorname.dataValues.name;
+    result[i]['departmentname']=departmentname[0].dataValues.name;
+  }
+  while(result.length>0){
+    traineerecord.push(result.splice(0,pagesize));
+  }
+  if (typeof req.query.page !== 'undefined') {
+		currentPage = +req.query.page;
+	}
+  List=traineerecord[+currentPage -1];
+
+  res.render('list',{
+    students:List,
+    pageSize:pagesize,
+    totalStudents:count,
+    pageCount:pagecount,
+    currentPage:currentPage
+  });
+};

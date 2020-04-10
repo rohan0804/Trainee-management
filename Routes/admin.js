@@ -10,7 +10,8 @@ const {
   getTrainee,
   postDeleteTrainee,
   getAddannouncement
-  ,getRecord
+  ,getRecord,
+  list
 } = require("../Controllers/admin");
 const {
   postTraineeSignup,
@@ -74,8 +75,9 @@ router.get("/add/event",getAddEvents);
 router.post("/add/event",postAddEvents);
 router.get("/dashboard",adminDashboard);
 
-router.get('/',getRecord);
+router.get('/record',getRecord);
 router.post('/csv/upload',upload.single('profile'),postRecord);
 
+router.get('/',list);
 
 module.exports = router;

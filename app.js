@@ -11,6 +11,7 @@ var http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 app.set("view engine", "ejs");
+app.engine('html', require('ejs').renderFile);
 app.set("views", "views");
 app.use(expressLayouts);
 
@@ -53,7 +54,8 @@ Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
 
 sequelize
-  .sync({alter:true})
+  // .sync({alter:true})
+  .sync()
   .then(result => {
     // console.log(result);
   })
