@@ -69,6 +69,7 @@ sequelize
   .then(result => {
     let count = 0;
     io.on('connection', socket => {
+      socket.emit('news', { hello: 'world' });
       count += 1;
       console.log("Active sockets", count);
       socket.on('disconnect', result => {

@@ -9,9 +9,12 @@
     </form>
     <ul id="messages"></ul>
 </div>
-<script> 
-    var socket = io();
+<script src="/socket.io/socket.io.js"> </script>
+<script>
+    const socket = io('http://localhost');
+    socket.on('getTraineeDoubt',function (data){
+        console.log("ygugughguygtu");
+        console.log(data);
+    });
 </script>
-
-
 

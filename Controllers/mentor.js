@@ -168,10 +168,6 @@ exports.postaddperformance = async (req, res, next) => {
 };
 
 exports.gettraineeDoubts = async (req, res, next) => {
-  const mentorId = req.params.mentorId;
-  io.getio().on('getTraineeDoubt',function(data){
-  console.log(data);
-  });
   res.render('doubt');
 }
 
