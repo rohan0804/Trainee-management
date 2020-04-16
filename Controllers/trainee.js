@@ -3,8 +3,8 @@ const Category = require('../Models/category');
 const subCategory = require('../Models/sub_category');
 const Timelog = require('../Models/timelog');
 const traineeDoubt = require('../Models/traineedoubt');
-const io = require('../socket');
-const socket = io.getio();
+var io = require('../socket');
+
 
 /**
  * @method : gettraineeDoubts
@@ -27,10 +27,7 @@ exports.posttraineeDoubts = async (req, res, next) => {
     });
    
     const trainee = await Trainee.findOne({ where: { id: traineeId } });
-    socket.emit('getTraineeDoubt',{
-    doubt:doubt ,
-    mentorId : trainee.mentor_id,
-    });
+    io.getio().emit('get',"Hekko");
     console.log(trainee.mentor_id);
     res.status(200).json({ status: 'Send Doubts!' });
   } catch (error) {
