@@ -11,7 +11,8 @@ const {
   postDeleteTrainee,
   getAddannouncement
   ,getRecord,
-  list
+  listofTrainees,
+  findByName
 } = require("../Controllers/admin");
 const {
   postTraineeSignup,
@@ -78,6 +79,7 @@ router.get("/dashboard",adminDashboard);
 router.get('/record',getRecord);
 router.post('/csv/upload',upload.single('profile'),postRecord);
 
-router.get('/',list);
+router.get('/listofTrainee/:page',listofTrainees);
+router.get('/findByName/:name',findByName);
 
 module.exports = router;

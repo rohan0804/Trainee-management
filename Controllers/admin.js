@@ -8,6 +8,7 @@ const Mentor = require("../Models/mentor");
 const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
+const Sequelize = require('sequelize');
 const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
 const Event = require('../Models/event');
@@ -484,8 +485,8 @@ exports.postRecord =async (req,res)=>{
       res.render('index',{message:message,status:'Not received'});
       res.status(404).json('CSV Not Found');
     }else{
-      const csvfile =await req.file.filename;
-      const filepath =await path.join(__dirname,'../uploads/'+csvfile);
+      const csvfile =req.file.filename;
+      const filepath =path.join(__dirname,'../uploads/'+csvfile);
       const record = await fs.createReadStream(filepath)
       .pipe(csvParser())
       .on('data',(row)=>{
@@ -525,42 +526,56 @@ exports.adminDashboard = async(req,res)=>{
   });
 };
 
-exports.list=async (req,res)=>{
-  var departmentname,mentorname,departmentid,mentorid;
-  var count =await Trainee.count();
-  var trainees =await Trainee.findAll({});
-  var traineerecord=await [];
-  var pagesize=2;
-  var pagecount=await Math.ceil(count/pagesize);
-  var currentPage=1;
-  var List=[];
-  var result = await trainees.map(res=>{
-    return res.dataValues;
-  });
-  console.log(result[1]['mentor_id']);
-  for (let i = 0; i < result.length; i++) {
-    mentorid=await result[i]['mentor_id'];
-    departmentid=await result[i]['department_id'];
-    console.log(mentorid,' ',departmentid);
-    mentorname=await Mentor.findOne({where:{id:mentorid}});
-    departmentname=await Department.findAll({where:{id:departmentid}});
-    console.log(mentorname.dataValues.name,' \n',departmentname[0].dataValues.name);
-    result[i]['mentorname']=mentorname.dataValues.name;
-    result[i]['departmentname']=departmentname[0].dataValues.name;
-  }
-  while(result.length>0){
-    traineerecord.push(result.splice(0,pagesize));
-  }
-  if (typeof req.query.page !== 'undefined') {
-		currentPage = +req.query.page;
-	}
-  List=traineerecord[+currentPage -1];
 
-  res.render('list',{
-    students:List,
-    pageSize:pagesize,
-    totalStudents:count,
-    pageCount:pagecount,
-    currentPage:currentPage
-  });
+exports.listofTrainees = async (req,res,next)=>{
+  try{
+    let limit =9;
+    let offset =0;
+    let page = req.params.page;
+    const trainees = await Trainee.findAndCountAll({});
+    console.log(trainees.count);
+    let pages = Math.ceil(trainees.count/limit);
+    offset = limit*(page-1);
+    const traineeRecord = await Trainee.findAll({
+      attributes:['id','name','department_id','mentor_id'],
+      limit:limit,
+      offset:offset,
+      $sort : { id : 0 }
+    });
+    res.status(200).json({
+      status:true,
+      'result':traineeRecord,
+      'count':trainees.count,
+      'pages':pages
+    });
+  }catch(error){
+    res.status(400).json({
+      status:false,
+      message:'No data find',
+      error
+    });
+  }
+};
+
+exports.findByName = async (req,res,next)=>{
+  try{
+    const name =await req.params.name;
+    const trainee = await Trainee.findAll({
+      where:{
+        name:{
+          [Sequelize.Op.like]:`${name}%`
+        },
+      }
+    });
+    res.status(200).json({
+      status:true,
+      trainee
+    });
+  }catch(error){
+    res.status(400).json({
+      status:false,
+      message:'not find',
+      error
+    });
+  }
 };
