@@ -15,8 +15,9 @@ const config = require("../utils/mailConf");
 
 exports.postLeave = async (data) => {
   try {
+    console.log(data)
     const traineeData = await Trainee.findOne({
-      where: { id: data.trainee_id },
+      where: { id: 1 },
     });
     if (!traineeData) {
       return {
@@ -96,6 +97,7 @@ exports.postLeave = async (data) => {
         status: 200,
         data: {
           msg: "Record added successfully",
+
         },
       };
     }
@@ -142,11 +144,14 @@ exports.getLeaveRecords = async (req, res) => {
     }
     const leaveRecords = await Leave.findAll({ where: { trainee_id: id } });
     if (leaveRecords) {
-      res.send(leaveRecords);
+      res.render('leaveList', {leaveRecords});   
     }
-    res.status(400).json({
+    else {
+       res.status(400).json({
       msg: "Something went wrong",
     });
+    }
+   
   } catch (err) {
     res.status(400).json({
       msg: "Something Wrong!",

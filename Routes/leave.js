@@ -7,6 +7,12 @@ const {
   deleteLeave,
   updateLeaveRecord,
 } = require("../Controllers/leave");
+
+router.get('/', (req, res) => {
+  res.render('leave')
+  
+})
+
 //route for insertion
 router.post(
   "/add",
@@ -29,7 +35,7 @@ router.post(
     }
     postLeave(req.body)
       .then((data) => {
-        res.status(data.status).json(data.data);
+        res.render('leave');
       })
       .catch((err) => {
         res.status(err.status).json(err.data);
