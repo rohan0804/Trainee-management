@@ -26,7 +26,6 @@ exports.postAddRole = async (req, res, next) => {
     const roleStatus = await Role.create({
       name
     });
-
     res.status(200).json({
       result: roleStatus
     });
@@ -39,6 +38,7 @@ exports.postAddRole = async (req, res, next) => {
 exports.getAddDepartment = async (req, res, next) => {
   res.render("department");
 };
+
 /**
  * @method : postAddDepartment
  * @author : Nishit Arora
@@ -66,7 +66,7 @@ exports.postAddDepartment = async (req, res, next) => {
 
 exports.getTraineeSignup = async (req, res) => {
   const departments = await Department.findAll();
-  res.render("trainee-signup", {
+  res.render("signup.ejs", {
     data: departments
   });
 };
@@ -80,7 +80,6 @@ exports.getTraineeSignup = async (req, res) => {
  * @return :
  * @param : [params]
  */
-
 exports.postTraineeSignup = async (req, res) => {
   try {
     const {
@@ -107,7 +106,6 @@ exports.postTraineeSignup = async (req, res) => {
       password: hashPassword,
       role_id: role.id
     });
-
     const trainee = await Trainee.create({
       name,
       phone_no,
@@ -163,6 +161,7 @@ exports.getUpdateTrainee = async (req, res, next) => {
     console.log(error);
   }
 };
+
 /**
  * @method : postUpdateTrainee
  * @author : Taranjeet
@@ -170,7 +169,6 @@ exports.getUpdateTrainee = async (req, res, next) => {
  * @return :
  * @param : [params]
  */
-
 exports.postUpdateTrainee = async (req, res, next) => {
   try {
     const trainee_id = req.params.id;
@@ -232,6 +230,7 @@ exports.getTrainee = async (req, res, next) => {
     console.log(error);
   }
 };
+
 /**
  * @method : postUpdateTrainee
  * @author : Taranjeet
@@ -279,6 +278,7 @@ exports.getMentor = async (req, res, next) => {
     console.log(error);
   }
 };
+
 /**
  * @method : postAddMentor
  * @author : Nishit Arora
@@ -319,7 +319,8 @@ exports.postAddMentor = async (req, res) => {
         
       }
     });
-  } catch (error) {
+  }
+  catch (error) {
     res.status(400).json({
       response_code: 400,
       error: error.message
@@ -441,12 +442,13 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  console.log({role_id:req.roleId,auth_id:req.authId})
+  
   res.render('addEvents');
 };
 
 exports.postAddEvents = async(req,res)=>{
   try {
+    console.log("post addevents ajax request");
     const {heading,description,date} = req.body;
     const event = await Event.create({heading,description,date});
     io.getio().emit('getEvent',event);

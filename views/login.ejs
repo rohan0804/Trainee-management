@@ -1,15 +1,83 @@
-<div class="container">
-    <form method="POST" action="/login">
-        <h1>Login</h1>
-        <div class="form-group">
-            <label for="email">Username</label>
-            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" id="password">
-        </div>
-        <button type="submit" name="submitbtn" class="btn btn-primary">Submit</button>
-    </form>
-</div>
-
+    
+    <header>
+         <div class="nav-container">
+            <div class="container-fluid">
+               <div class="header">
+                  <a class="brand" href="javascript:void(0);" title="Website name">Zapbuild HRM</a>
+               </div>
+               <div class="links">
+                  <a href="signup.html" title="Timelog" class="white">
+                  <span class="glyphicon glyphicon-log-in"></span> Signup
+                  </a>
+               </div>
+            </div>
+         </div>
+      </header>
+      <div class="login-wrapper">
+         <div class="row">
+            <div class="col-sm-6">
+               <div class="text-side">
+                  <div class="contact-info wow fadeIn">
+                     <img src="images/user.png" class="user-image" width="100" height="100" alt="A man picture">
+                     <h1 class="heading1 wow pulse" data-wow-duration="1s" data-wow-delay="0.8s">Welcome to Zapbuild</h1>
+                     <p>Happy to see you!!</p>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-6">
+               <section class="form-side wow slideInRight">
+                  <h2 class="heading2">Login here!</h2>
+                  
+                  <form id="signin-form" onsubmit="return validate()" action="/login"  method="POST">
+                     <div class="form-group fields">
+                        <label class="form-label">Email</label>
+                        <% if(typeof error =='object' && error.type=="email"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                           
+                        <input type="email" id="Email" name="email" class="form-control" placeholder="Enter your email">
+                     </div>
+                     <div class="form-group fields">
+                        <label class="form-label">Password</label>
+                        <% if(typeof error =='object' && error.type == "password"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="password" id="Password" name="password" class="form-control" placeholder="Enter your password">
+                     </div>
+                     <div class="checkbox-container">
+                        <label class="remember-me">Remember me!
+                        <input type="checkbox" name="a">
+                        <span class="checkmark"></span>
+                        </label>
+                     </div>
+                     <div class="login-btn">
+                        <button class="btn buttn" type="submit">Login</button>
+                        <div class="forget-pass">
+                           <a href="javascript:void(0);" title="Forgot password">Forgot Password?</a>
+                        </div>
+                     </div>
+                  </form>
+               </section>
+            </div>
+         </div>
+      </div>
+      <script src="js/wow.js"></script>
+      <script src="js/bootstrap.min.js"></script>
+      <script>
+         function validate(){
+                 var email = document.forms["signin-form"]["Email"];
+                 var password = document.forms["signin-form"]["Password"];
+                 if(email.value == "" && password.value == "")
+                 {
+                    alert("Kindly fill all the fields");
+                    return false;
+                 }
+                 else
+                 {
+                     alert("You are successfully logged in.");
+                     return true;
+                 }
+              }
+             new WOW().init();
+      </script>
+  

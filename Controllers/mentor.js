@@ -206,3 +206,15 @@ exports.findByName = async (req, res, next) => {
     });
   }
 };
+
+exports.gettraineeDoubts = async (req, res, next) => {
+  
+  res.render('doubt');
+}
+
+exports.posttraineeDoubts = async (req , res , next) => {
+}
+
+exports.mentorDashboard = async(req,res)=>{
+  res.render('mentorDashboard');
+}

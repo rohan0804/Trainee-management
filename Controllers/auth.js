@@ -19,13 +19,16 @@ exports.getLogin = async (req, res, next) => {
 exports.postLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
+    if(!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) throw {type:"email",error:"Invalid Email"};
+    if(!password) throw {type:"password",error:"please enter your password"};
     const user = await Auth.findOne({ where: { email: email } });
     if (!user) {
-      throw new Error("invalid email");
+      throw {type:"email",error:"You are not Registered"};
     }
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword) {
-      throw new Error("incorrect password");
+      // throw new Error("incorrect password");
+      throw {type:"password",error:"Incorrect password"};
     }
     
     const role = await Role.findByPk(user.role_id);
@@ -35,9 +38,8 @@ exports.postLogin = async (req, res) => {
     res.cookie('refreshToken',refreshToken,{httpOnly:true});
     res.send('hello');
   } catch (error) {
-    res.status(400).json({
-      error:error.message
+    res.render('login',{
+      error:error
     })
-  }
-};
+ }};
 

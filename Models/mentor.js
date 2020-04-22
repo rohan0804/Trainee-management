@@ -13,7 +13,7 @@ const Mentor = sequelize.define("mentor", {
     allowNull: false
   },
   phoneNo: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false,
     unique: true
   },

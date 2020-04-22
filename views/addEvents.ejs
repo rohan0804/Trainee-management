@@ -1,5 +1,5 @@
 
-    <form action="/add/event" method="POST">
+    <form onsubmit="return postEvent()">
 
         <input class="form-control"  id ="heading" type="text" name="heading" placeholder="enter event heading">
         
@@ -10,5 +10,23 @@
 
     <script>
         var socket = io();
+        function postEvent(){
+            let http = new XMLHttpRequest();
+            let url = '/admin/add/event';
+            let heading  = document.getElementById('heading').value;
+            let description = document.getElementById('description').value;
+            let date = document.getElementById('date').value;
+            let params = `heading=${heading}&description=${description}&date=${date}`;
+            http.open('POST',url,true);
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    alert("event Created");
+                }
+            }
+            http.send(params);
+            return true;
+        }
+       
     
     </script>

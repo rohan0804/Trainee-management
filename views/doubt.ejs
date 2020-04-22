@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="form-group">
+        <form id='message-form'  method="POST" action="/doubts" >
+            <input name='message' id="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
+    </div>
+    <button type="submit" id="btn" name="submitbtn" class="btn btn-primary">
+        Send
+    </button>
+    </form>
+    <ul id="messages"></ul>
+</div>
+<script> 
+    var socket = io();
+    socket.on('getTraineeDoubt',function(data){
+    console.log(data);
+});
+</script>
+
+
+
