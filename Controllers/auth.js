@@ -34,9 +34,9 @@ exports.postLogin = async (req, res) => {
     const role = await Role.findByPk(user.role_id);
     const refreshToken = jwt.sign({role_id:role.id,auth_id:user.id},config.get('refreshTokenSecret'),{expiresIn:"7d"});
     const accessToken = jwt.sign({role_id:role.id,auth_id:user.id},config.get('jwtSecret'),{expiresIn:30*60});
-    res.cookie('Token',accessToken,{httpOnly:true});
-    res.cookie('refreshToken',refreshToken,{httpOnly:true});
-    res.send('hello');
+    res.cookie('Token',accessToken,{maxAge:30*60*1000,httpOnly:true});
+    res.cookie('refreshToken',refreshToken,{maxAge:7*24*60*60*1000,httpOnly:true});
+    res.redirect(`/${role}/dashbaord`);
   } catch (error) {
     res.render('login',{
       error:error
