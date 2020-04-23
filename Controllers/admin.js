@@ -1,13 +1,18 @@
+const path = require('path');
+var csvParser = require('csv-parser');
+var fs = require('fs');
+const Record = require('../Models/csv');
 const Role = require("../Models/role");
 const Department = require("../Models/department");
 const Mentor = require("../Models/mentor");
 const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
+const Sequelize = require('sequelize');
 const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
 const Event = require('../Models/event');
-
+message = '';
 
 /**
  * @method : postAddRole
@@ -324,6 +329,10 @@ exports.postAddMentor = async (req, res) => {
    */
 
   exports.putAddMentor=async (req,res,next)=>{try{
+    if(!req.body){
+      res.status(403).send('Not found any information');
+    }
+    else{
     const updateMentor=await Mentor.update(
         {name:req.body.name,
         email:req.body.email,
@@ -342,7 +351,7 @@ exports.postAddMentor = async (req, res) => {
     )
     console.log(updateMentor);
     res.status(200).json(updateMentor);
-}catch(error){
+}}catch(error){
     res.status(400).json('Error');
 }
 };
@@ -356,11 +365,15 @@ exports.postAddMentor = async (req, res) => {
    * @param : [params]
    */
 exports.deleteMentor=async (req,res,next)=>{try{
+  if(!req.params.id){
+    res.status(403).send('id not found');
+  }
+  else{
     const mentor=await Mentor.findOne({where:{id:req.params.id}});
     const mentoremail=await mentor.dataValues.auth_id;
     const deletementor=await Mentor.destroy({where:{id:req.params.id}});
     const deletementorauth=await Auth.destroy({where:{id:mentoremail}});
-    res.status(200).json(deletementor);
+    res.status(200).json(deletementor);}
 }catch(Error){
     res.status(400).json('Error');
 }
@@ -379,12 +392,16 @@ exports.getAddannouncement=async (req,res,next)=>{
    */
 exports.postAddannouncement = async (req, res,next) => {
   try {
-    const {heading,description} = req.body;
+    if(!req.body){
+      res.status(403).send('NOT Filled');
+    }
+    else{
+      const {heading,description} = req.body;
     const announcementDetails = await Announcement.create({
       announcementTitle:heading,
       announcementDescription:description
     });
-    res.status(200).json({status:'Announcement Created!'});
+    res.status(200).json({status:'Announcement Created!'});}
   } catch (error) {
     res.status(400).json({error:error.message});
   }
@@ -452,6 +469,47 @@ exports.postAddEvents = async(req,res)=>{
   
 };
 
+exports.getRecord =async (req,res)=>{
+  res.render('index',message);
+};
+
+exports.postRecord =async (req,res)=>{
+  try{
+    if(path.extname(req.file.originalname)!=='.csv'){
+      message='Only csv files allowed!';
+      res.render('index',{message:message,status:'Not Valid'});
+      res.status(403).json('Wrong File Type');
+    }else if(!req.file){
+      console.log('No file received');
+      message='Error! in csv upload.';
+      res.render('index',{message:message,status:'Not received'});
+      res.status(404).json('CSV Not Found');
+    }else{
+      const csvfile =req.file.filename;
+      const filepath =path.join(__dirname,'../uploads/'+csvfile);
+      const record = await fs.createReadStream(filepath)
+      .pipe(csvParser())
+      .on('data',(row)=>{
+        var results={
+          id:row['id'],
+          name:row['name'],
+          description:row['description']
+        };
+        Record.create(results);
+      })
+      .on('end',()=>{
+        //end
+      });
+      message='Successfully! uploaded';
+      res.render('index',{message:message,status:'success'});
+      res.status(200).json('CSV uploaded');
+    }
+  }catch(err){
+    res.status(400).json({message:err.message});
+  }
+};
+
+
 exports.adminDashboard = async(req,res)=>{
   const events = await Event.findAll();
   const announcements=await Announcement.findAll();
@@ -468,3 +526,56 @@ exports.adminDashboard = async(req,res)=>{
   });
 };
 
+
+exports.listofTrainees = async (req,res,next)=>{
+  try{
+    let limit =9;
+    let offset =0;
+    let page = req.params.page;
+    const trainees = await Trainee.findAndCountAll({});
+    console.log(trainees.count);
+    let pages = Math.ceil(trainees.count/limit);
+    offset = limit*(page-1);
+    const traineeRecord = await Trainee.findAll({
+      attributes:['id','name','department_id','mentor_id'],
+      limit:limit,
+      offset:offset,
+      $sort : { id : 0 }
+    });
+    res.status(200).json({
+      status:true,
+      'result':traineeRecord,
+      'count':trainees.count,
+      'pages':pages
+    });
+  }catch(error){
+    res.status(400).json({
+      status:false,
+      message:'No data find',
+      error
+    });
+  }
+};
+
+exports.findByName = async (req,res,next)=>{
+  try{
+    const name =await req.params.name;
+    const trainee = await Trainee.findAll({
+      where:{
+        name:{
+          [Sequelize.Op.like]:`${name}%`
+        },
+      }
+    });
+    res.status(200).json({
+      status:true,
+      trainee
+    });
+  }catch(error){
+    res.status(400).json({
+      status:false,
+      message:'not find',
+      error
+    });
+  }
+};

@@ -11,6 +11,7 @@ var http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
 app.set("view engine", "ejs");
+app.engine('html', require('ejs').renderFile);
 app.set("views", "views");
 app.use(expressLayouts);
 
@@ -37,6 +38,7 @@ const Category = require("./Models/category");
 const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
+const Record = require('./Models/csv');
 
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
@@ -52,6 +54,7 @@ Category.hasMany(Timelog, { foreignKey: "category_id" });
 subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
 
 sequelize
+  // .sync({alter:true})
   .sync()
   .then(result => {
     // console.log(result);
