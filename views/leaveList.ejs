@@ -14,7 +14,8 @@
             <th>Start_date</th>
             <th>End_date</th>
             <th>Subject</th>
-            <th>Reason</th>
+          
+            
          
             
         </tr>
@@ -23,13 +24,14 @@
       
         <% leaveRecords.forEach(function(leaveRecord) { %>
             <tr>  
-                <td><%= leaveRecord.start_date %></td>  
-                <td><%= leaveRecord.end_date %></td>
+                <td><%= moment(leaveRecord.start_date).format( 'MMM-DD-YYYY') %></td>  
+                <td><%= moment(leaveRecord.end_date).format( 'MMM-DD-YYYY') %></td>
                 <td><%= leaveRecord.subject %></td>  
-                <td><%= leaveRecord.reason %></td>
+               
+                
             </tr>                                   
          <% }) %>
-
++
         
         </tbody>
         </table>

@@ -9,7 +9,7 @@ const {
 } = require("../Controllers/leave");
 
 router.get('/', (req, res) => {
-  res.render('leave')
+  res.render('leave', { errors: {}})
   
 })
 
@@ -21,25 +21,47 @@ router.post(
       .not()
       .isEmpty()
       .withMessage("Subject is required")
-      .isLength({ min: 3 }),
+      .isLength({ min: 3 })
+      .withMessage("Subject length should be required"),
     check("reason")
       .not()
       .isEmpty()
       .withMessage("Leave reason is required")
-      .isLength({ min: 10 }),
+      .isLength({ min: 10 })
+      .withMessage("Reason length should be required")
   ],
   (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(422).json({ errors: errors.array() });
+    const result = validationResult(req);
+    var errors = {};
+    
+    
+    
+    
+    
+    for (let error of result.array()) {
+
+      if (!errors.hasOwnProperty(error.param)) {
+        errors[error.param] = error.msg;
+      }
+      
     }
-    postLeave(req.body)
-      .then((data) => {
-        res.render('leave');
+    console.log(errors)
+    if (!result.isEmpty()) {
+      res.render('leave', {
+        errors: errors
       })
-      .catch((err) => {
-        res.status(err.status).json(err.data);
-      });
+    }
+    else {
+      
+
+      postLeave(req.body)
+        .then((data) => {
+          res.render('leave');
+        })
+        .catch((err) => {
+          res.status(err.status).json(err.data);
+        });
+    }
   }
 );
 

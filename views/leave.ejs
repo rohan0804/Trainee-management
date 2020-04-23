@@ -1,7 +1,10 @@
 <html>
     <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+       
+        
 <style>
+
     form{
         padding: 20px;
     }
@@ -19,41 +22,53 @@
             
             <form method="POST" action="/leave/add">
                 <h1>Leave Portal</h1>
-                <div class="form-group">
-                <label>Select Date:</label>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                          <input type="radio"  name="days">Single Day
-                        </label>
-                        <label class="form-check-label">
-                            <input type="radio"  name="days">Multiple Days
-                          </label>
-                        </div></div>
+               
+                
             
             <div class="row">
                 <div class="form-group col-sm-6">
                     <label for="Start_date">Start_date:</label>
-                    <input type="date" class="form-control" id="start_date" name="start_date">
-                </div>
+                    
+                    <div class='input-group date' id='datetimepicker'>
+                        <input type='text' class="form-control" name="start_date" id="start_name" />
+                        <span class="input-group-addon">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                      </div>
+                            
+                    </div>  
                 <div class="form-group col-sm-6">
                     <label for="end_date">End_date:</label>
-                    <input type="date" class="form-control" id="end_date" name="end_date">
+                   
+                    <div class='input-group date' id='datetimepicker2'>
+                        <input type='text' class="form-control" name="end_date" id="end_date" />
+                        <span class="input-group-addon">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                      </div>
                 </div>
             </div>
                 <div class="form-group">
                     <label for="subject">Subject:</label>
                     <input type="text" class="form-control" name="subject" id="subject">
+                    <span><% if(errors.hasOwnProperty('subject')){%>
+                        <p class="alert text-danger"><%= errors.subject %></p>
+                    <%}%></span>
                 </div>
                 <div class="form-group">
                     <label for="reason">Reason:</label>
                    
                     <textarea class="form-control" rows="4" id="reason"  name="reason"></textarea>
                 </div>
+                <span><% if(errors.hasOwnProperty('reason')){%>
+                    <p class="alert text-danger"><%= errors.reason %></p>
+                <%}%></span>
                 <button type="submit" name="submitbtn" class="btn btn-info">Apply</button>
             </form>
         </div>
-    
+       
         
+    
         
     </body>
 </html>

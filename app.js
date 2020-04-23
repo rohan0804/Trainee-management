@@ -17,6 +17,8 @@ app.use(expressLayouts);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//app.use(express.static('public'));
+
 app.use("/", authRouter);
 app.use("/", adminRouter);
 app.use("/timelog", timelogRoute);

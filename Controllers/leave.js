@@ -4,6 +4,7 @@ const Mentor = require("../Models/mentor");
 const { Op } = require("sequelize");
 const transporter = require("../utils/mailConfigration");
 const config = require("../utils/mailConf");
+const moment=require('moment')
 
 /**
  * @method : postLeave
@@ -143,8 +144,9 @@ exports.getLeaveRecords = async (req, res) => {
       });
     }
     const leaveRecords = await Leave.findAll({ where: { trainee_id: id } });
+    
     if (leaveRecords) {
-      res.render('leaveList', {leaveRecords});   
+      res.render('leaveList', {leaveRecords,moment: moment});   
     }
     else {
        res.status(400).json({
