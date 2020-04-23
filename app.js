@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
-const path = require('path');
+var http = require('http').createServer(app);
+var io = require('./socket').init(http);
 const sequelize = require("./utils/database");
 const bodyParser = require("body-parser");
 const authRouter = require("./Routes/auth");
@@ -11,8 +12,6 @@ const timelogRoute = require("./Routes/timelog");
 const leaveRoute = require("./Routes/leave");
 const expressLayouts = require("express-ejs-layouts");
 const {auth,roleBasedControl} = require('./middleware/auth');
-var http = require('http').createServer(app);
-const io = require('./socket').init(http);
 const cookieParser = require('cookie-parser');
 
 
