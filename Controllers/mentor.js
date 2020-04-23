@@ -7,9 +7,10 @@ const Performance = require("../Models/performance");
 const Sub_category = require("../Models/sub_category");
 const Category = require("../Models/category");
 const Auth = require("../Models/auth");
+const Announcement = require("../Models/announcement");
+const Event = require("../Models/event");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
-
 /**
  * @author : Rohan
  * @method : postaddtest
@@ -70,19 +71,11 @@ exports.postcheckperformance = async (req, res, next) => {
     });
     //calculating the percentage
     percentage = ((scoredmarks * 100) / totalmarks).toFixed(2);
-    if (percentage >= 97 && percentage <= 100) grade = "A+";
-    else if (percentage >= 93 && percentage <= 96) grade = "A";
-    else if (percentage >= 90 && percentage <= 92) grade = "A-";
-    else if (percentage >= 87 && percentage <= 89) grade = "B+";
-    else if (percentage >= 83 && percentage <= 86) grade = "B";
-    else if (percentage >= 80 && percentage <= 82) grade = "B-";
-    else if (percentage >= 77 && percentage <= 79) grade = "C+";
-    else if (percentage >= 73 && percentage <= 76) grade = "C";
-    else if (percentage >= 70 && percentage <= 72) grade = "C-";
-    else if (percentage >= 67 && percentage <= 69) grade = "D+";
-    else if (percentage >= 63 && percentage <= 66) grade = "D";
-    else if (percentage >= 60 && percentage <= 62) grade = "D-";
-    else if (percentage >= 0 && percentage <= 59) grade = "F";
+    if (percentage >= 90 && percentage <= 100) grade = "A";
+    else if (percentage >= 80 && percentage <= 89) grade = "B";
+    else if (percentage >= 60 && percentage <= 79) grade = "C";
+    else if (percentage >= 33 && percentage <= 59) grade = "D";
+    else if (percentage < 33) grade = "F";
     res.status(200).json({
       status: true,
       statusCode: res.statusCode,
@@ -371,7 +364,6 @@ exports.postAddDeprtment = async (req, res, next) => {
       });
     }
     const department = await Department.create({
-      // id: 6,
       name: name,
       syllabus: syllabussurl,
       department_head: head,
@@ -386,6 +378,81 @@ exports.postAddDeprtment = async (req, res, next) => {
       status: false,
       statusCode: res.statusCode,
       message: "could not add a department",
+      error,
+    });
+  }
+};
+/**
+ * @method : getDashboard
+ * @author : Rohan
+ * @description : To render the mentor's dashboard
+ * @return :
+ * @param :[]
+ **/
+exports.getDashboard = async (req, res, next) => {
+  try {
+    const traineeNames = await Trainee.findAll({
+      raw: true,
+      attributes: ["id", "name"],
+      where: { mentor_id: 1 },
+    });
+    // console.log(traineeNames);
+    const announcements = await Announcement.findAll({
+      raw: true,
+      order: [["id", "DESC"]],
+      attributes: ["announcementTitle", "announcementDescription", "createdAt"],
+    });
+    // console.log(announcements);
+    const events = await Event.findAll({
+      raw: true,
+      attributes: ["heading", "date"],
+    });
+    // console.log(events);
+    res.render("mentor-dashboard", {
+      traineeNames,
+      announcements,
+      events,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      error,
+    });
+  }
+};
+/**
+ * @method : getAddTest
+ * @author : Rohan
+ * @description : To render the test view to mentor for adding a test
+ * @return :
+ * @param :[]
+ **/
+exports.getAddTest = async (req, res, next) => {
+  res.render("test");
+};
+/**
+ * @method : getPerformance
+ * @author : Rohan
+ * @description : To render the addperformance view to mentor for adding a
+ * performance of a particular trainee
+ * @return :
+ * @param :[]
+ **/
+exports.getPerformance = async (req, res, next) => {
+  try {
+    console.log(req.params.mentorId);
+    const mentorId = req.params.mentorId;
+    const trainees = await Trainee.findAll({ where: { mentor_id: mentorId } });
+    const tests = await Test.findAll({});
+    res.render("addperformance", {
+      trainees,
+      tests,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
       error,
     });
   }

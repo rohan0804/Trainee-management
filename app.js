@@ -33,9 +33,13 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
 app.set("view engine", "ejs");
 app.set("views", "views");
+
+app.use(express.static("public"));
 app.use(expressLayouts);
+
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -64,6 +68,8 @@ const Category = require("./Models/category");
 const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
+const Announcement = require("./Models/announcement");
+const Event = require("./Models/event");
 
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });

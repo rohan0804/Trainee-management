@@ -8,6 +8,8 @@ const mentorcontroller = require("../Controllers/mentor");
  * @param :[]
  */
 router.get("/getAllTest", mentorcontroller.getAllTests);
+router.get("/getAddTest", mentorcontroller.getAddTest);
+router.get("/addPerformance/:mentorId", mentorcontroller.getPerformance);
 router.post("/addTest", mentorcontroller.postAddTest);
 router.post("/calculatePerformance", mentorcontroller.postcheckperformance);
 router.post("/addPerformance", mentorcontroller.postAddPerformance);
@@ -20,4 +22,5 @@ router.post(
 router.post("/checkTimelog", mentorcontroller.checkTimelog);
 router.get("/addDepartment", mentorcontroller.getAddDepartment);
 router.post("/addDepartment", mentorcontroller.postAddDeprtment);
+router.get("/dashboard", mentorcontroller.getDashboard);
 module.exports = router;
