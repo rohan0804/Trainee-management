@@ -1,16 +1,32 @@
 <div class="container">
     <div class="form-group">
-        <form id='message-form'  method="POST" action="/chat" >
+        <form id='message-form'  >
             <input name='message' id="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
     </div>
-    <button type="submit" id="btn" name="submitbtn" class="btn btn-primary">
+    <button  class="btn btn-primary" onclick="sendDoubt()">
         Send
     </button>
     </form>
-    <ul id="messages"></ul>
+    
 </div>
 <script> 
     var socket = io();
+    function sendDoubt(){
+        let req = new XMLHttpRequest();
+        let url ='/chat';
+        let message = document.getElementById('message').value;
+        let params = `message = ${message}`;
+        req.open('POST',url,true);
+        req.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+        req.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200) {
+                console.log("sent");
+                alert(" Your query sent ");
+            }
+        }
+        req.send(params);
+        return true;
+    }
 </script>
 
 

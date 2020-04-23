@@ -5,7 +5,6 @@ const Timelog = require('../Models/timelog');
 const traineeDoubt = require('../Models/traineedoubt');
 var io = require('../socket');
 
-
 /**
  * @method : gettraineeDoubts
  * @author : Taranjeet
@@ -25,10 +24,11 @@ exports.posttraineeDoubts = async (req, res, next) => {
     const doubt = await traineeDoubt.create({
       questions: message.message,
     });
-   
     const trainee = await Trainee.findOne({ where: { id: traineeId } });
-    io.getio().emit('get',"Hekko");
-    console.log(trainee.mentor_id);
+    io.getio().emit('getTraineeDoubt',{
+      doubt : doubt,
+      mentorId : trainee.mentor_id
+    });
     res.status(200).json({ status: 'Send Doubts!' });
   } catch (error) {
     res.status(400).json({ error: error.stack });

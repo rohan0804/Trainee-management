@@ -1,22 +1,28 @@
-<!-- <div class="container">
+<div class="container">
     <div class="form-group">
-         <form id='message-form'  method="POST" action="/doubts" > -->
-            <!-- <input name='message' id="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
+        <form id='message-form' method="POST" action="/doubts">
+            <label for="name" id="doubt"></label>
+            <input name='message' id="answer" type="text" placeholder="Message" autofocus autocomplete="off" />
     </div>
     <button type="submit" id="btn" name="submitbtn" class="btn btn-primary">
         Send
     </button>
     </form>
     <ul id="messages"></ul>
-</div> --> 
+</div>
 <script>
     var socket = io();
-    socket.on('news',function (data) {
+    socket.on('getTraineeDoubt', function (data) {
+        const button = document.createElement('button');
         console.log(data);
+        document.getElementById("doubt").innerHTML = data.doubt.questions;
+         const answer = document.getElementById("answer");
+         const btn = document.getElementById("btn");
+        btn.addEventListener('click', function () {
+         socket.emit('getTraineeDoubt',{
+             questions : data.doubt.questions,
+             answers : answer.value
+         })
     })
-    socket.on('get',function (data){
-        console.log("ygugughguygtu");
-        console.log(data);
-    });
+});
 </script>
-

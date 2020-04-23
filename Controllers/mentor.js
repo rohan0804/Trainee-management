@@ -4,6 +4,7 @@ const Department = require("../Models/department");
 const Test = require("../Models/test");
 const Performance = require("../Models/performance");
 const io = require('../socket');
+const traineeDoubt = require('../Models/traineedoubt');
 
 /**
  * @author : Rohan
@@ -172,5 +173,9 @@ exports.gettraineeDoubts = async (req, res, next) => {
 }
 
 exports.posttraineeDoubts = async (req , res , next) => {
- 
+  const message = req.body;
+  console.log(message.message);
+  const answer = traineeDoubt.create({
+    answers: message.message,
+}, { where: { questions: data.doubt.questions } });
 }
