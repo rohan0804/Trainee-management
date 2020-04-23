@@ -4,7 +4,12 @@ const Mentor = require("../Models/mentor");
 const Auth = require("../Models/auth");
 const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
+const Announcement=require('../Models/announcement');
 
+const io = require('../socket');
+const Event = require('../Models/event');
+const jwt = require('jsonwebtoken');
+const config = require('config');
 /**
  * @method : postAddRole
  * @author : Nishit Arora
@@ -12,6 +17,9 @@ const bcrypt = require("bcryptjs");
  * @return :
  * @param : [params]
  */
+
+
+
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -58,7 +66,7 @@ exports.postAddDepartment = async (req, res, next) => {
 
 exports.getTraineeSignup = async (req, res) => {
   const departments = await Department.findAll();
-  res.render("trainee-signup", {
+  res.render("signup.ejs", {
     data: departments
   });
 };
@@ -87,11 +95,12 @@ exports.postTraineeSignup = async (req, res) => {
       mentor_id
     } = req.body;
     const hashPassword = await bcrypt.hash(password, 12);
-    const role = await Role.findOne({ where: { name: "Trainee" } });
+    const role = await Role.findOne({ where: { name: "trainee" } });
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
       throw new Error("user already exists");
     }
+    
     const auth = await Auth.create({
       email: email,
       password: hashPassword,
@@ -109,16 +118,18 @@ exports.postTraineeSignup = async (req, res) => {
       auth_id: auth.id,
       linkedin_profile
     });
+    
     res.status(200).json({
       response_code: 200,
       status: "trainee created successfully",
-      result: trainee
+      result: auth,trainee,
+
     });
   } catch (error) {
     res.status(400).json({
       response_code: 400,
       status: "error occured",
-      error: error.message
+      error: error.stack
     });
   }
   console.log(req.body);
@@ -277,6 +288,7 @@ exports.getMentor = async (req, res, next) => {
  */
 exports.postAddMentor = async (req, res) => {
   try {
+    console.log(req.body);
     const { name, email, phoneNo, department_id, password } = req.body;
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
@@ -289,6 +301,7 @@ exports.postAddMentor = async (req, res) => {
       password: hashPassword,
       role_id: role.id
     });
+    
     const mentorDetails = await Mentor.create({
       name,
       phoneNo,
@@ -296,12 +309,14 @@ exports.postAddMentor = async (req, res) => {
       auth_id: auth.id,
       department_id
     });
+    
     res.status(200).json({
       response_code: 200,
       status: "Mentor created successfully",
       result: {
         auth,
-        mentorDetails
+        mentorDetails,
+        
       }
     });
   }
@@ -312,4 +327,164 @@ exports.postAddMentor = async (req, res) => {
     });
   }
 };
+/**
+   * @method : postAddMentor
+   * @author : Shyamal Sharma
+   * @description : Updating mentor information by HR
+   * @return : 
+   * @param : [params]
+   */
+
+  exports.putAddMentor=async (req,res,next)=>{try{
+    const updateMentor=await Mentor.update(
+        {name:req.body.name,
+        email:req.body.email,
+        phoneNo:req.body.phoneNo,
+        department_id:req.body.department_id},
+        {where:{id:req.params.id}}
+    );
+    const mentor=await Mentor.findOne({where:{id:req.params.id}});
+    const mentorAuth_id=await mentor.dataValues.auth_id;
+        const email=await req.body.email;
+        const password=await bcrypt.hash(req.body.password,12);
+    const updateAuth=await Auth.update({
+        email:email,
+        password:password
+    },{where:{id:mentorAuth_id}}
+    )
+    console.log(updateMentor);
+    res.status(200).json(updateMentor);
+}catch(error){
+    res.status(400).json('Error');
+}
+};
+
+
+/**
+   * @method : postAddMentor
+   * @author : Shyamal Sharma
+   * @description : Deleting mentor information by HR
+   * @return : 
+   * @param : [params]
+   */
+exports.deleteMentor=async (req,res,next)=>{try{
+    const mentor=await Mentor.findOne({where:{id:req.params.id}});
+    const mentoremail=await mentor.dataValues.auth_id;
+    const deletementor=await Mentor.destroy({where:{id:req.params.id}});
+    const deletementorauth=await Auth.destroy({where:{id:mentoremail}});
+    res.status(200).json(deletementor);
+}catch(Error){
+    res.status(400).json('Error');
+}
+};
+
+exports.getAddannouncement=async (req,res,next)=>{
+  res.render('announcement');
+};
+
+/**
+   * @method : postAddannouncement
+   * @author : Shyamal Sharma
+   * @description : Add announcement by HR
+   * @return : 
+   * @param : [params]
+   */
+exports.postAddannouncement = async (req, res,next) => {
+  try {
+    const {heading,description} = req.body;
+    const announcementDetails = await Announcement.create({
+      announcementTitle:heading,
+      announcementDescription:description
+    });
+    io.getio().emit('getAnnouncements',announcementDetails);
+    res.status(200).json({status:'Announcement Created!'});
+  } catch (error) {
+    res.status(400).json({error:error.message});
+  }
+};
+
+/**
+   * @method : putAddannouncement
+   * @author : Shyamal Sharma
+   * @description : update announcement by HR
+   * @return : 
+   * @param : [params]
+   */
+// exports.putAddannouncement=async (req,res,next)=>{
+//   try{
+//     const announcementEdit= await Announcement.update(
+//       {
+//         announcementTitle:req.body.Title,
+//         announcementDescription:req.body.Description
+//       },
+//       {where:{id:req.params.id}}
+//     );
+//     res.status(200).json({status:'Announcement Updated!'});
+//   }catch(error){
+//     res.status(400).json({status:error.message});
+//   }
+// };
+
+/**
+   * @method : deleteAddannouncement
+   * @author : Shyamal Sharma
+   * @description : delete announcement by HR
+   * @return : 
+   * @param : [params]
+   */
+exports.deleteAddannouncement=async (req,res)=>{
+  try{
+    const announcementDelete=await Announcement.destroy({where:{id:req.params.id}});
+    res.status(200).json({status:'Announcement Deleted'});
+  }catch(error){
+    res.status(400).json({status:error.message});
+  }
+}
+
+exports.getAddEvents = async(req,res)=>{
+  
+  res.render('addEvents');
+};
+
+exports.postAddEvents = async(req,res)=>{
+  try {
+    console.log("post addevents ajax request");
+    const {heading,description,date} = req.body;
+    const event = await Event.create({heading,description,date});
+    io.getio().emit('getEvent',event);
+    res.status(200).json({
+        response_code:200,
+        status:"event created successfully",
+        result:{
+          event
+        }
+      })
+  } catch (error) {
+      res.status(400).json({
+        response_code:400,
+        error:error.message
+      })
+  }
+  
+};
+
+exports.adminDashboard = async(req,res)=>{
+  const events = await Event.findAll();
+  const announcements=await Announcement.findAll();
+  const result = events.map(event=>{
+    return event.dataValues
+  });
+  const announcementresult = announcements.map(announcement=>{
+    return announcement.dataValues
+  });
+
+  res.render('traineeDashboard',{
+    events:result,
+    announcements:announcementresult
+  });
+};
+
+
+
+
 

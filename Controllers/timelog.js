@@ -2,6 +2,7 @@ const Trainee = require("../Models/trainee");
 const Category = require("../Models/category");
 const subCategory = require("../Models/sub_category");
 const Timelog = require("../Models/timelog");
+const Leave = require("../Models/leave");
 const { Op } = require("sequelize");
 /**
  * @method : postTimelog
@@ -49,6 +50,7 @@ exports.postTimelog = async data => {
         }
       };
     }
+
     // Time slot check on time
     const startTimeCheck = await Timelog.findOne({
       where: {

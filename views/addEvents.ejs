@@ -1,0 +1,32 @@
+
+    <form onsubmit="return postEvent()">
+
+        <input class="form-control"  id ="heading" type="text" name="heading" placeholder="enter event heading">
+        
+        <textarea class="form-control" id="description" name="description" placeholder="enter event description"></textarea>
+        <input class="form-control" id="date" type="date" name="date">
+        <button type="submit" class="btn btn-success submitEvent" value="submit">Send</button>
+    </form>
+
+    <script>
+        var socket = io();
+        function postEvent(){
+            let http = new XMLHttpRequest();
+            let url = '/admin/add/event';
+            let heading  = document.getElementById('heading').value;
+            let description = document.getElementById('description').value;
+            let date = document.getElementById('date').value;
+            let params = `heading=${heading}&description=${description}&date=${date}`;
+            http.open('POST',url,true);
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    alert("event Created");
+                }
+            }
+            http.send(params);
+            return true;
+        }
+       
+    
+    </script>

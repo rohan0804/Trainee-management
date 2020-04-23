@@ -18,17 +18,15 @@ exports.gettraineeDoubts = async (req, res, next) => {
 
 exports.posttraineeDoubts = async (req, res, next) => {
   try {
-    traineeId = 2;
+    traineeId = 6;
     const message = req.body;
     console.log(message.message);
     const doubt = await traineeDoubt.create({
       questions: message.message,
     });
     const trainee = await Trainee.findOne({ where: { id: traineeId } });
-    io.getio().emit('getTraineeDoubt',{
-      doubt : doubt,
-      mentorId : trainee.mentor_id
-    });
+    io.getio().emit('getTraineeDoubt', {doubt,mentor_id:trainee.mentor_id});
+    console.log(trainee.mentor_id);
     res.status(200).json({ status: 'Send Doubts!' });
   } catch (error) {
     res.status(400).json({ error: error.stack });
