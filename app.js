@@ -74,7 +74,7 @@ const Event = require("./Models/event");
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
 Auth.belongsTo(Role, { foreignKey: "role_id" });
-Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
+//Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 Department.hasMany(Mentor, { foreignKey: "department_id" });
 Test.hasMany(Performance, { foreignKey: "test_id" });
 Performance.belongsTo(Trainee, { foreignKey: "trainee_id" });
@@ -84,6 +84,7 @@ Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
 subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
+Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 sequelize
   .sync()
   .then((result) => {

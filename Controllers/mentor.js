@@ -8,9 +8,11 @@ const Sub_category = require("../Models/sub_category");
 const Category = require("../Models/category");
 const Auth = require("../Models/auth");
 const Announcement = require("../Models/announcement");
+const Leave = require("../Models/leave");
 const Event = require("../Models/event");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
+const moment=require('moment')
 /**
  * @author : Rohan
  * @method : postaddtest
@@ -454,6 +456,68 @@ exports.getPerformance = async (req, res, next) => {
       status: false,
       statusCode: res.statusCode,
       error,
+    });
+  }
+};
+
+/**
+ * @method : getLeaveRecords
+ * @author : Mehak Dhiman
+ * @description : To Retrive all data
+ * @return :
+ * @param :[params-trainee_id]
+ *
+ **/
+
+exports.getLeaveRecords = async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      res.status(400).json({
+        msg: "Parameter not found",
+      });
+    }
+    const mentorData = await Mentor.findOne({
+      where: { id: id },
+    });
+    if (!mentorData) {
+      res.status(400).json({
+        msg: "Record not Exist",
+      });
+    }
+
+    
+    const traineeData = await Trainee.findAll({
+      where: { mentor_id: id },
+    });
+    if (!traineeData) {
+      res.status(400).json({
+        msg: "Trainees records not Exist",
+      });
+    }
+
+    
+let traineeId = traineeData.map(function(trainee_id) {return trainee_id.id;});
+let traineename = traineeData.map(function(trainee_name) {return trainee_name.name;}); 
+
+    
+    const leaveRecords = await Leave.findAll({ where: { trainee_id: [traineeId] } });
+   
+    
+    if (leaveRecords) {
+    
+      
+       res.render('traineesLeaveList', {leaveRecords,traineename,moment: moment});   
+    }
+    else {
+       res.status(400).json({
+      msg: "Something went wrong",
+    });
+    }
+   
+  } catch (err) {
+    res.status(400).json({
+      msg: "Something Wrong!",
     });
   }
 };

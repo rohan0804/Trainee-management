@@ -1,5 +1,5 @@
 const { Sequelize } = require("sequelize");
-const sequelize = new Sequelize("zapbuildhrm", "root", "1234", {
+const sequelize = new Sequelize("zapbuildhrm", "root", "", {
   host: "localhost",
   dialect: "mysql",
 });
