@@ -24,4 +24,5 @@ router.post("/checkTimelog", mentorcontroller.checkTimelog);
 router.get("/addDepartment", mentorcontroller.getAddDepartment);
 router.post("/addDepartment", mentorcontroller.postAddDeprtment);
 router.get("/dashboard", mentorcontroller.getDashboard);
+router.get("/leaves/:id", mentorcontroller.getLeaveRecords);
 module.exports = router;

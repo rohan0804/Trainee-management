@@ -74,7 +74,7 @@ const Event = require("./Models/event");
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
 Auth.belongsTo(Role, { foreignKey: "role_id" });
-Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
+//Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 Department.hasMany(Mentor, { foreignKey: "department_id" });
 Test.hasMany(Performance, { foreignKey: "test_id" });
 Performance.belongsTo(Trainee, { foreignKey: "trainee_id" });
@@ -85,6 +85,7 @@ Category.hasMany(Timelog, { foreignKey: "category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
 subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
 Mentor.hasMany(Test, { foreignKey: "mentor_id" });
+Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 sequelize
   .sync()
   .then((result) => {
@@ -93,8 +94,7 @@ sequelize
   .catch((err) => {
     console.log(err);
   });
-
-let port = 4000;
-app.listen(4000, (req, res) => {
+let port = 3000;
+app.listen(3000, (req, res) => {
   console.log(`server is listening at port ${port}`);
 });
