@@ -21,13 +21,21 @@ const nodemailer = require("nodemailer");
 exports.postAddTest = async (req, res, next) => {
   try {
     console.log(req.body);
-    const { name, date, description, duration, totalmarks } = req.body;
+    const {
+      name,
+      date,
+      description,
+      duration,
+      totalmarks,
+      mentor_id,
+    } = req.body;
     const createdtest = await Test.create({
       name: name,
       date: date,
       test_description: description,
       duration: duration,
       totalmarks: totalmarks,
+      mentor_id: mentor_id,
     });
     res.status(201).json({
       status: true,
@@ -282,7 +290,7 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
  **/
 exports.checkTimelog = async (req, res, next) => {
   try {
-    const traineeId = req.body.id;
+    const traineeId = req.body.traineeId;
     let data = [];
     const timelogData = await Timelog.findAll({
       where: { trainee_id: traineeId },
@@ -444,10 +452,35 @@ exports.getPerformance = async (req, res, next) => {
     console.log(req.params.mentorId);
     const mentorId = req.params.mentorId;
     const trainees = await Trainee.findAll({ where: { mentor_id: mentorId } });
-    const tests = await Test.findAll({});
+    const tests = await Test.findAll({ where: { mentor_id: mentorId } });
     res.render("addperformance", {
       trainees,
       tests,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      error,
+    });
+  }
+};
+/**
+ * @method : getTraineeTimelog
+ * @author : Rohan
+ * @description : To render the addperformance view to mentor for adding a
+ * performance of a particular trainee
+ * @return :
+ * @param :[]
+ **/
+exports.getTraineeTimelog = async (req, res, next) => {
+  try {
+    console.log(req.params.mentorId);
+    const mentorId = req.params.mentorId;
+    const trainees = await Trainee.findAll({ where: { mentor_id: mentorId } });
+    // console.log(trainees);
+    res.render("trainee-timelog", {
+      trainees,
     });
   } catch (error) {
     res.status(400).json({

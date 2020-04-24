@@ -84,6 +84,7 @@ Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
 subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
+Mentor.hasMany(Test, { foreignKey: "mentor_id" });
 sequelize
   .sync()
   .then((result) => {

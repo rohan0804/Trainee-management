@@ -16,6 +16,10 @@ const Announcement = sequelize.define("announcement", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  createdAt: {
+    type: Sequelize.DATEONLY,
+    allowNull: false,
+  },
 });
 
 module.exports = Announcement;

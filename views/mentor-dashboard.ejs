@@ -3,25 +3,6 @@
 </div>
 <div class="page-content">
   <div id="main">
-    <header class="nav-container">
-      <div class="container-fluid">
-        <div class="header">
-          <span onclick="openNav()" id="collapse" class="bars-btn"
-            ><i class="fa fa-bars icon"></i
-          ></span>
-          <a class="brand" href="javascript:void(0);" title="Website name"
-            >Zapbuild HRM</a
-          >
-        </div>
-        <ul class="links">
-          <li>
-            <a href="javascript:void(0);" title="logout" class="white"
-              ><span class="glyphicon glyphicon-log-out"></span> Logout</a
-            >
-          </li>
-        </ul>
-      </div>
-    </header>
     <div class="main-panel">
       <div class="wrapper">
         <h1 class="page-title">Dashboard</h1>
@@ -85,48 +66,26 @@
                   <i class="fa fa-search" onclick="searchBar()"></i>
                 </form>
               </div>
-              <div class="card-content">
+              <div class="card-content" id="card">
                 <ul class="trainees-name" id="myList">
-                  <% for (var i =0; i < traineeNames.length; i++ ) { %>
-                  <li>
+                  <% if (traineeNames) { %> <% for (var i =0; i <
+                  traineeNames.length; i++ ) { %>
+                  <li style="font-size: larger;">
                     <a href="javascript:void(0);" title="Lazaro Roan"
                       ><%=traineeNames[i].name%></a
                     >
                   </li>
+                  <% } %> <%} else { %>
+                  <h2>No Trainee Registered Now!</h2>
                   <% } %>
-                  <!-- dummy li -->
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan">taran</a>
-                  </li>
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan">komal</a>
-                  </li>
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan">nishit</a>
-                  </li>
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan"
-                      >shyamal sharma</a
-                    >
-                  </li>
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan"
-                      >ricky shrivastav</a
-                    >
-                  </li>
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan">vikas</a>
-                  </li>
-                  <li>
-                    <a href="javascript:void(0);" title="Lazaro Roan">xyz</a>
-                  </li>
                 </ul>
                 <div id="loadMore">
                   <img
+                    style="position: absolute; bottom: 15px;"
                     src="/images/more.png"
                     width="15"
                     height="15"
-                    title="load more"
+                    title="show more"
                     alt="Double arrow"
                   />
                 </div>
@@ -139,15 +98,21 @@
                 <h2>Announcements</h2>
               </div>
               <div class="card-content">
-                <% for (var i =0; i < announcements.length; i++ ) { %>
+                <% if (announcements) { %> <% for (var i =0; i <
+                announcements.length; i++ ) { %>
                 <section class="announcement">
                   <h3 class="announcement-heading">
                     <%=announcements[i].announcementTitle%>
+                    <span class="announcement-data"
+                      ><%=announcements[i].createdAt%></span
+                    >
                   </h3>
                   <p style="font-size: 15px;" class="announcement-data">
                     <%=announcements[i].announcementDescription%>
                   </p>
                 </section>
+                <% } %> <%} else { %>
+                <h2>No Announcement Available Now!</h2>
                 <% } %>
               </div>
             </div>
@@ -158,13 +123,16 @@
                 <h2>Upcoming events</h2>
               </div>
               <div class="card-content">
-                <% for (var i =0; i < events.length; i++ ) { %>
+                <% if (events) { %> <% for (var i =0; i < events.length; i++ ) {
+                %>
                 <section class="event">
                   <h3 class="event-info"><%=events[i].heading%></h3>
                   <p style="font-size: 15px;" class="event-date">
                     <%=events[i].date%>
                   </p>
                 </section>
+                <% } %> <%} else { %>
+                <h2>Not Events Available Now!</h2>
                 <% } %>
               </div>
             </div>
@@ -198,7 +166,7 @@
         <a href="javascript:void(0)" title="Resolve Queries">Resolve Queries</a>
       </li>
       <li>
-        <a href="javascript:void(0)" title="Trainees Timelog"
+        <a href="/mentor/traineeTimelog/1" title="Trainees Timelog"
           >Trainees Timelog</a
         >
       </li>
@@ -217,42 +185,10 @@
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dashboard-script.js"></script>
 <script>
-  function openNav() {
-    if ($(window).width() <= 1200) {
-      document.getElementById("mysidenav").style.width = "230px";
-      document.getElementById("main").style.marginLeft = "0";
-      document.getElementById("collapse").style.display = "none";
-    } else {
-      document.getElementById("mysidenav").style.width = "230px";
-      document.getElementById("main").style.marginLeft = "230px";
-      document.getElementById("collapse").style.display = "none";
-    }
-  }
-  function closeNav() {
-    document.getElementById("mysidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft = "0";
-    document.getElementById("collapse").style.display = "inline-block";
-  }
-  function searchBar() {
-    var element = document.getElementById("searchicon");
-    var cname = element.className;
-    if (cname == "disp-none") {
-      element.classList.remove("disp-none");
-      element.classList.add("disp-block");
-    }
-    if (cname == "disp-block") {
-      element.classList.remove("disp-block");
-      element.classList.add("disp-none");
-    }
-  }
-  $(window).on("load", function () {
-    $(".loader-wrapper").fadeOut("slow");
-  });
-
-  // jquery for loadmore trainees
   $(document).ready(function () {
-    $("#myList li").css("font-size", "larger");
+    // $("#myList li").css("font-size", "larger");
     let size_li = $("#myList li").size();
     let x = 6;
     $("#myList li:lt(" + x + ")").show();
@@ -260,5 +196,8 @@
       x = x + 3 <= size_li ? x + 3 : size_li;
       $("#myList li:lt(" + x + ")").show();
     });
+  });
+  $(window).on("load", function () {
+    $(".loader-wrapper").fadeOut("slow");
   });
 </script>

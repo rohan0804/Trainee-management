@@ -10,6 +10,7 @@ const mentorcontroller = require("../Controllers/mentor");
 router.get("/getAllTest", mentorcontroller.getAllTests);
 router.get("/getAddTest", mentorcontroller.getAddTest);
 router.get("/addPerformance/:mentorId", mentorcontroller.getPerformance);
+router.get("/traineeTimelog/:mentorId", mentorcontroller.getTraineeTimelog);
 router.post("/addTest", mentorcontroller.postAddTest);
 router.post("/calculatePerformance", mentorcontroller.postcheckperformance);
 router.post("/addPerformance", mentorcontroller.postAddPerformance);
