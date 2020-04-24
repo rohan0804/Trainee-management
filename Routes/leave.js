@@ -51,7 +51,7 @@ router.post(
       
     postLeave(req.body)
         .then((data) => {
-          res.render('leave');
+          res.render('leave',{errors: {}});
         })
         .catch((err) => {
           res.status(err.status).json(err.data);
