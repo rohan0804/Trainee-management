@@ -513,15 +513,21 @@ exports.postRecord =async (req,res)=>{
 exports.adminDashboard = async(req,res)=>{
   const events = await Event.findAll();
   const announcements=await Announcement.findAll();
+  const departments= await Department.findAll();
   const result = events.map(event=>{
     return event.dataValues
   });
   const announcementresult = announcements.map(announcement=>{
     return announcement.dataValues
   });
+  const department = departments.map(result=>{
+    return result.dataValues;
+  });
+  console.log(department);
 
-  res.render('traineeDashboard',{
+  res.render('admin-dashboard',{
     events:result,
+    departmentt:department,
     announcements:announcementresult
   });
 };

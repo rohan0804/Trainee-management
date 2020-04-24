@@ -14,7 +14,7 @@ app.set("view engine", "ejs");
 app.engine('html', require('ejs').renderFile);
 app.set("views", "views");
 app.use(expressLayouts);
-
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 

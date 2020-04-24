@@ -1,20 +1,25 @@
-const Sequelize=require('sequelize');
+const {Sequelize,DataTypes}=require('sequelize');
 const sequelize=require('../utils/database');
 
 const Announcement=sequelize.define('announcement',{
     id:{
-        type:Sequelize.INTEGER,
+        type:DataTypes.INTEGER,
         autoIncrement:true,
         allowNull:false,
         primaryKey:true
     },
     announcementTitle:{
-        type:Sequelize.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     announcementDescription:{
-        type:Sequelize.STRING,
+        type:DataTypes.STRING,
         allowNull:false
+    },
+    announcementDate:{
+        type:DataTypes.DATE,
+        allowNull:false,
+        defaultValue:DataTypes.NOW
     }
 });
 
