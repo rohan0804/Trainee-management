@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
-const traineeRouter = require("./Routes/trainee")
+const traineeRouter = require("./Routes/trainee");
 const timelogRoute = require("./Routes/timelog");
 const leaveRoute = require("./Routes/leave");
 const expressLayouts = require("express-ejs-layouts");
@@ -15,15 +15,13 @@ const {auth,roleBasedControl} = require('./middleware/auth');
 const cookieParser = require('cookie-parser');
 
 
-app.use(cookieParser());
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
-app.use(express.static('public'));
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static('Routes'));
-app.use("/", authRouter);
+app.use(express.static('public'));
+app.use(authRouter);
 app.use(auth);
 app.use(roleBasedControl);
 
@@ -47,6 +45,7 @@ const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
 const traineeDoubt = require("./Models/traineedoubt");
+const Notification = require('./Models/notifications');
 
 Trainee.hasMany(traineeDoubt, { foreignKey: "trainee_id" });
 Department.hasMany(Trainee, { foreignKey: "department_id" });

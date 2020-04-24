@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-      <title>Admin dashboard</title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-      <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-      <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-      <link rel="stylesheet" type="text/css" href="css/style.css">
-   </head>
-   <body>
-      <div class="loader-wrapper">
+<div class="loader-wrapper">
          <div class="preloader" id="loader"></div>
       </div>
       <div class="page-content">
@@ -36,10 +25,10 @@
                            </div>
                            <div class="card-content">
                               <ul class="notification">
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Test is on monday.</li>
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Collect your nametags.</li>
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.</li>
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.</li>
+                                 <% notifications.forEach(notification=>{ %>
+                                    <li><span class="glyphicon glyphicon-hand-right "></span><%= notification.message%></li>
+                                 <% }) %>
+
                               </ul>
                            </div>
                         </div>
@@ -70,7 +59,7 @@
                                  <li><a href="javascript:void(0);" title="Admin department">Admin department</a></li>
                                  <li><a href="javascript:void(0);" title="IT services">IT services</a></li>
                               </ul>
-                                 <div id="loadMore"><img src="images/more.png" width="15" height="15" title="load more" alt="Double arrow"></div> 
+                                 <div id="loadMore"><img src="/images/more.png" width="15" height="15" title="load more" alt="Double arrow"></div> 
                            </div>
                         </div>
                      </div>
@@ -79,25 +68,15 @@
                            <div class="heading green">
                               <h2>Announcements</h2>
                            </div>
-                           <div class="card-content">
-                              <section class="announcement">
-                                 <h3 class="announcement-heading">Seminar on Cyber Security.</h3>
-                                 <p class="announcement-data">
-                                    Candidates should showcase their understanding for how their role fits into the bigger picture and helps the company grow," Halpin said. 
-                                 </p>
-                              </section>
-                              <section class="announcement">
-                                 <h3 class="announcement-heading">Today's boostup session is cancel.</h3>
-                                 <p class="announcement-data">
-                                    Candidates should showcase their understanding for how their role fits into the bigger picture and helps the company grow," Halpin said. 
-                                 </p>
-                              </section>
-                              <section class="announcement">
-                                 <h3 class="announcement-heading">Seminar on Cyber Security.</h3>
-                                 <p class="announcement-data">
-                                    Candidates should showcase their understanding for how their role fits into the bigger picture and helps the company grow," Halpin said. 
-                                 </p>
-                              </section>
+                           <div class="card-content announcement-card">
+                              <% announcements.forEach(announcement=>{ %>
+                                 <section class="announcement">
+                                    <h3 class="announcement-heading"><%=announcement.announcementTitle%></h3>
+                                    <p class="announcement-data">
+                                       <%=announcement.announcementDescription%>
+                                    </p>
+                                 </section>
+                              <% })%>
                            </div>
                         </div>
                      </div>
@@ -106,19 +85,15 @@
                            <div class="heading purple">
                               <h2>Upcoming events</h2>
                            </div>
-                           <div class="card-content">
-                              <section class="event">
-                                 <h3 class="event-info">Celebrating Valentines day</h3>
-                                 <p class="event-date"> Feb-14-2020</p>
-                              </section>
-                              <section class="event">
-                                 <h3 class="event-info">Celebrating  Women's day</h3>
-                                 <p class="event-date"> March-08-2020</p>
-                              </section>
-                              <section class="event">
-                                 <h3 class="event-info">Celebrating holi</h3>
-                                 <p class="event-date"> March-09-2020</p>
-                              </section>
+                           <div class="card-content event-card">
+                              <% events.forEach(event=>{ %>
+                                 <section class="event">
+                                    <h3 class="event-info">event.heading</h3>
+                                    <p class="event-date"> event.date</p>
+                                 </section>
+                             <% }) %>
+                              
+                              
                            </div>
                         </div>
                      </div>
@@ -130,7 +105,7 @@
             <div class="overlay"></div>
             <a href="javascript:void(0)" title="Click to close" class="closebtn" onclick="closeNav()">&times;</a>
             <div class="profile-photo">
-               <img src="images/profile.jpeg" width="216" height="233" alt="user's profile pic">
+               <img src="/images/profile.jpeg" width="216" height="233" alt="user's profile pic">
             </div>
             <ul class="items">
                <li><a href="javascript:void(0)" title="Add Announcements">Add Announcements</a></li>
@@ -143,9 +118,9 @@
             </ul>
          </aside>
       </div>
-      <script src="js/jquery.min.js"></script>
-      <script src="js/bootstrap.min.js"></script>
-      <script src="js/jquery-1.12.4.js"></script>
+      <script src="/js/jquery.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <script src="/js/jquery-1.12.4.js"></script>
       <script>
          function openNav() {
             if($(window).width() <= 1200)
@@ -196,7 +171,56 @@
                  $('#myList li:lt('+x+')').show();
              });
          });
-         
+         var socket = io();
+         socket.on('notification',(data)=>{
+            let ulElement = document.querySelector('.notification');
+            let listElement = document.createElement('LI');
+            let spanElement = document.createElement('SPAN');
+            spanElement.classList.add('glyphicon');
+            spanElement.classList.add('glyphicon-hand-right');
+            let spanTextNode = document.createTextNode(data);
+            
+            listElement.appendChild(spanElement);
+            listElement.appendChild(spanTextNode);
+            ulElement.appendChild(listElement);
+         })
+
+         socket.on('event',(event)=>{
+            let divEventElement = document.querySelector('.event-card');
+            let sectionElement = document.createElement('SECTION');
+            sectionElement.classList.add('event');
+            let h3Element = document.createElement('H3');
+            h3Element.classList.add('event-info');
+            let h3TextNode = document.createTextNode(event.heading);
+            h3Element.appendChild(h3TextNode);
+            let pElement = document.createElement("P");
+            pElement.classList.add('event-date');
+            let pTextnode = document.createTextNode(event.date)
+            pElement.appendChild(pTextnode);
+            sectionElement.appendChild(h3Element);
+            sectionElement.appendChild(pElement);
+            divEventElement.appendChild(sectionElement);
+            
+         })
+
+         socket.on('announcement',data=>{
+            let divEventElement = document.querySelector('.announcement-card');
+            let sectionElement = document.createElement('SECTION');
+            sectionElement.classList.add('announcement');
+            let h3Element = document.createElement('H3');
+            h3Element.classList.add('announcement-heading');
+            let h3TextNode = document.createTextNode(data.announcementTitle);
+            h3Element.appendChild(h3TextNode);
+            let pElement = document.createElement("P");
+            pElement.classList.add('announcement-data');
+            let pTextnode = document.createTextNode(data.announcementDescription)
+            pElement.appendChild(pTextnode);
+            sectionElement.appendChild(h3Element);
+            sectionElement.appendChild(pElement);
+            divEventElement.appendChild(sectionElement);
+         })
+                             
       </script>
-   </body>
-</html>
+      
+
+ 

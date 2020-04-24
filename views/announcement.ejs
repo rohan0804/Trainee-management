@@ -1,13 +1,28 @@
-
-    <form action="/add/announcement" method="POST">
-
-      <input class="form-control"  id ="heading" type="text" name="heading" placeholder="enter announcement heading">
-      
-      <textarea class="form-control" id="description" name="description" placeholder="enter announcement description"></textarea>
-      <button type="submit" class="btn btn-success submitEvent" value="submit">Send</button>
+<form action="/admin/add/announcement" method="POST" onsubmit="return postAnnouncement()">
+    <input class="form-control"  id ="heading" type="text" id="heading" name="heading" placeholder="enter announcement heading">
+    <textarea class="form-control" id="description" name="description" id="description" placeholder="enter announcement description"></textarea>
+    <button type="submit" class="btn btn-success submitEvent" value="submit">Send</button>
   </form>
 
   <script>
       var socket = io();
+      function postAnnouncement(){
+            let http = new XMLHttpRequest();
+            let url = '/admin/add/announcement';
+            let heading  = document.getElementById('heading').value;
+            let description = document.getElementById('description').value;
+            let params = `heading=${heading}&description=${description}`;
+            http.open('POST',url,true);
+            http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            http.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    alert("event Created");
+                }
+            }
+            http.send(params);
+
+        return true;
+            
+        }
      
   </script>

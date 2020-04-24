@@ -12,10 +12,11 @@ const Sequelize = require('sequelize');
 const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
 const Event = require('../Models/event');
+const Notification  = require('../Models/notifications');
 message = '';
 
 const io = require('../socket');
-const Event = require('../Models/event');
+
 const jwt = require('jsonwebtoken');
 const config = require('config');
 /**
@@ -412,10 +413,11 @@ exports.postAddannouncement = async (req, res,next) => {
     }
     else{
       const {heading,description} = req.body;
-    const announcementDetails = await Announcement.create({
+      const announcementDetails = await Announcement.create({
       announcementTitle:heading,
       announcementDescription:description
     });
+    io.getio().emit('announcement',announcementDetails);
     res.status(200).json({status:'Announcement Created!'});}
   } catch (error) {
     res.status(400).json({error:error.message});
@@ -470,7 +472,7 @@ exports.postAddEvents = async(req,res)=>{
     console.log("post addevents ajax request");
     const {heading,description,date} = req.body;
     const event = await Event.create({heading,description,date});
-    io.getio().emit('getEvent',event);
+    io.getio().emit('event',event);
     res.status(200).json({
         response_code:200,
         status:"event created successfully",
@@ -529,18 +531,23 @@ exports.postRecord =async (req,res)=>{
 
 
 exports.adminDashboard = async(req,res)=>{
+  console.log("inside admin dashboard");
+  console.log(req.authId,req.roleId);
   const events = await Event.findAll();
   const announcements=await Announcement.findAll();
-  const result = events.map(event=>{
-    return event.dataValues
-  });
-  const announcementresult = announcements.map(announcement=>{
-    return announcement.dataValues
-  });
+  // const result = events.map(event=>{
+  //   return event.dataValues
+  // });
+  // const announcementresult = announcements.map(announcement=>{
+  //   return announcement.dataValues
+  // });
+  const notifications = await Notification.findAll();
+  
 
-  res.render('traineeDashboard',{
-    events:result,
-    announcements:announcementresult
+  res.render('admin-dashboard',{
+    notifications:notifications,
+    events:events,
+    announcements:announcements
   });
 };
 
@@ -597,3 +604,26 @@ exports.findByName = async (req,res,next)=>{
     });
   }
 };
+
+exports.getNotifications = async(req,res)=>{
+  res.render('notifications');
+}
+
+exports.postNotifications = async(req,res)=>{
+  try {
+    const {message} = req.body;
+    if(!message) throw new Error("Notification Message Cannot be Blank")
+    io.getio().emit('notification',message);
+    const notification = await Notification.create({
+        message:message
+    })
+    res.status(200).json({
+      notification:notification
+    })
+  } catch (error) {
+    res.status(400).json({
+      error:error.message
+    })
+  }
+  
+}

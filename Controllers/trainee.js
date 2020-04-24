@@ -27,11 +27,7 @@ exports.posttraineeDoubts = async (req, res, next) => {
     });
    
     const trainee = await Trainee.findOne({ where: { id: traineeId } });
-<<<<<<< HEAD
-    io.getio().emit('getTraineeDoubt', {doubt,mentor_id:trainee.mentor_id});
-=======
     io.getio().emit('get',"Hekko");
->>>>>>> 51f1bfdfa7be99137d1606241d9c1f06e782e04d
     console.log(trainee.mentor_id);
     res.status(200).json({ status: 'Send Doubts!' });
   } catch (error) {
@@ -39,24 +35,3 @@ exports.posttraineeDoubts = async (req, res, next) => {
   }
 };
 
-// exports.postCategory = async (req, res) => {
-//     const { category, subCategory } = req.body;
-//     const Category = await Category.create({
-//         name: category
-//     })
-//     const SubCategory = await subCategory.create({
-//         name: subCategory
-//     });
-// }
-// exports.postTimelog = async (req, res, next) => {
-//     const { start_time, end_time, date, task_memo } = req.body;
-//     const categoryID = await Category.findOne({ where: { name: name } });
-//     const Timelog = await Timelog.create({
-//         start_time,
-//          end_time,
-//           date, 
-//           task_memo,
-//            categoryname=categoryID.dataValues.name, 
-//            subCategory=categoryID.dataValues.subCategoryname
-//     })
-// }
