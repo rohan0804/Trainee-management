@@ -8,5 +8,7 @@ const traineeController = require("../Controllers/trainee");
  */
 router.get("/chat", traineeController.gettraineeDoubts);
 router.post("/chat",traineeController.posttraineeDoubts);
+
+router.get("/dashboard", traineeController.gettraineeDashboard);
 module.exports = router;
 

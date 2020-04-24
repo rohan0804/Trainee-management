@@ -15,7 +15,6 @@ exports.getLogin = async (req, res, next) => {
  * @return :
  * @param : [params]
  */
-
 exports.postLogin = async (req, res) => {
   try {
     const { email, password } = req.body;

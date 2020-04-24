@@ -10,6 +10,7 @@ const io = require('../socket');
 const Event = require('../Models/event');
 const jwt = require('jsonwebtoken');
 const config = require('config');
+
 /**
  * @method : postAddRole
  * @author : Nishit Arora
@@ -17,9 +18,6 @@ const config = require('config');
  * @return :
  * @param : [params]
  */
-
-
-
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -442,7 +440,6 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  
   res.render('addEvents');
 };
 
@@ -450,6 +447,7 @@ exports.postAddEvents = async(req,res)=>{
   try {
     console.log("post addevents ajax request");
     const {heading,description,date} = req.body;
+    console.log(heading);
     const event = await Event.create({heading,description,date});
     io.getio().emit('getEvent',event);
     res.status(200).json({
@@ -465,7 +463,6 @@ exports.postAddEvents = async(req,res)=>{
         error:error.message
       })
   }
-  
 };
 
 exports.adminDashboard = async(req,res)=>{
@@ -483,8 +480,5 @@ exports.adminDashboard = async(req,res)=>{
     announcements:announcementresult
   });
 };
-
-
-
 
 

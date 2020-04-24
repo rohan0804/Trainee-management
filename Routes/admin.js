@@ -52,4 +52,5 @@ router.delete('/add/announcement/:id',deleteAddannouncement);
 router.get("/add/event",getAddEvents);
 router.post("/add/event",postAddEvents);
 router.get("/dashboard",adminDashboard);
+
 module.exports = router;

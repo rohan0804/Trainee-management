@@ -25,8 +25,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static('Routes'));
 app.use("/", authRouter);
-app.use(auth);
-app.use(roleBasedControl);
+//app.use(auth);
+//app.use(roleBasedControl);
 
 app.use("/admin", adminRouter);
 app.use("/trainee", traineeRouter);
