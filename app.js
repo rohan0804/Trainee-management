@@ -14,10 +14,11 @@ const expressLayouts = require("express-ejs-layouts");
 app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//app.use(express.static('public'));
+
 
 app.use("/", authRouter);
 app.use("/", adminRouter);
