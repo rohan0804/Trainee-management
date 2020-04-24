@@ -523,8 +523,6 @@ exports.adminDashboard = async(req,res)=>{
   const department = departments.map(result=>{
     return result.dataValues;
   });
-  console.log(department);
-
   res.render('admin-dashboard',{
     events:result,
     departmentt:department,

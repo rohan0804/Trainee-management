@@ -17,7 +17,7 @@ const Announcement=sequelize.define('announcement',{
         allowNull:false
     },
     announcementDate:{
-        type:DataTypes.DATE,
+        type:DataTypes.DATEONLY,
         allowNull:false,
         defaultValue:DataTypes.NOW
     }
