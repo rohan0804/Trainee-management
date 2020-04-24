@@ -1,4 +1,4 @@
-<!-- <div class="loader-wrapper">
+<div class="loader-wrapper">
   <div class="preloader" id="loader"></div>
 </div>
 <div class="page-content">
@@ -14,7 +14,7 @@
                 class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           <li class="bell dropdown">
             <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><img
-                src="images/notification.png" width="25" height="25" alt="bell-icon"><span class="badge">5</span></span>
+                src="/images/notification.png" width="25" height="25" alt="bell-icon"><span class="badge">5</span></span>
             <ul class="dropdown-menu">
               <li><span class="glyphicon glyphicon-hand-right"></span>Test is on monday.<div class="notify-time">1.00 pm
                 </div>
@@ -105,13 +105,12 @@
                   </p>
                 </section>
                 <%})%>
-                <section class="announcement">
-                  <h3 class="announcement-heading">Today's boostup session is cancel.</h3>
-                  <p class="announcement-data">
-                    Candidates should showcase their understanding for how their role fits into the bigger picture and
-                    helps the company grow," Halpin said.
+
+                <section class="announcement" id="heading">
+                  <p class="mb-1">
                   </p>
                 </section>
+
                 <section class="announcement">
                   <h3 class="announcement-heading">Seminar on Cyber Security.</h3>
                   <p class="announcement-data">
@@ -134,10 +133,13 @@
                   <p class="event-date"> <%= event.description%></p>
                 </section>
                 <%})%>
-                <section class="event">
-                  <h3 class="event-info">Celebrating Women's day</h3>
-                  <p class="event-date"> March-08-2020</p>
+               
+                <section class="event" id="heading">
+                
+                   <p class="mb-1"></p>
+                 
                 </section>
+
                 <section class="event">
                   <h3 class="event-info">Celebrating holi</h3>
                   <p class="event-date"> March-09-2020</p>
@@ -165,8 +167,8 @@
     </ul>
   </aside>
 </div>
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
 <script>
   function openNav() {
     if ($(window).width() <= 1200) {
@@ -189,8 +191,40 @@
   $(window).on("load", function () {
     $(".loader-wrapper").fadeOut("slow");
   });
+
+  var socket = io();
+  socket.on('getEvent', (event) => {
+    var parent = document.getElementById('heading');
+    var helement = document.createElement("h3");
+    var heading = document.createTextNode(event.heading);
+    helement.appendChild(heading);
+    helement.classList.add("mb-1");
+    parent.appendChild(helement);
+    var eventParent = document.getElementById('mainEvent');
+    var descriptionElement = document.createElement("p");
+    var description = document.createTextNode(event.description);
+    descriptionElement.appendChild(description);
+    descriptionElement.classList.add("mb-1");
+    eventParent.appendChild(descriptionElement);
+  });
+
+  socket.on('getAnnouncements', (announcement) => {
+    var parent = document.getElementById('heading');
+    var helement = document.createElement("h3");
+    var heading = document.createTextNode(announcement.announcementTitle);
+    helement.appendChild(heading);
+    helement.classList.add("mb-1");
+    parent.appendChild(helement);
+    var eventParent = document.getElementById('mainEvent');
+    var descriptionElement = document.createElement("p");
+    var description = document.createTextNode(announcement.announcementDescription);
+    descriptionElement.appendChild(description);
+    descriptionElement.classList.add("mb-1");
+    eventParent.appendChild(descriptionElement);
+  });
+
+
 </script>
- -->
 
 
 
@@ -199,6 +233,7 @@
 
 
 
+<!-- 
 <h1>Trainee Dashboard</h1>
 <h1>events</h1>
 <div class="list-group">
@@ -238,39 +273,5 @@
     <p class="mb-1"></p>
 
   </a>
-</div>
+</div> -->
 
-<script>
-  var socket = io();
-  socket.on('getEvent', (event) => {
-
-
-    var parent = document.getElementById('heading');
-    var helement = document.createElement("h5");
-    var heading = document.createTextNode(event.heading);
-    helement.appendChild(heading);
-    helement.classList.add("mb-1");
-    parent.appendChild(helement);
-    var eventParent = document.getElementById('mainEvent');
-    var descriptionElement = document.createElement("p");
-    var description = document.createTextNode(event.description);
-    descriptionElement.appendChild(description);
-    descriptionElement.classList.add("mb-1");
-    eventParent.appendChild(descriptionElement);
-  });
-  socket.on('getAnnouncements', (announcement) => {
-    var parent = document.getElementById('heading');
-    var helement = document.createElement("h5");
-    var heading = document.createTextNode(announcement.announcementTitle);
-    helement.appendChild(heading);
-    helement.classList.add("mb-1");
-    parent.appendChild(helement);
-    var eventParent = document.getElementById('mainEvent');
-    var descriptionElement = document.createElement("p");
-    var description = document.createTextNode(announcement.announcementDescription);
-    descriptionElement.appendChild(description);
-    descriptionElement.classList.add("mb-1");
-    eventParent.appendChild(descriptionElement);
-  });
-
-</script>

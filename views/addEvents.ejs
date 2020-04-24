@@ -1,5 +1,5 @@
 
-    <form onsubmit="return postEvent()">
+    <form onsubmit=" return postEvent()">
 
         <input class="form-control"  id ="heading" type="text" name="heading" placeholder="enter event heading">
         
@@ -25,7 +25,9 @@
                 }
             }
             http.send(params);
+
             return true;
+            
         }
        
     
