@@ -34,18 +34,14 @@ router.post(
     const result = validationResult(req);
     var errors = {};
     
-    
-    
-    
-    
-    for (let error of result.array()) {
+   for (let error of result.array()) {
 
       if (!errors.hasOwnProperty(error.param)) {
         errors[error.param] = error.msg;
       }
       
     }
-    console.log(errors)
+   
     if (!result.isEmpty()) {
       res.render('leave', {
         errors: errors
@@ -53,8 +49,7 @@ router.post(
     }
     else {
       
-
-      postLeave(req.body)
+    postLeave(req.body)
         .then((data) => {
           res.render('leave');
         })
