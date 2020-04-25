@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
+const moment = require("moment");
 const {
   postLeave,
   getLeaveRecords,
@@ -8,15 +9,37 @@ const {
   updateLeaveRecord,
 } = require("../Controllers/leave");
 
-router.get('/', (req, res) => {
-  res.render('leave', { errors: {}})
-  
-})
+router.get("/", (req, res) => {
+  res.render("leave", { error: "", errors: {} });
+});
 
 //route for insertion
 router.post(
-  "/add",
+  "/",
   [
+    check("start_date")
+      .not()
+      .isEmpty()
+      .withMessage("Start date is required")
+      .custom((value) => {
+        if (!moment(value, "MM/DD/YYYY HH:mm A", true).isValid()) {
+          throw new Error("date format is invalid");
+        }
+        return true;
+      }),
+
+    check("end_date")
+      .not()
+      .isEmpty()
+      .withMessage("End date is required")
+      .custom((value) => {
+        console.log(value);
+        if (!moment(value, "MM/DD/YYYY HH:mm A", true).isValid()) {
+          throw new Error("date format is invalid");
+        }
+        return true;
+      }),
+
     check("subject")
       .not()
       .isEmpty()
@@ -28,33 +51,35 @@ router.post(
       .isEmpty()
       .withMessage("Leave reason is required")
       .isLength({ min: 10 })
-      .withMessage("Reason length should be required")
+      .withMessage("Reason length should be required"),
   ],
   (req, res, next) => {
     const result = validationResult(req);
     var errors = {};
-    
-   for (let error of result.array()) {
 
+    for (let error of result.array()) {
       if (!errors.hasOwnProperty(error.param)) {
         errors[error.param] = error.msg;
       }
-      
     }
-   
+
     if (!result.isEmpty()) {
-      res.render('leave', {
-        errors: errors
-      })
-    }
-    else {
-      
-    postLeave(req.body)
+      res.render("leave", {
+        error: "",
+        errors: errors,
+      });
+    } else {
+      postLeave(req.body)
         .then((data) => {
-          res.render('leave',{errors: {}});
+          if (data.status != 200) {
+            res.render("leave", { error: data.data.msg, errors: {} });
+          } else {
+            res.redirect("/leave");
+          }
         })
         .catch((err) => {
-          res.status(err.status).json(err.data);
+          console.log(err.message);
+          res.status(400).json({});
         });
     }
   }
