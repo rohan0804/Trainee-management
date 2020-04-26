@@ -16,7 +16,7 @@ const moment = require("moment");
 
 exports.postLeave = async (data) => {
   const traineeData = await Trainee.findOne({
-    where: { id: 1 },
+    where: { id: 5 },
   });
   if (!traineeData) {
     throw new Error("Trainee data not found");

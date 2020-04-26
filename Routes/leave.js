@@ -15,7 +15,7 @@ router.get("/", (req, res) => {
 
 //route for insertion
 router.post(
-  "/",
+  "/add",
   [
     check("start_date")
       .not()
@@ -79,7 +79,7 @@ router.post(
         })
         .catch((err) => {
           console.log(err.message);
-          res.status(400).json({});
+          res.render("error");
         });
     }
   }

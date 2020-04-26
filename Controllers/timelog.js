@@ -15,121 +15,91 @@ const { Op } = require("sequelize");
 // Date validation while inserting upadating  and deleting Record
 // date.setDate(date.getDate() + 1);
 
-exports.postTimelog = async data => {
-  try {
-    const categoryData = await Category.findOne({
-      where: { id: data.category_id }
-    });
-    if (!categoryData) {
-      return {
-        status: 400,
-        data: {
-          msg: "Category not found"
-        }
-      };
-    }
-    const subCategoryData = await subCategory.findOne({
-      where: { id: data.sub_category_id }
-    });
-    if (!subCategoryData) {
-      return {
-        status: 400,
-        data: {
-          msg: " Sub category not found"
-        }
-      };
-    }
-    const traineeData = await Trainee.findOne({
-      where: { id: data.trainee_id }
-    });
-    if (!traineeData) {
-      return {
-        status: 400,
-        data: {
-          msg: "Trainee data not found"
-        }
-      };
-    }
+exports.postTimelog = async (data) => {
+  const categoryData = await Category.findOne({
+    where: { id: data.category_id },
+  });
+  if (!categoryData) {
+    throw new Error("Category not found");
+  }
+  const subCategoryData = await subCategory.findOne({
+    where: { id: data.sub_category_id },
+  });
+  if (!subCategoryData) {
+    throw new Error("Sub category not found");
+  }
+  const traineeData = await Trainee.findOne({
+    where: { id: data.trainee_id },
+  });
+  if (!traineeData) {
+    throw new Error("Trainee data not found");
+  }
 
-    // Time slot check on time
-    const startTimeCheck = await Timelog.findOne({
-      where: {
-        trainee_id: data.trainee_id,
-        date: data.date,
-        [Op.or]: [
-          {
-            [Op.and]: {
-              start_time: { [Op.eq]: data.start_time },
-              end_time: { [Op.eq]: data.end_time }
-            }
-          },
-          {
-            [Op.and]: {
-              start_time: { [Op.gt]: data.start_time },
-              end_time: { [Op.lt]: data.end_time }
-            }
-          },
-          {
-            [Op.and]: {
-              end_time: { [Op.gt]: data.start_time, [Op.lt]: data.end_time }
-            }
-          },
-          {
-            [Op.and]: {
-              start_time: { [Op.lt]: data.start_time },
-              end_time: { [Op.gt]: data.start_time }
-            }
-          },
-          {
-            [Op.and]: {
-              start_time: { [Op.lt]: data.end_time },
-              end_time: { [Op.gt]: data.end_time }
-            }
-          }
-        ]
-      }
-    });
-    if (startTimeCheck) {
-      return {
-        status: 400,
-        data: {
-          msg: "Time slot already exist"
-        }
-      };
-    }
-
-    const Timelogg = await Timelog.create({
-      start_time: data.start_time,
-      end_time: data.end_time,
+  // Time slot check on time
+  const startTimeCheck = await Timelog.findOne({
+    where: {
+      trainee_id: data.trainee_id,
       date: data.date,
-      task_memo: data.task_memo,
-      trainee_id: traineeData.id,
-      category_id: categoryData.id,
-      sub_category_id: subCategoryData.id
-    });
-    if (Timelogg) {
-      return {
-        status: 200,
-        data: {
-          msg: "Record added successfully"
-        }
-      };
-    }
+      [Op.or]: [
+        {
+          [Op.and]: {
+            start_time: { [Op.eq]: data.start_time },
+            end_time: { [Op.eq]: data.end_time },
+          },
+        },
+        {
+          [Op.and]: {
+            start_time: { [Op.gt]: data.start_time },
+            end_time: { [Op.lt]: data.end_time },
+          },
+        },
+        {
+          [Op.and]: {
+            end_time: { [Op.gt]: data.start_time, [Op.lt]: data.end_time },
+          },
+        },
+        {
+          [Op.and]: {
+            start_time: { [Op.lt]: data.start_time },
+            end_time: { [Op.gt]: data.start_time },
+          },
+        },
+        {
+          [Op.and]: {
+            start_time: { [Op.lt]: data.end_time },
+            end_time: { [Op.gt]: data.end_time },
+          },
+        },
+      ],
+    },
+  });
+  if (startTimeCheck) {
     return {
       status: 400,
       data: {
-        msg: "Something went wrong"
-      }
-    };
-  } catch (e) {
-    console.log(e);
-    return {
-      status: 400,
-      data: {
-        msg: "Something went wrong!"
-      }
+        msg: "Time slot already exist",
+      },
     };
   }
+
+  const Timelogg = await Timelog.create({
+    start_time: data.start_time,
+    end_time: data.end_time,
+    date: data.date,
+    task_memo: data.task_memo,
+    trainee_id: traineeData.id,
+    category_id: categoryData.id,
+    sub_category_id: subCategoryData.id,
+  });
+  if (Timelogg) {
+    return {
+      status: 200,
+      data: {
+        msg: "Record added successfully",
+      },
+    };
+  }
+  throw new Error("Something went wrong!");
 };
 
 /**
@@ -142,33 +112,23 @@ exports.postTimelog = async data => {
  **/
 
 exports.getTimelogData = async (req, res) => {
-  try {
-    const id = req.params.id;
-    if (!id) {
-      res.status(400).json({
-        msg: "Parameter not found"
-      });
-    }
-    const timelogData = await Timelog.findOne({
-      where: { trainee_id: id }
-    });
-    if (!timelogData) {
-      res.status(400).json({
-        msg: "Record not Exist"
-      });
-    }
-    const timelogRecords = await Timelog.findAll({ where: { trainee_id: id } });
-    if (timelogRecords) {
-      res.send(timelogRecords);
-    }
+  const id = req.params.id;
+  if (!id) {
+    throw new Error("Parameter not found");
+  }
+  const timelogData = await Timelog.findOne({
+    where: { trainee_id: id },
+  });
+  if (!timelogData) {
     res.status(400).json({
-      msg: "Something went wrong"
-    });
-  } catch (err) {
-    res.status(400).json({
-      msg: "Something Wrong!"
+      msg: "Record not Exist",
     });
   }
+  const timelogRecords = await Timelog.findAll({ where: { trainee_id: id } });
+  if (timelogRecords) {
+    res.send(timelogRecords);
+  }
+  throw new Error("Something went wrong!");
 };
 
 /**
@@ -180,34 +140,26 @@ exports.getTimelogData = async (req, res) => {
  **/
 
 exports.deleteTimelog = async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const trainee_id = req.params.trainee_id;
+  const id = req.params.id;
+  const trainee_id = req.params.trainee_id;
 
-    const timelogData = await Timelog.findOne({
-      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
-    });
-    if (!timelogData) {
-      res.status(400).json({
-        msg: "Record not Exist"
-      });
-    }
-    const deleteTimelog = await Timelog.destroy({
-      where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] }
-    });
-    if (deleteTimelog) {
-      res.status(200).json({
-        msg: "Record deleted successfully"
-      });
-    }
+  const timelogData = await Timelog.findOne({
+    where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] },
+  });
+  if (!timelogData) {
     res.status(400).json({
-      msg: "Something went wrong"
-    });
-  } catch (error) {
-    res.status(400).json({
-      msg: "Something  wrong!"
+      msg: "Record not Exist",
     });
   }
+  const deleteTimelog = await Timelog.destroy({
+    where: { [Op.and]: [{ trainee_id: trainee_id }, { id: id }] },
+  });
+  if (deleteTimelog) {
+    res.status(200).json({
+      msg: "Record deleted successfully",
+    });
+  }
+  throw new Error("Something went wrong!");
 };
 
 /**
@@ -219,107 +171,92 @@ exports.deleteTimelog = async (req, res, next) => {
  **/
 
 exports.updateTimelogRecord = async (params, data) => {
-  try {
-    const id = params.id;
-    const trainee_id = params.trainee_id;
+  const id = params.id;
+  const trainee_id = params.trainee_id;
 
-    const timelogData = await Timelog.findOne({
-      where: {
-        [Op.and]: [{ trainee_id: trainee_id }, { id: id }]
-      }
-    });
-    if (!timelogData) {
-      return {
-        status: 400,
-        data: {
-          msg: "Record not found"
-        }
-      };
-    }
-
-    // Time slot check on time
-    const startTimeCheck = await Timelog.findOne({
-      where: {
-        id: { [Op.ne]: params.id },
-        trainee_id: params.trainee_id,
-
-        date: params.date,
-
-        [Op.or]: [
-          {
-            [Op.and]: {
-              start_time: { [Op.eq]: data.start_time },
-              end_time: { [Op.eq]: data.end_time }
-            }
-          },
-          {
-            [Op.and]: {
-              start_time: { [Op.gt]: data.start_time },
-              end_time: { [Op.lt]: data.end_time }
-            }
-          },
-          {
-            [Op.and]: {
-              end_time: {
-                [Op.gt]: data.start_time,
-                [Op.lt]: data.end_time
-              }
-            }
-          },
-          {
-            [Op.and]: {
-              start_time: { [Op.lt]: data.start_time },
-              end_time: { [Op.gt]: data.start_time }
-            }
-          },
-          {
-            [Op.and]: {
-              start_time: { [Op.lt]: data.end_time },
-              end_time: { [Op.gt]: data.end_time }
-            }
-          }
-        ]
-      }
-    });
-    if (startTimeCheck) {
-      console.log("error");
-      return {
-        status: 400,
-        data: {
-          msg: "Time slot already exist"
-        }
-      };
-    }
-
-    const updatedTimelog = await timelogData.update({
-      start_time: data.start_time,
-      end_time: data.end_time,
-      date: data.date,
-      task_memo: data.task_memo,
-      category_id: data.category_id,
-      sub_category_id: data.sub_category_id
-    });
-    if (updatedTimelog) {
-      return {
-        status: 200,
-        data: {
-          msg: "Record updated successfully"
-        }
-      };
-    }
+  const timelogData = await Timelog.findOne({
+    where: {
+      [Op.and]: [{ trainee_id: trainee_id }, { id: id }],
+    },
+  });
+  if (!timelogData) {
     return {
       status: 400,
       data: {
-        msg: "Something went wrong"
-      }
-    };
-  } catch (error) {
-    console.log(error);
-    return {
-      status: 400,
-      data: {
-        msg: "Something went worng!"
-      }
+        msg: "Record not found",
+      },
     };
   }
+
+  // Time slot check on time
+  const startTimeCheck = await Timelog.findOne({
+    where: {
+      id: { [Op.ne]: params.id },
+      trainee_id: params.trainee_id,
+
+      date: params.date,
+
+      [Op.or]: [
+        {
+          [Op.and]: {
+            start_time: { [Op.eq]: data.start_time },
+            end_time: { [Op.eq]: data.end_time },
+          },
+        },
+        {
+          [Op.and]: {
+            start_time: { [Op.gt]: data.start_time },
+            end_time: { [Op.lt]: data.end_time },
+          },
+        },
+        {
+          [Op.and]: {
+            end_time: {
+              [Op.gt]: data.start_time,
+              [Op.lt]: data.end_time,
+            },
+          },
+        },
+        {
+          [Op.and]: {
+            start_time: { [Op.lt]: data.start_time },
+            end_time: { [Op.gt]: data.start_time },
+          },
+        },
+        {
+          [Op.and]: {
+            start_time: { [Op.lt]: data.end_time },
+            end_time: { [Op.gt]: data.end_time },
+          },
+        },
+      ],
+    },
+  });
+  if (startTimeCheck) {
+    console.log("error");
+    return {
+      status: 400,
+      data: {
+        msg: "Time slot already exist",
+      },
+    };
+  }
+
+  const updatedTimelog = await timelogData.update({
+    start_time: data.start_time,
+    end_time: data.end_time,
+    date: data.date,
+    task_memo: data.task_memo,
+    category_id: data.category_id,
+    sub_category_id: data.sub_category_id,
+  });
+  if (updatedTimelog) {
+    return {
+      status: 200,
+      data: {
+        msg: "Record updated successfully",
+      },
+    };
+  }
+  throw new Error("Something went wrong!");
 };
