@@ -16,8 +16,8 @@
         let http = new XMLHttpRequest();
         let url = '/trainee/chat';
         let topic = document.getElementById('topic').value;
-        let question = document.getElementById('question').value;
-        let params = `topic = ${topic}&question=${question}`;
+        let questions = document.getElementById('question').value;
+        let params = `topic=${topic}&questions=${questions}`;
         http.open('POST', url, true);
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         http.onreadystatechange = function () {

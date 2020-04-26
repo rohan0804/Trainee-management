@@ -14,21 +14,22 @@
                 class="glyphicon glyphicon-log-out"></span> Logout</a></li>
           <li class="bell dropdown">
             <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><img
-                src="/images/notification.png" width="25" height="25" alt="bell-icon"><span class="badge">5</span></span>
-            <ul class="dropdown-menu">
-              <li><span class="glyphicon glyphicon-hand-right"></span>Test is on monday.<div class="notify-time">1.00 pm
-                </div>
-              </li>
-              <li><span class="glyphicon glyphicon-hand-right"></span>Collect your nametags.<div class="notify-time">
-                  11.00 am</div>
-              </li>
-              <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.<div
-                  class="notify-time">4.00 pm</div>
-              </li>
-              <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.<div
-                  class="notify-time">6.00 pm</div>
+                src="/images/notification.png" width="25" height="25" alt="bell-icon"><span
+                class="badge">5</span></span>
+            
+              <% notifications.forEach(notification=>{ %>
+                <ul class="dropdown-menu">
+              <li ><span class="glyphicon glyphicon-hand-right"></span><%= notification.message%><div
+                  class="notify-time"><%= notification.createdAt%></div>
               </li>
             </ul>
+              <%})%>
+               <ul class="dropdown-menu" id="notificationMainEvent">
+              <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span> <div class="notify-time">
+                  </div>
+              </li>
+               </ul>
+              
           </li>
         </ul>
       </div>
@@ -96,28 +97,24 @@
               <div class="heading green">
                 <h2>Announcements</h2>
               </div>
-              <% announcements.forEach(announcement=>{ %>
               <div class="card-content">
-                <section class="announcement">
-                  <h3 class="announcement-heading"><%= announcement.announcementTitle%></h3>
-                  <p class="announcement-data">
+                <% announcements.forEach(announcement=>{ %>
+                <div class="list-group-item list-group-item-action flex-column align-items-start ">
+                  <section class="announcement">
+                    <h3 class="announcement-heading"><%= announcement.announcementTitle%></h3>
+                    <p class="announcement-data">
                       <%= announcement.announcementDescription%>
-                  </p>
-                </section>
+                    </p>
+                  </section>
+                </div>
                 <%})%>
-
-                <section class="announcement" id="heading">
-                  <p class="mb-1">
-                  </p>
-                </section>
-
-                <section class="announcement">
-                  <h3 class="announcement-heading">Seminar on Cyber Security.</h3>
-                  <p class="announcement-data">
-                    Candidates should showcase their understanding for how their role fits into the bigger picture and
-                    helps the company grow," Halpin said.
-                  </p>
-                </section>
+                <div class="list-group-item list-group-item-action flex-column align-items-start "
+                  id="announcementMainEvent">
+                  <section class="announcement" id="announcementheading">
+                    <p class="mb-1announcement">
+                    </p>
+                  </section>
+                </div>
               </div>
             </div>
           </div>
@@ -128,22 +125,20 @@
               </div>
               <div class="card-content">
                 <% events.forEach(event=>{ %>
-                <section class="event">
-                  <h3 class="event-info"><%= event.heading%></h3>
-                  <p class="event-date"> <%= event.description%></p>
-                </section>
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                  <section class="event">
+                    <h3 class="event-info"><%= event.heading%></h3>
+                    <p class="event-date"> <%= event.description%></p>
+                  </section>
+                </div>
                 <%})%>
-               
-                <section class="event" id="heading">
-                
-                   <p class="mb-1"></p>
-                 
-                </section>
 
-                <section class="event">
-                  <h3 class="event-info">Celebrating holi</h3>
-                  <p class="event-date"> March-09-2020</p>
-                </section>
+                <div class="list-group-item list-group-item-action flex-column align-items-start " id="eventMainEvent">
+                  <section class="event" id="eventheading">
+                    <p class="mb-1event"></p>
+                  </section>
+                </div>
+
               </div>
             </div>
           </div>
@@ -194,36 +189,60 @@
 
   var socket = io();
   socket.on('getEvent', (event) => {
-    var parent = document.getElementById('heading');
+    var parent = document.getElementById('eventheading');
     var helement = document.createElement("h3");
     var heading = document.createTextNode(event.heading);
     helement.appendChild(heading);
-    helement.classList.add("mb-1");
+    helement.classList.add("mb-1event");
     parent.appendChild(helement);
-    var eventParent = document.getElementById('mainEvent');
+    var eventParent = document.getElementById('eventMainEvent');
     var descriptionElement = document.createElement("p");
     var description = document.createTextNode(event.description);
     descriptionElement.appendChild(description);
-    descriptionElement.classList.add("mb-1");
+    descriptionElement.classList.add("mb-1event");
     eventParent.appendChild(descriptionElement);
   });
 
   socket.on('getAnnouncements', (announcement) => {
-    var parent = document.getElementById('heading');
+    var parent = document.getElementById('announcementheading');
     var helement = document.createElement("h3");
     var heading = document.createTextNode(announcement.announcementTitle);
     helement.appendChild(heading);
-    helement.classList.add("mb-1");
+    helement.classList.add("mb-1announcement");
     parent.appendChild(helement);
-    var eventParent = document.getElementById('mainEvent');
+    var eventParent = document.getElementById('announcementMainEvent');
     var descriptionElement = document.createElement("p");
     var description = document.createTextNode(announcement.announcementDescription);
     descriptionElement.appendChild(description);
-    descriptionElement.classList.add("mb-1");
+    descriptionElement.classList.add("mb-1announcement");
     eventParent.appendChild(descriptionElement);
   });
 
+  <ul class="dropdown-menu" id="notificationMainEvent">
+              <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span> <div class="notify-time">
+                  11.00 am</div>
+              </li>
+               </ul>
 
+
+  // socket.on('notification', (notification) => {
+  //   var parent = document.getElementById('notificationheading');
+  //   var helement = document.createTextNode(notification.message);
+  //   var selement = document.createElement("span");
+  //   var delement = document.createElement("div");
+  //   var heading = document.createTextNode(notification.createdAt);
+  //   delement.appendChild(heading);
+  //   helement.classList.add("mb-1notification");
+  //   parent.appendChild(helement);
+  //   parent.appendChild(selement);
+  //   parent.appendChild(delement);
+  //   // var eventParent = document.getElementById('notificationMainEvent');
+  //   // var descriptionElement = document.createElement("div");
+  //   // var description = document.createTextNode();
+  //   // descriptionElement.appendChild(description);
+  //   // descriptionElement.classList.add("mb-1");
+  //   // eventParent.appendChild(descriptionElement);
+  // });
 </script>
 
 
@@ -274,4 +293,3 @@
 
   </a>
 </div> -->
-

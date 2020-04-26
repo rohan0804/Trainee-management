@@ -1,4 +1,4 @@
-<form action="/admin/add/announcement" method="POST" onsubmit="return postAnnouncement()">
+<form onsubmit="return postAnnouncement()">
     <input class="form-control"  id ="heading" type="text" id="heading" name="heading" placeholder="enter announcement heading">
     <textarea class="form-control" id="description" name="description" id="description" placeholder="enter announcement description"></textarea>
     <button type="submit" class="btn btn-success submitEvent" value="submit">Send</button>
@@ -20,9 +20,7 @@
                 }
             }
             http.send(params);
-
-        return true;
-            
+        return true;    
         }
      
   </script>

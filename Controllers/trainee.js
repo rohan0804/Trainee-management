@@ -6,6 +6,7 @@ const traineeDoubt = require('../Models/traineedoubt');
 var io = require('../socket');
 const Announcement = require('../Models/announcement');
 const Event = require('../Models/event');
+const Notification  = require('../Models/notifications');
 
 /**
  * @method : gettraineeDoubts
@@ -65,15 +66,20 @@ exports.posttraineeDoubts = async (req, res, next) => {
 exports.gettraineeDashboard = async (req, res) => {
   const events = await Event.findAll();
   const announcements = await Announcement.findAll();
-  const result = events.map(event => {
+  const notifications = await Notification.findAll();
+  const eventsresult = events.map(event => {
     return event.dataValues
   });
   const announcementresult = announcements.map(announcement => {
     return announcement.dataValues
   });
+  const notificationresult = notifications.map(notification => {
+    return notification.dataValues
+  });
 
   res.render('traineeDashboard', {
-    events: result,
-    announcements: announcementresult
+    events: eventsresult,
+    announcements: announcementresult,
+    notifications: notificationresult
   });
 };
