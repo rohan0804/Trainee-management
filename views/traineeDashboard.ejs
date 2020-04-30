@@ -16,19 +16,19 @@
             <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><img
                 src="/images/notification.png" width="25" height="25" alt="bell-icon"><span
                 class="badge">5</span></span>
-            
+                <ul class="dropdown-menu" id="notificationMainEvent"  >
               <% notifications.forEach(notification=>{ %>
-                <ul class="dropdown-menu">
+                
               <li ><span class="glyphicon glyphicon-hand-right"></span><%= notification.message%><div
-                  class="notify-time"><%= notification.createdAt%></div>
+                  class="notify-time"><%=notification.createdAt %></div>
               </li>
-            </ul>
+            
               <%})%>
-               <ul class="dropdown-menu" id="notificationMainEvent">
+            </ul>
               <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span> <div class="notify-time">
                   </div>
               </li>
-               </ul>
+               
               
           </li>
         </ul>
@@ -218,31 +218,24 @@
     eventParent.appendChild(descriptionElement);
   });
 
-  <ul class="dropdown-menu" id="notificationMainEvent">
-              <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span> <div class="notify-time">
-                  11.00 am</div>
-              </li>
-               </ul>
-
-
-  // socket.on('notification', (notification) => {
-  //   var parent = document.getElementById('notificationheading');
-  //   var helement = document.createTextNode(notification.message);
-  //   var selement = document.createElement("span");
-  //   var delement = document.createElement("div");
-  //   var heading = document.createTextNode(notification.createdAt);
-  //   delement.appendChild(heading);
-  //   helement.classList.add("mb-1notification");
-  //   parent.appendChild(helement);
-  //   parent.appendChild(selement);
-  //   parent.appendChild(delement);
-  //   // var eventParent = document.getElementById('notificationMainEvent');
-  //   // var descriptionElement = document.createElement("div");
-  //   // var description = document.createTextNode();
-  //   // descriptionElement.appendChild(description);
-  //   // descriptionElement.classList.add("mb-1");
-  //   // eventParent.appendChild(descriptionElement);
-  // });
+  socket.on('notification', (notification) => {
+    var parent = document.getElementById('notificationheading');
+    var helement = document.createTextNode(notification.message);
+    var selement = document.createElement("span");
+    var delement = document.createElement("div");
+    var heading = document.createTextNode(notification.createdAt);
+    delement.appendChild(heading);
+    helement.classList.add("mb-1notification");
+    parent.appendChild(helement);
+    parent.appendChild(selement);
+    parent.appendChild(delement);
+    // var eventParent = document.getElementById('notificationMainEvent');
+    // var descriptionElement = document.createElement("div");
+    // var description = document.createTextNode();
+    // descriptionElement.appendChild(description);
+    // descriptionElement.classList.add("mb-1");
+    // eventParent.appendChild(descriptionElement);
+  });
 </script>
 
 

@@ -76,7 +76,7 @@ exports.gettraineeDashboard = async (req, res) => {
   const notificationresult = notifications.map(notification => {
     return notification.dataValues
   });
-
+ console.log(notificationresult);
   res.render('traineeDashboard', {
     events: eventsresult,
     announcements: announcementresult,
