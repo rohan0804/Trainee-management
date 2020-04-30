@@ -31,7 +31,7 @@ const {
   deleteMentor,
   deleteAddannouncement
 }=require('../Controllers/admin');
-const {getAddEvents,postAddEvents,adminDashboard,getNotifications,postNotifications} = require("../Controllers/admin");
+const {getAddEvents,postAddEvents,adminDashboard,getNotifications,postNotifications,getAddMentor} = require("../Controllers/admin");
 // router.use(authorization);
 
 const DIR = './uploads';
@@ -57,6 +57,7 @@ router.post("/add/department", postAddDepartment);
 router.get("/add/department", getAddDepartment);
 router.post("/add/trainee", postTraineeSignup);
 router.get("/add/trainee", getTraineeSignup);
+router.get('/add/mentor',getAddMentor);
 router.get("/add/mentor/:id", getMentor);
 router.post("/add/mentor", postAddMentor);
 router.put('/add/mentor/:id',putAddMentor);

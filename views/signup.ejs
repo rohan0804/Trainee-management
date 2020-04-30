@@ -26,26 +26,40 @@
             <div class="col-sm-6">
                <section class="form-side wow slideInRight">
                   <h2 class="heading2">Create your account!</h2>
-                  <form id="signin-form">
+                  <form id="signin-form" action="/admin/add/mentor" method="POST">
                       <div class="form-group fields">
                         <label class="form-label">Name</label>
-                        <input type="text" name="user" id="user" class="form-control" placeholder="Enter your name" required>
+                        <% if(typeof error =='object' && error.type=="name"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="text" name="name" id="user" class="form-control" placeholder="Enter your name" required>
                      </div>
                      <div class="form-group fields">
                         <label class="form-label">Email</label>
-                        <input type="email" name="Email" id="Email" class="form-control" placeholder="Enter your email" required>
+                        <% if(typeof error =='object' && error.type=="email"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="email" name="email" id="Email" class="form-control" placeholder="Enter your email" required>
                      </div>
                      <div class="form-group fields">
-                        <label class="form-label">Date of Joining</label>
-                        <input type="text" name="dob" id="datepicker" class="form-control date"  placeholder="MM/DD/YYYY" required>
-                     </div>
+                        <label class="form-label">Select Department</label>
+                           <select class="form-control" name="department" id="Department">
+                              <%if(typeof departments !==undefined){ %>
+                              <% for(let department of departments){ %>
+                                 <option value="<%=department.name%>"><%=department.name%></option>
+                              <%}}%>
+                           </select>
+                        </div>
                      <div class="form-group fields">
                         <label class="form-label">Contact Number</label>
-                        <input type="tel" name="contact" id="contact" class="form-control" placeholder="Enter your contact number" required>
+                        <% if(typeof error =='object' && error.type=="phoneNo"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="tel" name="phoneNo" id="contact" class="form-control" placeholder="Enter your contact number" required>
                      </div>
                      <div class="form-group fields">
                         <label class="form-label">Password</label>
-                        <input type="password" name="Password" id="Password" class="form-control" placeholder="Enter your password" required>
+                        <input type="password" name="password" id="Password" class="form-control" placeholder="Enter your password" required>
                      </div>
                      <div class="form-group fields">
                         <label class="form-label"> Confirm Password</label>

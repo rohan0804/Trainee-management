@@ -16,10 +16,6 @@ const Mentor = sequelize.define("mentor", {
     type: Sequelize.STRING,
     allowNull: false,
     unique: true
-  },
-  mail_id: {
-    type: Sequelize.STRING,
-    allowNull: false
   }
 });
 module.exports = Mentor;

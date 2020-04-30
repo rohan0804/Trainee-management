@@ -32,6 +32,8 @@ const config = require('config');
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
+    const roleRecord = await Role.findOne({where:{name:name}});
+    if(roleRecord) throw new Error("Role already exists");
     const roleStatus = await Role.create({
       name
     });
@@ -75,9 +77,7 @@ exports.postAddDepartment = async (req, res, next) => {
 
 exports.getTraineeSignup = async (req, res) => {
   const departments = await Department.findAll();
-  res.render("signup.ejs", {
-    data: departments
-  });
+  
 };
 
 /**
@@ -91,15 +91,7 @@ exports.getTraineeSignup = async (req, res) => {
  */
 exports.postTraineeSignup = async (req, res) => {
   try {
-    const {
-      name,
-      email,
-      password,
-      phone_no,
-      joining_date,
-      last_date,
-      department_id,
-      image_url,
+    const {name,email,password,phone_no,joining_date,last_date,department_id,image_url,
       linkedin_profile,
       mentor_id
     } = req.body;
@@ -297,14 +289,24 @@ exports.getMentor = async (req, res, next) => {
  */
 exports.postAddMentor = async (req, res) => {
   try {
+    const { name, email,department, phoneNo,password } = req.body;
     console.log(req.body);
-    const { name, email, phoneNo, department_id, password } = req.body;
+    if(!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) throw {type:"email",error:"Invalid Email"};
+    if(!/^[A-Za-z]+/.test(name)) throw {type:"name",error:"invalid name"};
+    if(!password) throw {type:"password",error:"password cannot be empty"};
+    if(! /[2-9]{2}\d{8}/.test(phoneNo)) throw {type:"phoneNo",error:"contact number is not valid"};
     const user = await Auth.findOne({ where: { email: email } });
+    
     if (user) {
-      throw new Error("Mentor email already exists");
+      throw {type:"email",error:"Mentor email already exists"};
     }
+    const mentor = await Mentor.findOne({where:{phoneNo:phoneNo}});
+    if(mentor!==null)throw {type:"phoneNo",error:"phoneNo already exists"};
     const hashPassword = await bcrypt.hash(password, 12);
     const role = await Role.findOne({ where: { name: "mentor" } });
+    const departmentDetail = await Department.findOne({where:{name:department}});
+    console.log(departmentDetail);
+    console.log(departmentDetail);
     const auth = await Auth.create({
       email: email,
       password: hashPassword,
@@ -314,28 +316,49 @@ exports.postAddMentor = async (req, res) => {
     const mentorDetails = await Mentor.create({
       name,
       phoneNo,
-      department_id,
       auth_id: auth.id,
-      department_id
+      department_id:departmentDetail.dataValues.id
     });
-    
-    res.status(200).json({
-      response_code: 200,
-      status: "Mentor created successfully",
-      result: {
-        auth,
-        mentorDetails,
+    // console.log(mentorDetails);
+    // res.status(200).json({
+    //   response_code: 200,
+    //   status: "Mentor created successfully",
+    //   result: {
+    //     auth,
+    //     mentorDetails,
         
-      }
-    });
+    //   }
+    // });
+    res.redirect('/admin/dashboard');
   }
   catch (error) {
-    res.status(400).json({
-      response_code: 400,
-      error: error.message
+    // res.status(400).json({
+    //   response_code: 400,
+    //   error: error.message
+    // });
+    const departments = await Department.findAll();
+    const result = departments.map(department=>{
+    return department.dataValues
+  });
+    res.render('signup',{
+      error:error,
+      departments:result
     });
+    console.log(error);
   }
 };
+
+exports.getAddMentor = async(req,res)=>{
+  const departments = await Department.findAll();
+  
+   const result = departments.map(department=>{
+    return department.dataValues
+  });
+  console.log(result);
+  res.render('signup',{
+    departments:result
+  });
+}
 /**
    * @method : postAddMentor
    * @author : Shyamal Sharma
@@ -538,9 +561,7 @@ exports.adminDashboard = async(req,res)=>{
   // const result = events.map(event=>{
   //   return event.dataValues
   // });
-  // const announcementresult = announcements.map(announcement=>{
-  //   return announcement.dataValues
-  // });
+ 
   const notifications = await Notification.findAll();
   
 
