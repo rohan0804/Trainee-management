@@ -7,24 +7,24 @@ const Leave = sequelize.define("leave", {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
   },
   start_date: {
     type: Sequelize.DATE,
-    allowNull: false
+    allowNull: false,
   },
   end_date: {
     type: Sequelize.DATE,
-    allowNull: false
+    allowNull: false,
   },
   subject: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
   },
   reason: {
     type: Sequelize.STRING,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 });
 
 module.exports = Leave;
