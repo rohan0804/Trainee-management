@@ -514,18 +514,19 @@ exports.adminDashboard = async(req,res)=>{
   const events = await Event.findAll();
   const announcements=await Announcement.findAll();
   const departments= await Department.findAll();
+  const mentor = await Mentor.findAll();
+  const trainees = await Trainee.findAll();
+  const traineesResult = trainees.map(res=>{
+    res['departmentName'] = await departments
+  });
   const result = events.map(event=>{
     return event.dataValues
   });
   const announcementresult = announcements.map(announcement=>{
     return announcement.dataValues
   });
-  const department = departments.map(result=>{
-    return result.dataValues;
-  });
   res.render('admin-dashboard',{
     events:result,
-    departmentt:department,
     announcements:announcementresult
   });
 };
