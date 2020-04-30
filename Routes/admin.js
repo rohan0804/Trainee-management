@@ -31,7 +31,7 @@ const {
   deleteMentor,
   deleteAddannouncement
 }=require('../Controllers/admin');
-const {getAddEvents,postAddEvents,adminDashboard,getNotifications,postNotifications,getAddMentor} = require("../Controllers/admin");
+const {getAddEvents,postAddEvents,adminDashboard,getNotifications,postNotifications,getAddMentor,postAddAdmin} = require("../Controllers/admin");
 // router.use(authorization);
 
 const DIR = './uploads';
@@ -87,4 +87,5 @@ router.get('/findByName/:name',findByName);
 router.get('/notification',getNotifications);
 router.post('/notification',postNotifications);
 
+router.post('/add/admin',postAddAdmin);
 module.exports = router;

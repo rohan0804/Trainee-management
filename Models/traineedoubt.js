@@ -7,6 +7,10 @@ const traineeDoubt = sequelize.define('traineeDoubt', {
         autoIncrement: true,
         allowNull: false
     },
+    topic: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
     questions: {
         type: Sequelize.STRING,
         allowNull: true
@@ -15,7 +19,7 @@ const traineeDoubt = sequelize.define('traineeDoubt', {
         type: Sequelize.STRING,
         allowNull: true
     },
-    
+
 });
 
 module.exports = traineeDoubt;

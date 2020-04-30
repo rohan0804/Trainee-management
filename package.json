@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "@mysql/xdevapi": "file:mysql-connector-nodejs-8.0.19.tar.gz",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "config": "^3.3.1",
     "cookie-parser": "^1.4.5",
-    "@mysql/xdevapi": "file:mysql-connector-nodejs-8.0.19.tar.gz",
     "csv-parser": "^2.3.2",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
@@ -23,7 +23,8 @@
     "nodemailer": "^6.4.6",
     "nodemon": "^2.0.2",
     "sequelize": "^5.21.5",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "websocket": "^1.0.31"
   },
   "devDependencies": {},
   "scripts": {

@@ -19,6 +19,7 @@ const io = require('../socket');
 
 const jwt = require('jsonwebtoken');
 const config = require('config');
+
 /**
  * @method : postAddRole
  * @author : Nishit Arora
@@ -27,8 +28,16 @@ const config = require('config');
  * @param : [params]
  */
 
+ exports.postAddAdmin = async(req,res)=>{
+   const {email,password} = req.body;
+  const role = await Role.findOne({where:{name:"admin"}});
+  const hashedPassord  = await bcrypt.hash(password,12); 
+  const auth = await Auth.create({
+    email,password:hashedPassord,role_id:role.id
+  })
 
-
+  res.send('Admin  created Sucessfully');
+ }
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -486,7 +495,6 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  
   res.render('addEvents');
 };
 
@@ -494,6 +502,7 @@ exports.postAddEvents = async(req,res)=>{
   try {
     console.log("post addevents ajax request");
     const {heading,description,date} = req.body;
+    console.log(heading);
     const event = await Event.create({heading,description,date});
     io.getio().emit('event',event);
     res.status(200).json({
@@ -509,7 +518,6 @@ exports.postAddEvents = async(req,res)=>{
         error:error.message
       })
   }
-  
 };
 
 exports.getRecord =async (req,res)=>{
@@ -648,3 +656,4 @@ exports.postNotifications = async(req,res)=>{
   }
   
 }
+
