@@ -16,20 +16,21 @@
             <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><img
                 src="/images/notification.png" width="25" height="25" alt="bell-icon"><span
                 class="badge">5</span></span>
-                <ul class="dropdown-menu" id="notificationMainEvent"  >
+            <ul class="dropdown-menu" id="notificationMainEvent">
               <% notifications.forEach(notification=>{ %>
-                
-              <li ><span class="glyphicon glyphicon-hand-right"></span><%= notification.message%><div
+
+              <li><span class="glyphicon glyphicon-hand-right"></span><%= notification.message%><div
                   class="notify-time"><%=notification.createdAt %></div>
               </li>
-            
+
               <%})%>
             </ul>
-              <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span> <div class="notify-time">
-                  </div>
-              </li>
-               
-              
+          <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span>
+            <div class="notify-time">
+            </div>
+          </li>
+
+
           </li>
         </ul>
       </div>
@@ -44,33 +45,26 @@
                 <h2>My Questions and Queries</h2>
               </div>
               <div class="card-content">
-                <section class="queries">
-                  <h3 class="question"> What kind of development are you currently doing?</h3>
+                <% traineedoubts.forEach(traineedoubt=>{ %>
+                <div class="list-group-item list-group-item-action flex-column align-items-start ">
+                  <section class="queries">
+                    <h3 class="question"> <%=traineedoubt.questions %> ?</h3> <span
+                      class="notify-time"><%=traineedoubt.createdAt %></span>
+                    <p class="answer">
+
+                    </p>
+                  </section>
+                </div>
+                <%})%>
+
+                <div class="list-group-item list-group-item-action flex-column align-items-start "
+                  id="traineedoubtMainEvent">
+                <section class="queries" id="traineedoubtheading">
                   <p class="answer">
-                    Candidates should showcase their understanding for how their role fits into the bigger picture and
-                    helps the company grow," Halpin said. "For example, if a candidate works at an e-commerce
-                    organization, they should understand how the application they work on allows orders to be processed
-                    and helps track customer information.
                   </p>
                 </section>
-                <section class="queries">
-                  <h3 class="question"> What kind of development are you currently doing?</h3>
-                  <p class="answer">
-                    Candidates should showcase their understanding for how their role fits into the bigger picture and
-                    helps the company grow," Halpin said. "For example, if a candidate works at an e-commerce
-                    organization, they should understand how the application they work on allows orders to be processed
-                    and helps track customer information.
-                  </p>
-                </section>
-                <section class="queries">
-                  <h3 class="question"> What kind of development are you currently doing?</h3>
-                  <p class="answer">
-                    Candidates should showcase their understanding for how their role fits into the bigger picture and
-                    helps the company grow," Halpin said. "For example, if a candidate works at an e-commerce
-                    organization, they should understand how the application they work on allows orders to be processed
-                    and helps track customer information.
-                  </p>
-                </section>
+                </div>
+
               </div>
             </div>
           </div>
@@ -217,6 +211,22 @@
     descriptionElement.classList.add("mb-1announcement");
     eventParent.appendChild(descriptionElement);
   });
+
+  socket.on('getTraineeDoubt', (traineedoubt) => {
+    var parent = document.getElementById('traineedoubtheading');
+    var helement = document.createElement("h3");
+    var heading = document.createTextNode(traineedoubt.questions);
+    helement.appendChild(heading);
+    helement.classList.add("answer");
+    parent.appendChild(helement);
+    var doubtParent = document.getElementById('traineedoubtMainEvent');
+    var doubtanswer = document.createElement("p");
+    var doubt = document.createTextNode(traineedoubt.answers);
+    doubtanswer.appendChild(doubt);
+    doubtanswer.classList.add("answer");
+    doubtParent.appendChild(doubtanswer);
+  });
+
 
   socket.on('notification', (notification) => {
     var parent = document.getElementById('notificationheading');

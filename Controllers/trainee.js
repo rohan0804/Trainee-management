@@ -6,7 +6,7 @@ const traineeDoubt = require('../Models/traineedoubt');
 var io = require('../socket');
 const Announcement = require('../Models/announcement');
 const Event = require('../Models/event');
-const Notification  = require('../Models/notifications');
+const Notification = require('../Models/notifications');
 
 /**
  * @method : gettraineeDoubts
@@ -22,12 +22,12 @@ exports.gettraineeDoubts = async (req, res, next) => {
 exports.posttraineeDoubts = async (req, res, next) => {
   try {
     console.log("sent query by ajax request");
-    const {topic,questions} = req.body;
+    const { topic, questions } = req.body;
     console.log(topic);
     console.log(questions);
     const doubt = await traineeDoubt.create({
       questions: questions,
-   //   trainee_id: traineeId,
+      //   trainee_id: traineeId,
       topic: topic
     });
     console.log("sent");
@@ -67,6 +67,7 @@ exports.gettraineeDashboard = async (req, res) => {
   const events = await Event.findAll();
   const announcements = await Announcement.findAll();
   const notifications = await Notification.findAll();
+  const traineedoubts = await traineeDoubt.findAll();
   const eventsresult = events.map(event => {
     return event.dataValues
   });
@@ -76,10 +77,15 @@ exports.gettraineeDashboard = async (req, res) => {
   const notificationresult = notifications.map(notification => {
     return notification.dataValues
   });
- console.log(notificationresult);
+  const traineedoubtresult = traineedoubts.map(traineedoubt => {
+    return traineedoubt.dataValues
+  })
+
+  console.log(traineedoubtresult);
   res.render('traineeDashboard', {
     events: eventsresult,
     announcements: announcementresult,
-    notifications: notificationresult
+    notifications: notificationresult,
+    traineedoubts: traineedoubtresult,
   });
 };
