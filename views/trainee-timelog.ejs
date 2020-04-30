@@ -1,0 +1,18 @@
+<div class="container">
+  <h1>Select Trainee:</h1>
+  <hr />
+  <form action="/mentor/checkTimelog" method="POST">
+    <div class="form-group">
+      <label for="Trainee">Select Trainee:</label>
+      <select class="form-control" id="traineeId" name="traineeId">
+        <option value="selected" selected>select trainee</option>
+        <%trainees.forEach((trainee)=>{%>
+        <option value="<%=trainee.id%>"><%=trainee.name%></option>
+        <%})%>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary mb-2">
+      Check Timelog
+    </button>
+  </form>
+</div>

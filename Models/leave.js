@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../utils/database");
 
-const Leave = sequelize.define("leave", {
+const Leave =sequelize.define('leave',{
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
