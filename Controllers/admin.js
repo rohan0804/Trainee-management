@@ -355,7 +355,7 @@ exports.getAddMentor = async(req,res)=>{
     return department.dataValues
   });
   console.log(result);
-  res.render('signup',{
+  res.render('mentor-signup',{
     departments:result
   });
 }
