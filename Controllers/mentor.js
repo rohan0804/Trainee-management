@@ -13,6 +13,7 @@ const Event = require("../Models/event");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 const moment = require("moment");
+
 /**
  * @author : Rohan
  * @method : postaddtest
@@ -20,6 +21,7 @@ const moment = require("moment");
  * @return :
  * @param :[name, date, description, duration, totalmarks]
  */
+
 exports.postAddTest = async (req, res, next) => {
   try {
     console.log(req.body);
@@ -53,6 +55,7 @@ exports.postAddTest = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @author : Rohan
  * @method : postcheckperformance
@@ -61,24 +64,57 @@ exports.postAddTest = async (req, res, next) => {
  * @return :
  * @param :[trainee]
  */
+
 exports.postcheckperformance = async (req, res, next) => {
   let totalmarks = 0,
     skills = [],
     percentage = 0,
     grade = "",
+    test_marks_array = [],
     scoredmarks = 0;
   try {
     const traineeId = req.body.traineeId;
-    const traineeRecords = await Performance.findAll({
-      where: {
-        trainee_id: traineeId,
-      },
+    const mentorId = req.body.mentorId;
+    const trainee = await Trainee.findOne({
+      raw: true,
+      where: { id: traineeId },
+      attributes: ["name"],
     });
-    traineeRecords.forEach((traineeRecord) => {
-      totalmarks += traineeRecord.totalmarks;
-      scoredmarks += traineeRecord.marks_obtained;
-      skills.push(traineeRecord.extra_skills);
+    console.log(trainee);
+    traineeName = trainee.name;
+    // console.log(mentorId);
+    // console.log(traineeId);
+    // const traineeRecords = await Performance.findAll({
+    //   raw: true,
+    //   where: {
+    //     trainee_id: traineeId,
+    //   },
+    // });
+    // console.log(traineeRecords);
+    const tests = await Test.findAll({
+      raw: true,
+      where: { mentor_id: mentorId },
     });
+    // console.log(tests);
+
+    // traineeRecords.forEach((traineeRecord) => {
+    //   skills.push(traineeRecord.extra_skills);
+    // });
+    for (test of tests) {
+      totalmarks += test.totalmarks;
+      test_marks = await Performance.findAll({
+        raw: true,
+        where: {
+          [Op.and]: [{ trainee_id: traineeId }, { test_id: test.id }],
+        },
+      });
+      if (test_marks[0]) {
+        test_marks_array.push(test_marks[0].marks_obtained);
+        scoredmarks += test_marks[0].marks_obtained;
+      } else {
+        test_marks_array.push("absent");
+      }
+    }
     //calculating the percentage
     percentage = ((scoredmarks * 100) / totalmarks).toFixed(2);
     if (percentage >= 90 && percentage <= 100) grade = "A";
@@ -86,14 +122,16 @@ exports.postcheckperformance = async (req, res, next) => {
     else if (percentage >= 60 && percentage <= 79) grade = "C";
     else if (percentage >= 33 && percentage <= 59) grade = "D";
     else if (percentage < 33) grade = "F";
-    res.status(200).json({
-      status: true,
-      statusCode: res.statusCode,
+    res.render("performance-new", {
       percentage,
       grade,
       totalmarks,
       scoredmarks,
       skills,
+      tests,
+      test_marks_array,
+      scoredmarks,
+      traineeName,
     });
   } catch (error) {
     res.status(400).json({
@@ -104,6 +142,7 @@ exports.postcheckperformance = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @author : Rohan
  * @method : getaddperformance
@@ -111,6 +150,7 @@ exports.postcheckperformance = async (req, res, next) => {
  * @return :
  * @param :[]
  */
+
 exports.getAllTests = async (req, res, next) => {
   try {
     const tests = await Test.findAll();
@@ -128,6 +168,7 @@ exports.getAllTests = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @author : Rohan
  * @method : postaddperformance
@@ -135,6 +176,7 @@ exports.getAllTests = async (req, res, next) => {
  * @return :
  * @param :[skills, totalmarks, obtainedmarks, trainee, test]
  */
+
 exports.postAddPerformance = async (req, res, next) => {
   try {
     const { skills, totalmarks, obtainedmarks, trainee, test } = req.body;
@@ -159,6 +201,7 @@ exports.postAddPerformance = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : listOfTrainees
  * @author : Rohan
@@ -166,6 +209,7 @@ exports.postAddPerformance = async (req, res, next) => {
  * @return :
  * @param :[departmentId]
  **/
+
 exports.listOfTrainees = async (req, res, next) => {
   try {
     const trainees = await Trainee.findAll({
@@ -186,6 +230,7 @@ exports.listOfTrainees = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : findByName
  * @author : Rohan
@@ -193,6 +238,7 @@ exports.listOfTrainees = async (req, res, next) => {
  * @return :
  * @param :[name]
  **/
+
 exports.findByName = async (req, res, next) => {
   try {
     const name = req.params.name;
@@ -215,6 +261,19 @@ exports.findByName = async (req, res, next) => {
     });
   }
 };
+
+/**
+ * @method : getLeaveRecords
+ * @author : Mehak Dhiman
+ * @description : To Retrive all data
+ * @return :
+ * @param :[params-trainee_id]
+ *
+ **/
+exports.getSendEmail = async (req, res, next) => {
+  res.render("sendemail");
+};
+
 /**
  * @method : sendMailToAllTrainees
  * @author : Rohan
@@ -222,10 +281,12 @@ exports.findByName = async (req, res, next) => {
  * @return :
  * @param :[text,mentorId]
  **/
+
 exports.sendMailToAllTrainees = async (req, res, next) => {
   try {
+    // console.log(req.body);
     const emails = [],
-      text = req.body.text,
+      text = req.body.mailtext,
       mentorId = parseInt(req.params.mentorId);
     let getmailoptions = require("../mail/mailoptions");
     const mentor = await Auth.findAll({
@@ -257,6 +318,7 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
       });
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
+          console.log(error);
           res.status(400).json({
             status: false,
             statusCode: res.statusCode,
@@ -283,6 +345,7 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : sendMailToAllTrainees
  * @author : Rohan
@@ -290,51 +353,88 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
  * @return :
  * @param :[traineeId]
  **/
+
 exports.checkTimelog = async (req, res, next) => {
   try {
     const traineeId = req.body.traineeId;
     let data = [];
     const timelogData = await Timelog.findAll({
+      raw: true,
+      order: [["date", "DESC"]],
       where: { trainee_id: traineeId },
     });
-    timelogData.forEach(async (timelog) => {
-      let { start_time, end_time, date, task_memo } = timelog;
-      if (timelog.dataValues.sub_category_id != null) {
+    for (timelog of timelogData) {
+      console.log(timelog);
+      if (timelog.sub_category_id != null) {
         let sub_category = await Sub_category.findAll({
+          raw: true,
           attributes: ["name"],
-          where: { id: timelog.dataValues.sub_category_id },
+          where: { id: timelog.sub_category_id },
         });
         let category = await Category.findAll({
+          raw: true,
           attributes: ["name"],
-          where: { id: timelog.dataValues.category_id },
+          where: { id: timelog.category_id },
         });
         data.push({
-          end_time: timelog.dataValues.end_time,
-          start_time: timelog.dataValues.start_time,
-          task_memo: timelog.dataValues.task_memo,
-          sub_category: sub_category[0].dataValues.name,
-          category: category[0].dataValues.name,
+          date: timelog.date,
+          end_time:
+            timelog.end_time.getDate() +
+            " " +
+            timelog.end_time.getMonth() +
+            " " +
+            timelog.end_time.getFullYear() +
+            " " +
+            timelog.end_time.toLocaleTimeString(),
+          start_time:
+            timelog.start_time.getDate() +
+            " " +
+            timelog.start_time.getMonth() +
+            " " +
+            timelog.start_time.getFullYear() +
+            " " +
+            timelog.start_time.toLocaleTimeString(),
+          task_memo: timelog.task_memo,
+          sub_category: sub_category[0].name,
+          category: category[0].name,
         });
       } else {
         let category = await Category.findAll({
+          raw: true,
           attributes: ["name"],
-          where: { id: timelog.dataValues.category_id },
+          where: { id: timelog.category_id },
         });
         data.push({
-          start_time: timelog.dataValues.start_time,
-          end_time: timelog.dataValues.end_time,
-          task_memo: timelog.dataValues.task_memo,
-          category: category[0].dataValues.name,
+          date: timelog.date,
+          start_time:
+            timelog.start_time.getDate() +
+            " " +
+            timelog.start_time.getMonth() +
+            " " +
+            timelog.start_time.getFullYear() +
+            " " +
+            timelog.start_time.toLocaleTimeString(),
+          end_time:
+            timelog.end_time.getDate() +
+            " " +
+            timelog.end_time.getMonth() +
+            " " +
+            timelog.end_time.getFullYear() +
+            " " +
+            timelog.end_time.toLocaleTimeString(),
+          task_memo: timelog.task_memo,
+          category: category[0].name,
         });
       }
+    }
+    // res.status(200).json({
+    //   status: true,
+    //   statusCode: res.statusCode,
+    //   data,
+    // });
+    res.render("trainee-timelogdata", {
+      data,
     });
-    setTimeout(() => {
-      res.status(200).json({
-        status: true,
-        statusCode: res.statusCode,
-        data,
-      });
-    }, 20);
   } catch (error) {
     res.status(400).json({
       status: false,
@@ -344,6 +444,7 @@ exports.checkTimelog = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : getAddDepartment
  * @author : Rohan
@@ -351,6 +452,7 @@ exports.checkTimelog = async (req, res, next) => {
  * @return :
  * @param :[]
  **/
+
 exports.getAddDepartment = async (req, res, next) => {
   res.render("department");
 };
@@ -392,6 +494,7 @@ exports.postAddDeprtment = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : getDashboard
  * @author : Rohan
@@ -399,6 +502,7 @@ exports.postAddDeprtment = async (req, res, next) => {
  * @return :
  * @param :[]
  **/
+
 exports.getDashboard = async (req, res, next) => {
   try {
     const traineeNames = await Trainee.findAll({
@@ -415,6 +519,7 @@ exports.getDashboard = async (req, res, next) => {
     // console.log(announcements);
     const events = await Event.findAll({
       raw: true,
+      order: [["id", "DESC"]],
       attributes: ["heading", "date"],
     });
     // console.log(events);
@@ -431,6 +536,7 @@ exports.getDashboard = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : getAddTest
  * @author : Rohan
@@ -438,9 +544,11 @@ exports.getDashboard = async (req, res, next) => {
  * @return :
  * @param :[]
  **/
+
 exports.getAddTest = async (req, res, next) => {
   res.render("test");
 };
+
 /**
  * @method : getPerformance
  * @author : Rohan
@@ -449,9 +557,10 @@ exports.getAddTest = async (req, res, next) => {
  * @return :
  * @param :[]
  **/
+
 exports.getPerformance = async (req, res, next) => {
   try {
-    console.log(req.params.mentorId);
+    // console.log(req.params.mentorId);
     const mentorId = req.params.mentorId;
     const trainees = await Trainee.findAll({ where: { mentor_id: mentorId } });
     const tests = await Test.findAll({ where: { mentor_id: mentorId } });
@@ -467,17 +576,18 @@ exports.getPerformance = async (req, res, next) => {
     });
   }
 };
+
 /**
  * @method : getTraineeTimelog
  * @author : Rohan
- * @description : To render the addperformance view to mentor for adding a
- * performance of a particular trainee
+ * @description : To render the view  to mentor for select the trainee
  * @return :
  * @param :[]
  **/
+
 exports.getTraineeTimelog = async (req, res, next) => {
   try {
-    console.log(req.params.mentorId);
+    // console.log(req.params.mentorId);
     const mentorId = req.params.mentorId;
     const trainees = await Trainee.findAll({ where: { mentor_id: mentorId } });
     // console.log(trainees);
@@ -496,7 +606,7 @@ exports.getTraineeTimelog = async (req, res, next) => {
 /**
  * @method : getLeaveRecords
  * @author : Mehak Dhiman
- * @description : To Retrive all data
+ * @description : To Retreive all data
  * @return :
  * @param :[params-trainee_id]
  *
@@ -505,7 +615,7 @@ exports.getTraineeTimelog = async (req, res, next) => {
 exports.getLeaveRecords = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
+    // console.log(id);
     if (!id) {
       res.status(400).json({
         msg: "Parameter not found",
@@ -519,7 +629,6 @@ exports.getLeaveRecords = async (req, res) => {
         msg: "Record not Exist",
       });
     }
-
     const traineeData = await Trainee.findAll({
       where: { mentor_id: id },
     });
@@ -531,7 +640,7 @@ exports.getLeaveRecords = async (req, res) => {
     let traineeId = traineeData.map(function (trainee_id) {
       return trainee_id.id;
     });
-    console.log(traineeId);
+    // console.log(traineeId);
     let traineename = traineeData.map(function (trainee_name) {
       return trainee_name.name;
     });
@@ -556,4 +665,12 @@ exports.getLeaveRecords = async (req, res) => {
       msg: "Something Wrong!",
     });
   }
+};
+
+exports.getCheckPerfromance = async (req, res, next) => {
+  const mentorId = req.params.mentorId;
+  const trainees = await Trainee.findAll({ where: { mentor_id: mentorId } });
+  res.render("performance", {
+    trainees,
+  });
 };

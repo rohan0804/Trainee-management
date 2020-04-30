@@ -40,11 +40,7 @@ app.set("views", "views");
 app.use(express.static("public"));
 app.use(expressLayouts);
 
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("syllabuss")
 );
@@ -94,7 +90,7 @@ sequelize
   .catch((err) => {
     console.log(err);
   });
-let port = 3000;
-app.listen(3000, (req, res) => {
+let port = 4000;
+app.listen(4000, (req, res) => {
   console.log(`server is listening at port ${port}`);
 });

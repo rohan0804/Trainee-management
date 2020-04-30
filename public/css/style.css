@@ -139,7 +139,6 @@ body {
   min-height: 100%;
   width: 230px;
   position: absolute;
-  top: -20px;
   left: 0;
   z-index: 6;
   background: url(../images/sidebar.jpg);
