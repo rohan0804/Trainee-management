@@ -1,29 +1,35 @@
 const express = require("express");
 const app = express();
+var http = require('http').createServer(app);
+var io = require('./socket').init(http);
 const sequelize = require("./utils/database");
 const bodyParser = require("body-parser");
 const authRouter = require("./Routes/auth");
 const adminRouter = require("./Routes/admin");
 const mentorRouter = require("./Routes/mentor");
+const traineeRouter = require("./Routes/trainee");
+const timelogRoute = require("./Routes/timelog");
+const leaveRoute = require("./Routes/leave");
 const expressLayouts = require("express-ejs-layouts");
+const {auth,roleBasedControl} = require('./middleware/auth');
+const cookieParser = require('cookie-parser');
 
-var http = require('http').createServer(app);
-const io = require('socket.io')(http);
 
 app.set("view engine", "ejs");
-app.engine('html', require('ejs').renderFile);
 app.set("views", "views");
 app.use(expressLayouts);
-app.use(express.static('public'));
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.static('public'));
+app.use(authRouter);
+app.use(auth);
+app.use(roleBasedControl);
 
-
-app.use("/", authRouter);
-
-app.use("/", adminRouter);
-
+app.use("/admin", adminRouter);
+app.use("/trainee", traineeRouter);
 app.use("/mentor", mentorRouter);
+app.use("/timelog", timelogRoute);
+app.use("/leave", leaveRoute);
 
 const Department = require("./Models/department");
 const Announcement=require('./Models/announcement');
@@ -38,8 +44,10 @@ const Category = require("./Models/category");
 const subCategory = require("./Models/sub_category");
 const Test = require("./Models/test");
 const Auth = require("./Models/auth");
-const Record = require('./Models/csv');
+const traineeDoubt = require("./Models/traineedoubt");
+const Notification = require('./Models/notifications');
 
+Trainee.hasMany(traineeDoubt, { foreignKey: "trainee_id" });
 Department.hasMany(Trainee, { foreignKey: "department_id" });
 Mentor.hasMany(Trainee, { foreignKey: "mentor_id" });
 Auth.belongsTo(Role, { foreignKey: "role_id" });
@@ -51,36 +59,29 @@ Trainee.belongsTo(Auth, { foreignKey: "auth_id" });
 Mentor.belongsTo(Auth, { foreignKey: "auth_id" });
 Trainee.hasMany(Timelog, { foreignKey: "trainee_id" });
 Category.hasMany(Timelog, { foreignKey: "category_id" });
-subCategory.hasMany(Category, { foreignKey: "subcategory_id" });
+subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
+Category.hasMany(subCategory, { foreignKey: "category_id" });
+Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 
-sequelize
-  // .sync({alter:true})
-  .sync()
+sequelize.sync({alter:true})
   .then(result => {
-    // console.log(result);
   })
-  .catch(err => {
-    console.log(err);
-  });
   let count=0;
-io.sockets.on('connection',socket=>{
-  console.log(socket.id);
-  count+=1;
-  console.log("Socket connected",count);
-  socket.on('disconnect',result=>{
-    count-=1;
-    console.log("Socket Disconnected",count);
-  });
-  socket.on('addEvent',event=>{
-    console.log(event);
-    io.sockets.emit('getEvent',event);
-  })
-    socket.on('announcement',(announcement)=>{
-      console.log(announcement);
-      io.sockets.emit('chat',data);
+    io.on('connection',socket=>{
+    count+=1;
+    console.log("Active sockets",count);
+    socket.on('disconnect',result=>{
+      count-=1;
+      console.log("Active sockets",count);
     });
-  });
+    });
+    http.listen(4000,()=>{
+      console.log(`server is listening at my port`);
+    });
   
-http.listen(4000, (req, res) => {
-  console.log(`server is listening at my port`);
-});
+  
+  
+
+  
+ 
+  

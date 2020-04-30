@@ -39,12 +39,11 @@
                               <h2>Notifications</h2>
                            </div>
                            <div class="card-content">
+                              <%notifications.forEach(result=>{%>
                               <ul class="notification">
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Test is on monday.</li>
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Collect your nametags.</li>
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.</li>
-                               <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.</li>
+                               <li><span class="glyphicon glyphicon-hand-right"></span><%=result.message%></li>
                               </ul>
+                              <%})%>
                            </div>
                         </div>
                      </div>
@@ -180,4 +179,4 @@
              });
          });
          
-      </script>
+      </script>01af79247a313fa332

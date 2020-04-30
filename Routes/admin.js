@@ -14,7 +14,7 @@ const {
   findByName
 } = require("../Controllers/admin");
 const {
-  postTraineeSignup,
+  postTraineeSignup,getChat,
   getTraineeSignup,
   getMentor,
   postUpdateTrainee,
@@ -30,13 +30,15 @@ const {
   deleteMentor,
   deleteAddannouncement
 }=require('../Controllers/admin');
-const {getAddEvents,postAddEvents,adminDashboard} = require("../Controllers/admin");
+const {getAddEvents,postAddEvents,adminDashboard,getNotifications,postNotifications,getAddMentor} = require("../Controllers/admin");
+// router.use(authorization);
 
 router.post("/add/role", postAddRole);
 router.post("/add/department", postAddDepartment);
 router.get("/add/department", getAddDepartment);
 router.post("/add/trainee", postTraineeSignup);
 router.get("/add/trainee", getTraineeSignup);
+router.get('/add/mentor',getAddMentor);
 router.get("/add/mentor/:id", getMentor);
 router.post("/add/mentor", postAddMentor);
 router.put('/add/mentor/:id',putAddMentor);
@@ -62,5 +64,8 @@ router.post('/csv/upload',upload.single('profile'),postRecord);
 
 router.get('/listofTrainee/:page',listofTrainees);
 router.get('/findByName/:name',findByName);
+
+router.get('/notification',getNotifications);
+router.post('/notification',postNotifications);
 
 module.exports = router;

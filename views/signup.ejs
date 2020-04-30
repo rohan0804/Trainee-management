@@ -1,0 +1,89 @@
+   <header>
+         <div class="nav-container">
+            <div class="container-fluid">
+               <div class="header">
+                  <a class="brand" href="javascript:void(0);" title="Website name">Zapbuild HRM</a>
+               </div>
+               <div class="links">
+                  <a href="/login" title="Timelog" class="white">
+                  <span class="glyphicon glyphicon-log-in"></span> Login
+                  </a>
+               </div>
+            </div>
+         </div>
+      </header>
+      <div class="login-wrapper">
+         <div class="row">
+            <div class="col-sm-6">
+               <div class="text-side-signup">
+                  <div class="contact-info wow fadeIn">
+                     <img src="/images/signup.png" class="user-image" width="100" height="100" alt="A man picture">
+                     <h1 class="heading1 wow fadeIn data-wow-duration="1s" data-wow-delay="0.8s">Connect with us</h1>
+                     <p>To keep connected with us enter your information</p>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-6">
+               <section class="form-side wow slideInRight">
+                  <h2 class="heading2">Create your account!</h2>
+                  <form id="signin-form" action="/admin/add/mentor" method="POST">
+                      <div class="form-group fields">
+                        <label class="form-label">Name</label>
+                        <% if(typeof error =='object' && error.type=="name"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="text" name="name" id="user" class="form-control" placeholder="Enter your name" required>
+                     </div>
+                     <div class="form-group fields">
+                        <label class="form-label">Email</label>
+                        <% if(typeof error =='object' && error.type=="email"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="email" name="email" id="Email" class="form-control" placeholder="Enter your email" required>
+                     </div>
+                     <div class="form-group fields">
+                        <label class="form-label">Select Department</label>
+                           <select class="form-control" name="department" id="Department">
+                              <%if(typeof departments !==undefined){ %>
+                              <% for(let department of departments){ %>
+                                 <option value="<%=department.name%>"><%=department.name%></option>
+                              <%}}%>
+                           </select>
+                        </div>
+                     <div class="form-group fields">
+                        <label class="form-label">Contact Number</label>
+                        <% if(typeof error =='object' && error.type=="phoneNo"){%>
+                           <p style="color: red;">*<%= error.error%></p>
+                           <%}%>
+                        <input type="tel" name="phoneNo" id="contact" class="form-control" placeholder="Enter your contact number" required>
+                     </div>
+                     <div class="form-group fields">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" id="Password" class="form-control" placeholder="Enter your password" required>
+                     </div>
+                     <div class="form-group fields">
+                        <label class="form-label"> Confirm Password</label>
+                        <input type="password" name="Cpassword" id="Cpassword" class="form-control" placeholder="Enter your password again" required>
+                     </div>
+                     
+                     <div class="login-btn">
+                        <button class="btn buttn" type="submit">Signup</button>
+                     </div>
+                  </form>
+               </section>
+            </div>
+         </div>
+      </div>
+      <script src="/js/wow.js"></script>
+      <script src="/js/jquery.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <script src="/js/jquery-1.12.4.js"></script>
+      <script src="/js/jquery-ui.js"></script>
+      <script>
+            $( function() {
+              $( "#datepicker" ).datepicker();
+            } );
+  
+             new WOW().init();
+      </script>
+ 
