@@ -18,19 +18,18 @@ const Trainee = sequelize.define('trainee',{
     },
     joining_date:{
         type:Sequelize.STRING,
-        allowNull:true
+        allowNull:false
     },
     last_date:{
         type:Sequelize.STRING,
-        allowNull:false
     },
     linkedin_profile:{
         type:Sequelize.STRING,
-        allowNull:false
+        allowNull:true
     },
     image_url:{
-        type:Sequelize.STRING,
-        allowNull:false
+        type:Sequelize.BLOB('long'),
+        allowNull:true
     }
 })
 

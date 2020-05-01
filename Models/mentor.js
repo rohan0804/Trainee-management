@@ -14,7 +14,7 @@ const Mentor = sequelize.define("mentor", {
   },
   phoneNo: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: true
   }
 });

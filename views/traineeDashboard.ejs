@@ -1,76 +1,298 @@
-<h1>Trainee Dashboard</h1>
-    <h1>events</h1>
-    <div class="list-group">
-        <% events.forEach(event=>{ %>
-        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1"><%= event.heading%></h5>
-            <small>3 days ago</small>
-          </div>
-          <p class="mb-1"><%= event.description%></p>
-          <small></small>
-        </a>
-        <%})%>
-        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start " id="mainEvent">
-            <div class="d-flex w-100 justify-content-between" id="heading">
-              
-            </div>
-            <p class="mb-1"></p>
-            
-          </a>
+<div class="loader-wrapper">
+  <div class="preloader" id="loader"></div>
+</div>
+<div class="page-content">
+  <div id="main">
+    <header class="nav-container">
+      <div class="container-fluid">
+        <div class="header">
+          <span onclick="openNav()" id="collapse" class="bars-btn"><i class="fa fa-bars icon"></i></span>
+          <a class="brand" href="javascript:void(0);" title="Website name">Zapbuild HRM</a>
         </div>
-        <h1>announcements</h1>
-        <div class="list-group">
-            <% announcements.forEach(announcement=>{ %>
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-              <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><%= announcement.announcementTitle%></h5>
-                <small>3 days ago</small>
-              </div>
-              <p class="mb-1"><%= announcement.announcementDescription%></p>
-              <small></small>
-            </a>
-            <%})%>
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start " id="mainEvent">
-                <div class="d-flex w-100 justify-content-between" id="heading">
-                  
-                </div>
-                <p class="mb-1"></p>
-                
-              </a>
+        <ul class="links">
+          <li><a href="javascript:void(0);" title="logout" class="white"><span
+                class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+          <li class="bell dropdown">
+            <span class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><img
+                src="/images/notification.png" width="25" height="25" alt="bell-icon"><span
+                class="badge">5</span></span>
+            <ul class="dropdown-menu" id="notificationMainEvent">
+              <% notifications.forEach(notification=>{ %>
+
+              <li><span class="glyphicon glyphicon-hand-right"></span><%= notification.message%><div
+                  class="notify-time"><%=notification.createdAt %></div>
+              </li>
+
+              <%})%>
+            </ul>
+          <li id="notificationheading"><span class="glyphicon glyphicon-hand-right"></span>
+            <div class="notify-time">
             </div>
-        
-    <script>
-        var socket = io();
-        socket.on('getEvent',(event)=>{
-            
-            
-            var parent = document.getElementById('heading');
-            var helement = document.createElement("h5");
-            var heading = document.createTextNode(event.heading);
-            helement.appendChild(heading);
-            helement.classList.add("mb-1");
-            parent.appendChild(helement);
-            var eventParent = document.getElementById('mainEvent');
-            var descriptionElement=  document.createElement("p");
-            var description = document.createTextNode(event.description);
-            descriptionElement.appendChild(description);
-            descriptionElement.classList.add("mb-1");
-            eventParent.appendChild(descriptionElement);
-        });
-        socket.on('getAnnouncements',(announcement)=>{
-            var parent = document.getElementById('heading');
-            var helement = document.createElement("h5");
-            var heading = document.createTextNode(announcement.announcementTitle);
-            helement.appendChild(heading);
-            helement.classList.add("mb-1");
-            parent.appendChild(helement);
-            var eventParent = document.getElementById('mainEvent');
-            var descriptionElement=  document.createElement("p");
-            var description = document.createTextNode(announcement.announcementDescription);
-            descriptionElement.appendChild(description);
-            descriptionElement.classList.add("mb-1");
-            eventParent.appendChild(descriptionElement);
-        });
-        
-    </script>
+          </li>
+
+
+          </li>
+        </ul>
+      </div>
+    </header>
+    <div class="main-panel">
+      <div class="wrapper">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="row">
+          <div class="col-md-8 col-sm-6">
+            <div class="column">
+              <div class="heading red">
+                <h2>My Questions and Queries</h2>
+              </div>
+              <div class="card-content">
+                <% traineedoubts.forEach(traineedoubt=>{ %>
+                <div class="list-group-item list-group-item-action flex-column align-items-start ">
+                  <section class="queries">
+                    <h3 class="question"> <%=traineedoubt.questions %> ?</h3> <span
+                      class="notify-time"><%=traineedoubt.createdAt %></span>
+                    <p class="answer">
+
+                    </p>
+                  </section>
+                </div>
+                <%})%>
+
+                <div class="list-group-item list-group-item-action flex-column align-items-start "
+                  id="traineedoubtMainEvent">
+                <section class="queries" id="traineedoubtheading">
+                  <p class="answer">
+                  </p>
+                </section>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="column">
+              <div class="heading yellow">
+                <h2>Performance</h2>
+              </div>
+              <div class="card-content">
+                <div class="percentage">
+                  <svg class="svg">
+                    <circle cx="70" cy="70" r="70"></circle>
+                    <circle cx="70" cy="70" r="70" class="circle"></circle>
+                  </svg>
+                  <div class="number">
+                    <h3>75<span>%</span></h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8 col-sm-6">
+            <div class="column">
+              <div class="heading green">
+                <h2>Announcements</h2>
+              </div>
+              <div class="card-content">
+                <% announcements.forEach(announcement=>{ %>
+                <div class="list-group-item list-group-item-action flex-column align-items-start ">
+                  <section class="announcement">
+                    <h3 class="announcement-heading"><%= announcement.announcementTitle%></h3>
+                    <p class="announcement-data">
+                      <%= announcement.announcementDescription%>
+                    </p>
+                  </section>
+                </div>
+                <%})%>
+                <div class="list-group-item list-group-item-action flex-column align-items-start "
+                  id="announcementMainEvent">
+                  <section class="announcement" id="announcementheading">
+                    <p class="mb-1announcement">
+                    </p>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="column">
+              <div class="heading purple">
+                <h2>Upcoming events</h2>
+              </div>
+              <div class="card-content">
+                <% events.forEach(event=>{ %>
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                  <section class="event">
+                    <h3 class="event-info"><%= event.heading%></h3>
+                    <p class="event-date"> <%= event.description%></p>
+                  </section>
+                </div>
+                <%})%>
+
+                <div class="list-group-item list-group-item-action flex-column align-items-start " id="eventMainEvent">
+                  <section class="event" id="eventheading">
+                    <p class="mb-1event"></p>
+                  </section>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="sidenav" id="mysidenav">
+    <div class="overlay"></div>
+    <a href="javascript:void(0)" title="Click to close" class="closebtn" onclick="closeNav()">&times;</a>
+    <div class="profile-photo">
+      <img src="images/profile.jpeg" width="216" height="233" alt="user's profile pic">
+    </div>
+    <ul class="items">
+      <li><a href="javascript:void(0)" title="Add Timelog">Add Timelog</a></li>
+      <li><a href="javascript:void(0)" title="Performance">Performance</a></li>
+      <li><a href="javascript:void(0)" title="Syllabus">Syllabus</a></li>
+      <li><a href="javascript:void(0)" title="Extra Skills">Extra Skills</a></li>
+      <li><a href="javascript:void(0)" title="Leave">Leave</a></li>
+      <li><a href="javascript:void(0)" title="Ask a question">Ask a question</a></li>
+    </ul>
+  </aside>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script>
+  function openNav() {
+    if ($(window).width() <= 1200) {
+      document.getElementById("mysidenav").style.width = "230px";
+      document.getElementById("main").style.marginLeft = "0";
+      document.getElementById("collapse").style.display = "none";
+    }
+    else {
+      document.getElementById("mysidenav").style.width = "230px";
+      document.getElementById("main").style.marginLeft = "230px";
+      document.getElementById("collapse").style.display = "none";
+    }
+  }
+  function closeNav() {
+    document.getElementById("mysidenav").style.width = "0px";
+    document.getElementById("main").style.marginLeft = "0";
+    document.getElementById("collapse").style.display = "inline-block";
+  }
+
+  $(window).on("load", function () {
+    $(".loader-wrapper").fadeOut("slow");
+  });
+
+  var socket = io();
+  socket.on('getEvent', (event) => {
+    var parent = document.getElementById('eventheading');
+    var helement = document.createElement("h3");
+    var heading = document.createTextNode(event.heading);
+    helement.appendChild(heading);
+    helement.classList.add("mb-1event");
+    parent.appendChild(helement);
+    var eventParent = document.getElementById('eventMainEvent');
+    var descriptionElement = document.createElement("p");
+    var description = document.createTextNode(event.description);
+    descriptionElement.appendChild(description);
+    descriptionElement.classList.add("mb-1event");
+    eventParent.appendChild(descriptionElement);
+  });
+
+  socket.on('getAnnouncements', (announcement) => {
+    var parent = document.getElementById('announcementheading');
+    var helement = document.createElement("h3");
+    var heading = document.createTextNode(announcement.announcementTitle);
+    helement.appendChild(heading);
+    helement.classList.add("mb-1announcement");
+    parent.appendChild(helement);
+    var eventParent = document.getElementById('announcementMainEvent');
+    var descriptionElement = document.createElement("p");
+    var description = document.createTextNode(announcement.announcementDescription);
+    descriptionElement.appendChild(description);
+    descriptionElement.classList.add("mb-1announcement");
+    eventParent.appendChild(descriptionElement);
+  });
+
+  socket.on('getTraineeDoubt', (traineedoubt) => {
+    var parent = document.getElementById('traineedoubtheading');
+    var helement = document.createElement("h3");
+    var heading = document.createTextNode(traineedoubt.questions);
+    helement.appendChild(heading);
+    helement.classList.add("answer");
+    parent.appendChild(helement);
+    var doubtParent = document.getElementById('traineedoubtMainEvent');
+    var doubtanswer = document.createElement("p");
+    var doubt = document.createTextNode(traineedoubt.answers);
+    doubtanswer.appendChild(doubt);
+    doubtanswer.classList.add("answer");
+    doubtParent.appendChild(doubtanswer);
+  });
+
+
+  socket.on('notification', (notification) => {
+    var parent = document.getElementById('notificationheading');
+    var helement = document.createTextNode(notification.message);
+    var selement = document.createElement("span");
+    var delement = document.createElement("div");
+    var heading = document.createTextNode(notification.createdAt);
+    delement.appendChild(heading);
+    helement.classList.add("mb-1notification");
+    parent.appendChild(helement);
+    parent.appendChild(selement);
+    parent.appendChild(delement);
+    // var eventParent = document.getElementById('notificationMainEvent');
+    // var descriptionElement = document.createElement("div");
+    // var description = document.createTextNode();
+    // descriptionElement.appendChild(description);
+    // descriptionElement.classList.add("mb-1");
+    // eventParent.appendChild(descriptionElement);
+  });
+</script>
+
+
+
+
+
+
+
+
+<!-- 
+<h1>Trainee Dashboard</h1>
+<h1>events</h1>
+<div class="list-group">
+  <% events.forEach(event=>{ %>
+  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1"><%= event.heading%></h5>
+      <small>3 days ago</small>
+    </div>
+    <p class="mb-1"><%= event.description%></p>
+    <small></small>
+  </a>
+  <%})%>
+  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start " id="mainEvent">
+    <div class="d-flex w-100 justify-content-between" id="heading">
+    </div>
+    <p class="mb-1"></p>
+
+  </a>
+</div>
+<h1>announcements</h1>
+<div class="list-group">
+  <% announcements.forEach(announcement=>{ %>
+  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1"><%= announcement.announcementTitle%></h5>
+      <small></small>
+    </div>
+    <p class="mb-1"><%= announcement.announcementDescription%></p>
+    <small></small>
+  </a>
+  <%})%>
+  <a href="#" class="list-group-item list-group-item-action flex-column align-items-start " id="mainEvent">
+    <div class="d-flex w-100 justify-content-between" id="heading">
+
+    </div>
+    <p class="mb-1"></p>
+
+  </a>
+</div> -->

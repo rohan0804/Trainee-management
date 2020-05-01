@@ -19,6 +19,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 app.use(expressLayouts);
 app.use(cookieParser());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
 app.use(authRouter);

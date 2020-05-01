@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {upload} = require('../multer');
+const {upload,uploadFile} = require('../multer');
 const {
   postAddRole,
   postAddDepartment,
@@ -36,7 +36,7 @@ const {getAddEvents,postAddEvents,adminDashboard,getNotifications,postNotificati
 router.post("/add/role", postAddRole);
 router.post("/add/department", postAddDepartment);
 router.get("/add/department", getAddDepartment);
-router.post("/add/trainee", postTraineeSignup);
+router.post("/add/trainee",uploadFile.single('profile'), postTraineeSignup);
 router.get("/add/trainee", getTraineeSignup);
 router.get('/add/mentor',getAddMentor);
 router.get("/add/mentor/:id", getMentor);

@@ -77,7 +77,25 @@ exports.postAddDepartment = async (req, res, next) => {
 
 exports.getTraineeSignup = async (req, res) => {
   const departments = await Department.findAll();
-  
+  const mentor = await Mentor.findAll();
+  const traineees = await Trainee.findAll();
+  console.log(traineees);
+   const result = departments.map(department=>{
+    return department.dataValues
+  });
+
+  const rs = traineees.map(s=>{
+    return s.dataValues;
+  })
+  const results = mentor.map(trainees=>{
+    return trainees.dataValues
+  });
+  console.log(results);
+  res.render('trainee-signup',{
+    departments:result,
+    mentor:results,
+    tr:rs
+  });
 };
 
 /**
@@ -91,12 +109,16 @@ exports.getTraineeSignup = async (req, res) => {
  */
 exports.postTraineeSignup = async (req, res) => {
   try {
-    const {name,email,password,phone_no,joining_date,last_date,department_id,image_url,
+    const imagefile =req.file.filename;
+    const filepath =path.join(__dirname,'../uploads/'+imagefile);
+    const imageRecord = await fs.readFileSync(filepath);
+    const {name,email,password,phoneNo,joining_date,department,
       linkedin_profile,
-      mentor_id
+      id
     } = req.body;
     const hashPassword = await bcrypt.hash(password, 12);
     const role = await Role.findOne({ where: { name: "trainee" } });
+    console.log(role.dataValues.id,'hgghg');
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
       throw new Error("user already exists");
@@ -109,23 +131,15 @@ exports.postTraineeSignup = async (req, res) => {
     });
     const trainee = await Trainee.create({
       name,
-      phone_no,
       joining_date,
-      last_date,
-      phone_no,
-      department_id,
-      mentor_id,
-      image_url,
+      phone_no:phoneNo,
+      department_id:department,
+      mentor_id:id,
+      image_url:imageRecord,
       auth_id: auth.id,
       linkedin_profile
     });
-    
-    res.status(200).json({
-      response_code: 200,
-      status: "trainee created successfully",
-      result: auth,trainee,
-
-    });
+    res.redirect('/admin/dashboard');
   } catch (error) {
     res.status(400).json({
       response_code: 400,
@@ -133,7 +147,6 @@ exports.postTraineeSignup = async (req, res) => {
       error: error.stack
     });
   }
-  console.log(req.body);
 };
 
 /**
@@ -306,7 +319,6 @@ exports.postAddMentor = async (req, res) => {
     const role = await Role.findOne({ where: { name: "mentor" } });
     const departmentDetail = await Department.findOne({where:{name:department}});
     console.log(departmentDetail);
-    console.log(departmentDetail);
     const auth = await Auth.create({
       email: email,
       password: hashPassword,
@@ -319,17 +331,17 @@ exports.postAddMentor = async (req, res) => {
       auth_id: auth.id,
       department_id:departmentDetail.dataValues.id
     });
-    // console.log(mentorDetails);
-    // res.status(200).json({
-    //   response_code: 200,
-    //   status: "Mentor created successfully",
-    //   result: {
-    //     auth,
-    //     mentorDetails,
+    console.log(mentorDetails);
+    res.status(200).json({
+      response_code: 200,
+      status: "Mentor created successfully",
+      result: {
+        auth,
+        mentorDetails,
         
-    //   }
-    // });
-    res.redirect('/admin/dashboard');
+      }
+    });
+    // res.redirect('/admin/dashboard');
   }
   catch (error) {
     // res.status(400).json({
