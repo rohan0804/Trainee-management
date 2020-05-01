@@ -29,7 +29,7 @@ const config = require('config');
  */
 
  exports.postAddAdmin = async(req,res)=>{
-   const {email,password} = req.body;
+ const {email,password} = req.body;
   const role = await Role.findOne({where:{name:"admin"}});
   const hashedPassord  = await bcrypt.hash(password,12); 
   const auth = await Auth.create({

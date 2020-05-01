@@ -28,7 +28,7 @@ exports.posttraineeDoubts = async (req, res, next) => {
     const doubt = await traineeDoubt.create({
       questions: questions,
       //   trainee_id: traineeId,
-      topic: topic
+      topic: topic,
     });
     console.log("sent");
     traineeId = 6;

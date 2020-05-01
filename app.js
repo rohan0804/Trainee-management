@@ -81,8 +81,3 @@ sequelize.sync({alter:true})
     });
   
   
-  
-
-  
- 
-  
