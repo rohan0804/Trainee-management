@@ -1,4 +1,5 @@
 const path = require('path');
+const stream =require('stream');
 var csvParser = require('csv-parser');
 var fs = require('fs');
 const Record = require('../Models/csv');
@@ -78,23 +79,15 @@ exports.postAddDepartment = async (req, res, next) => {
 exports.getTraineeSignup = async (req, res) => {
   const departments = await Department.findAll();
   const mentor = await Mentor.findAll();
-  const traineees = await Trainee.findAll();
-  console.log(traineees);
-   const result = departments.map(department=>{
+  const result = departments.map(department=>{
     return department.dataValues
   });
-
-  const rs = traineees.map(s=>{
-    return s.dataValues;
-  })
   const results = mentor.map(trainees=>{
     return trainees.dataValues
   });
-  console.log(results);
   res.render('trainee-signup',{
     departments:result,
-    mentor:results,
-    tr:rs
+    mentor:results
   });
 };
 
@@ -118,7 +111,6 @@ exports.postTraineeSignup = async (req, res) => {
     } = req.body;
     const hashPassword = await bcrypt.hash(password, 12);
     const role = await Role.findOne({ where: { name: "trainee" } });
-    console.log(role.dataValues.id,'hgghg');
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
       throw new Error("user already exists");
@@ -135,7 +127,8 @@ exports.postTraineeSignup = async (req, res) => {
       phone_no:phoneNo,
       department_id:department,
       mentor_id:id,
-      image_url:imageRecord,
+      image_urlName:req.file.originalname,
+      image_url:imageRecord.buffer,
       auth_id: auth.id,
       linkedin_profile
     });

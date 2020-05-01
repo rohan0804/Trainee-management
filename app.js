@@ -22,9 +22,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
-app.use(authRouter);
-app.use(auth);
-app.use(roleBasedControl);
+// app.use(authRouter);
+// app.use(auth);
+// app.use(roleBasedControl);
 
 app.use("/admin", adminRouter);
 app.use("/trainee", traineeRouter);
@@ -64,7 +64,7 @@ subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
 Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 
-sequelize.sync({alter:true})
+sequelize.sync({})
   .then(result => {
   })
   let count=0;
