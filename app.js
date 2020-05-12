@@ -64,7 +64,7 @@ subCategory.hasMany(Timelog, { foreignKey: "sub_category_id" });
 Category.hasMany(subCategory, { foreignKey: "category_id" });
 Trainee.hasMany(Leave, { foreignKey: "trainee_id" });
 
-sequelize.sync({})
+sequelize.sync({alter:true})
   .then(result => {
   })
   let count=0;

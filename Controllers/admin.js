@@ -557,6 +557,7 @@ exports.postAddEvents = async(req,res)=>{
 };
 
 exports.getRecord =async (req,res)=>{
+  message='';
   res.render('index',message);
 };
 
