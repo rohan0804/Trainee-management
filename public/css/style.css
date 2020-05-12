@@ -34,8 +34,51 @@ body {
 	position:relative;
 	font-family: 'Roboto-Regular';
 	overflow-x:hidden;
+} 
+/*common css starts*/
+h2{
+	margin:0;
+}
+.column, .column-mentor, .performance-card, .leaveportal-container,
+ .add-memo,
+ .previous-memo{
+   border: 1px solid #ddd;
+	-webkit-box-shadow: 2px 2px 4px #ddd;
+	-moz-box-shadow: 2px 2px 4px #ddd;
+	-ms-box-shadow: 2px 2px 4px #ddd;
+	-o-box-shadow: 2px 2px 4px #ddd;
+	box-shadow: 2px 2px 4px #ddd;
+}
+.wrapper .column:hover, .performance-card:hover, .leaveportal-container:hover {
+	-webkit-box-shadow: 4px 4px 8px #ccc;
+	-moz-box-shadow: 4px 4px 8px #cccd-;
+	-ms-box-shadow: 4px 4px 8px #ccc;
+	-o-box-shadow: 4px 4px 8px #ccc;
+	box-shadow: 4px 4px 8px #ccc;
+}
+.yellow {
+	background: linear-gradient(60deg, #ffa726, #fb8c00);
 }
 
+.green {
+	background: linear-gradient(60deg, #66bb6a, #43a047);
+}
+
+.red {
+	background: linear-gradient(60deg, #ef5350, #e53935);
+}
+
+.purple {
+	background: linear-gradient(60deg, #ab47bc, #8e24aa);
+}
+.alert{
+	position:fixed;
+	right:0;
+	padding:20px 37px;
+	z-index:999;
+	width:50%;
+}
+/*common css ends here*/
 /*loader css*/
 .loader-wrapper {
 	position:fixed;
@@ -163,12 +206,8 @@ body {
     margin-left:30px;
     overflow:hidden;
 }
-.profile-photo img{
-   width:120px;
-   height:130px;
-}
 .sidenav a {
-	animation: sidenav 4s;
+	animation: sidenav 3s;
 	animation-delay: 0.5s;
 	margin: 10px 0 10px 30px;
 	text-decoration: none;
@@ -176,7 +215,26 @@ body {
 	color: #f1f1f1;
 	display: inline-block;
 }
-
+@-webkit-keyframes sidenav {
+	from {
+		margin-left: 0;
+		opacity: 0;
+	}
+	to {
+		margin-left: 30px;
+		opacity: 1;
+	}
+}
+@-moz-keyframes sidenav {
+	from {
+		margin-left: 0;
+		opacity: 0;
+	}
+	to {
+		margin-left: 30px;
+		opacity: 1;
+	}
+}
 @keyframes sidenav {
 	from {
 		margin-left: 0;
@@ -200,12 +258,21 @@ body {
 	-o-text-shadow:1px 2px 2px #101010;
 	text-shadow:1px 2px 2px #101010;
 }
+.links a:active, .sidenav .closebtn:active, 
+.sidenav a:active, .bars-btn:active, .brand:active {
+	-webkit-text-shadow:1px 2px 2px #1898ed;
+	-moz-text-shadow:1px 2px 2px #1898ed;
+	-ms-text-shadow:1px 2px 2px #1898ed;
+	-o-text-shadow:1px 2px 2px #1898ed;
+	text-shadow:1px 2px 2px #1898ed;
+}
 .sidenav .closebtn {
 	position: absolute;
 	top: 0;
 	right: 20px;
 	font-size: 25px;
 }
+/*sidebar css ends here*/
 /*nav css*/
 .nav-container {
 	background-color:rgba(0, 102, 170,0.85);
@@ -279,8 +346,9 @@ body {
 	color:#ada9a9;
     padding-left: 23px;
 }
-/*cards css*/
+/*nav css ends here*/
 
+/*cards css*/
 #main {
 	margin-left: 230px;
 	-webkit-transition: 0.5s;
@@ -292,13 +360,7 @@ body {
 
 
 .column, .column-mentor{
-	border: 1px solid #ddd;
 	height: 230px;
-	-webkit-box-shadow: 2px 2px 4px #ddd;
-	-moz-box-shadow: 2px 2px 4px #ddd;
-	-ms-box-shadow: 2px 2px 4px #ddd;
-	-o-box-shadow: 2px 2px 4px #ddd;
-	box-shadow: 2px 2px 4px #ddd;
 	position: relative;
 	margin-bottom: 40px;
 	background:;
@@ -321,27 +383,12 @@ body {
 	-o-box-shadow: 0 2px 5px #bbb;
 }
 
-.heading h2 {
+.heading h2{
 	margin: 0;
 	font-size: 17px;
 	font-family: 'Roboto-Medium';
 }
 
-.yellow {
-	background: linear-gradient(60deg, #ffa726, #fb8c00);
-}
-
-.green {
-	background: linear-gradient(60deg, #66bb6a, #43a047);
-}
-
-.red {
-	background: linear-gradient(60deg, #ef5350, #e53935);
-}
-
-.purple {
-	background: linear-gradient(60deg, #ab47bc, #8e24aa);
-}
 
 .card-content {
 	width: 100%;
@@ -351,7 +398,9 @@ body {
 
 .question,
 .announcement-heading,
-.event-info, .trainees-name, .department-names, .notification {
+.event-info, .trainees-name, .trainees-table thead,
+ .notification,.performance-table thead, 
+.leavelist-table thead{
 	color: #055e93;
 	margin: 0;
 	font-size: 16px;
@@ -375,15 +424,29 @@ body {
 	margin-top: 5px;
 	margin-bottom: 12px;
 }
-.trainees-name, .department-names{
+.trainees-name{
 	padding-left:20px;
 	font-size:15px;
 }
-.trainees-name > li, .department-names > li{
+.trainees-name > li{
 	margin-bottom:7px;
 }
-.department-names > li a, .trainees-name > li a{
+.trainees-table  tbody  a, .trainees-name > li a{
 	text-decoration:none;
+	color: #055e93;
+}
+.trainees-table  tbody  a:hover{
+	color:#5d5959;
+}
+.trainees-table tbody{
+	color: #5d5959;
+}
+.trainees-table thead{
+	color:#6f6c6c;
+}
+.trainees-table .table{
+	overflow-y: auto;
+	white-space:nowrap;
 }
 #myList li{ display:none;
 }
@@ -395,6 +458,8 @@ body {
 #loadMore:hover{
 	color: #5d5957;
 }
+/*cards css ends here*/
+
 /*Search bar css*/
 .search-bar{
 	position: absolute;
@@ -421,6 +486,7 @@ body {
     right:4px;
     cursor:pointer;
 }
+/*searchbar css ends here*/
 /*progress bar css*/
 .percentage, .percentage .number {
 	-webkit-border-radius:50%;
@@ -463,14 +529,6 @@ body {
 	transition: 0.5s;
 }
 
-.wrapper .column:hover {
-	-webkit-box-shadow: 4px 4px 8px #ccc;
-	-moz-box-shadow: 4px 4px 8px #ccc;
-	-ms-box-shadow: 4px 4px 8px #ccc;
-	-o-box-shadow: 4px 4px 8px #ccc;
-	box-shadow: 4px 4px 8px #ccc;
-}
-
 .column:hover .number h3 {
 	color: #000;
 	-webkit-transform: scale(1.08);
@@ -511,31 +569,34 @@ body {
 	stroke-dashoffset: calc(440 - (440 * 75) / 100);
 	stroke:#337ab7;
 }
+/*progress bar css ends here*/
 /*dashboard css ends*/
 
-/*login page css starts*/
-.buttn:hover, .heading2, .checkmark::after {
+/*login and signup page css starts*/
+.buttn:hover, .heading2, .checkmark::after, .leaveportal-form .glyphicon-calendar {
 	color:#06a;
 }
 
 .login-wrapper{
 	padding:50px 15px 20px 15px;
 }
-.login-wrapper .row {
+.row-sign {
 	max-width: 1050px;
 	margin: auto;
     background: linear-gradient(to top, #373b44, #4286f4);
+    display:table;
+    width:100%;
+}
+.col-sign{
+	display:table-cell;
+	vertical-align: middle;
+	float:none;
 }
 .text-side{
 	padding:80px 30px;
 }
 .text-side-signup{
 	padding:0px 30px;
-}
-.contact-signup{
-	height:755px;
-	display:table-cell;
-	vertical-align: middle;
 }
 .form-side {
 	background: #fff;
@@ -653,7 +714,136 @@ body {
   opacity: 0;
   cursor: pointer;
 }
-/*login page css ends here*/
+/*login and signup page css ends here*/
+
+/*performance page css starts here*/
+.performance-card{
+	margin-bottom:30px;
+	border-top:3px solid #06a;	
+	min-height:410px;
+}
+.performance-card-head{
+	font-size:20px;
+	display:inline-block;
+	padding-bottom:10px;
+    font-family:'Roboto-Medium';
+}
+.performance-table, .leavelist-table{
+	padding:25px 30px;
+	font-size:16px;
+	overflow-y: auto;
+	white-space:nowrap;
+}
+.performance-table  td, .performance-table th{
+	text-align:center;
+}
+.performance-table tbody tr td,.leavelist-table tbody tr td{
+	padding:10px 10px;
+} 
+.performance-table tbody, tfoot,.leavelist-table tbody, tfoot{
+	color:#5d5959;
+}
+.performance-table tfoot, .leavelist-table tfoot{
+	font-family:'Roboto-Medium';
+}
+.canvasjs-chart-container a[title="JavaScript Charts"]
+{
+	display:none;
+}
+.chart-box{
+	height: 300px; 
+	width: 100%;
+	margin-top:35px;
+}
+
+/*performance page css ends here*/
+/*leave page css*/
+    .leaveportal-form{
+        padding: 20px;
+    }
+    .leaveportal-container{
+        max-width:800px;
+        margin:0 auto;
+        background-color: #f2f1f1; 
+        margin-bottom:20px;
+    }
+    .textarea{
+    	resize:none;
+    }
+/*leave page css ends*/
+
+/*timelog page css starts*/
+.add-memo, .previous-memo{
+	min-height:120px;
+	padding: 15px;
+	margin-bottom:20px;
+}
+.add-memo{
+	border-top:3px solid #06a;
+}
+.previous-memo{
+   border-top:3px solid #b7b0b0;
+}
+.worked-time, .total-time{
+	float:right;
+}
+.add-memo-form, .previous-status{
+	clear:both;
+	margin-top:40px;
+}
+
+.select-opt{
+	position:relative;
+}
+.select-opt select{
+	-webkit-appearance: none;
+	position:relative;
+	outline:0;
+}
+a{
+	color:black;
+}
+.select-arrow{
+	position:absolute;
+	top: 7px;
+    right: 7px;
+	pointer-events:none;
+}
+.add-btn{
+	width:100%;
+	padding:5px 0;
+}
+.status-block, .previous-status{
+    color:#5d5959;
+}
+.status-block .row, .show-enteries .row{
+	margin-top:10px;
+}
+.edit-remove, .view-more{
+	text-align:center;
+}
+.edit-remove a:hover img{
+	-webkit-transform: scale(1.2);
+	-moz-transform: scale(1.2);
+	-ms-transform: scale(1.2);
+	-o-transform: scale(1.2);
+	transform: scale(1.2);
+	-webkit-transition:0.5s;
+	-moz-transition:0.5s;
+	-ms-transition:0.5s;
+	-o-transition:0.5s;
+	transition:0.5s;
+}
+.edit-remove a{
+    margin-right:10px;	
+}
+.show-enteries{
+	display:none;
+}
+/*timelog page css ends*/
+
+
+
 
 ::-webkit-scrollbar {
 	width: 5px;
@@ -672,10 +862,10 @@ body {
 	background: #aaa;
 }
 
-/*media query dashborad*/
+/*media query*/
 @media (max-width: 1200px) {
 	.sidenav {
-		width: 0;
+	    margin-left:-230px;
 	}
 	#main {
 		margin-left: 0;
@@ -689,10 +879,22 @@ body {
 		font-size:17px;
 	}
 
+	#chart #bars li span {
+    bottom: -3em;
 }
-/*media query dashborad ends*/
+	.chart-container {
+    width: 100%;
+    padding: 32px 0px 52px 0px;
+    border: 1px solid #ddd;
+    -webkit-box-shadow: 2px 2px 4px #ddd;
+    -moz-box-shadow: 2px 2px 4px #ddd;
+    -ms-box-shadow: 2px 2px 4px #ddd;
+    -o-box-shadow: 2px 2px 4px #ddd;
+    box-shadow: 2px 2px 4px #ddd;
+}
 
-/*media query login page*/
+}
+
 @media only screen and (max-width: 992px){
 	.login-wrapper{
 		padding-top:20px;
@@ -705,9 +907,22 @@ body {
 	.text-side{
 		padding:5px 10px;
 	}
-	.contact-signup{
-		height:250px;
+	.col-sign{
 		display:block;
-	}	
+	}
+	.alert{
+	    width:80%;
+    }
 }
-/*media query login page ends*/
+@media only screen and (max-width: 468px){
+   .leavelist-table, .performance-table{
+   	  padding:25px 0px;
+   }
+}
+@media only screen and (max-width: 353px){
+.worked-time{
+	float:left;
+}
+}
+/*media query ends*/
+

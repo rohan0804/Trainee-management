@@ -1,50 +1,124 @@
-<div class="container">
-  <form action="/admin/add/trainee" role="form" method="POST" enctype="multipart/form-data">
-      <h1>Signup Form</h1>
-      <div class="form-group">
-          <label for="name">name</label>
-          <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp">
-      </div>
-      
-      <div class="form-group">
-          <label for="email">Email address</label>
-          <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
-          <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-      </div>
-      <div class="form-group">
-          <label for="phoneNo">phoneno</label>
-          <input type="text" name="phoneNo" class="form-control" id="name" aria-describedby="emailHelp">
-      </div>
-      <div class="form-group">
-          <label for="csv" class="col-md-3 control-label">Image</label>
-          <div class="col-sm-9">
-              <input class="form-control" type="file" name="profile" accept=""/>
-            </div>
-        </div>
-      <div class="form-group">
-          <label for="joining_date">joining_date</label>
-          <input type="date" name="joining_date" class="form-control" id="names" aria-describedby="emailHelp">
-      </div>
-      <div class="form-group">
-          <label for="Department">Department</label>
-          <select id="department" name="department_id">
-              <% departments.forEach((department)=>{ %>
-              <option value="<%= department.id %>"> <%= department.name%> </option>
-              <% })  %>
-          </select>
-      </div>
-      <div class="form-group">
-          <label for="mentor">Mentor</label>
-          <select id="mentor" name="mentor_id">
-              <% mentor.forEach((mentors)=>{ %>
-              <option value="<%= mentors.id %>"><%= mentors.id %> <%= mentors.name%> </option>
-              <% })  %>
-          </select>
-      </div>
-      <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" class="form-control" name="password" id="password">
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+<header class="nav-container">
+    <div class="container-fluid">
+       <div class="header">
+          <a class="brand" href="javascript:void(0);" title="Website name">Zapbuild HRM</a>
+       </div>
+       <div class="links">
+          <a href="login.html" title="Timelog" class="white">
+          <span class="glyphicon glyphicon-log-in"></span> Login
+          </a>
+       </div>
+    </div>
+ </header>
+ <% if(error){%>
+ <div class="alert alert-success alert-dismissible wow slideInRight">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Failed!</strong> You are failed to create an account! <%=error.message%>
+ </div>
+ <%} else if(!error && messages){%>
+   <div class="alert alert-success alert-dismissible wow slideInRight">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+   <strong>Success!</strong> Your account has been successfully created!
 </div>
+ <%}%>
+ <div class="login-wrapper">
+    <div class="row row-sign">
+       <div class="col-sm-5 col-sign text-side-signup">
+          <div class="contact-info wow fadeIn">
+             <img src="/images/signup.png" class="user-image" width="100" height="100" alt="A man picture">
+             <h1 class="heading1 wow fadeIn data-wow-duration="1s" data-wow-delay="0.8s">Connect with us</h1>
+             <p>To keep connected with us enter your information</p>
+          </div>
+       </div>
+       <div class="col-sm-7 col-sign">
+          <section class="form-side wow slideInRight">
+             <h2 class="heading2 text-center">Create your account!</h2>
+             <form id="signin-form" action="/admin/add/trainee" role="form" method="POST">
+                <div class="row">
+                   <div class="col-md-6">
+                      <div class="form-group fields">
+                         <label class="form-label">Name</label>
+                         <input type="text" name="name" id="name" class="form-control" placeholder="Enter your name" required>
+                      </div>
+                      <div class="form-group fields">
+                         <label class="form-label">Email</label>
+                         <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+                      </div>
+                      <div class="form-group fields">
+                         <label class="form-label">Date of Joining</label>
+                         <input type="text" name="dob" id="datepicker" class="form-control"  placeholder="MM/DD/YYYY" required>
+                      </div>
+                      <div class="form-group fields">
+                         <label class="form-label">Department</label>
+                         <div class="select-opt">
+                            <select class="form-control" id="department_id" name="department_id" required>
+                               <% departments.forEach((department)=>{ %>
+                               <option value="" disabled selected hidden>Select Department</option>
+                               <option value="<%= department.id %>"><%= department.name%></option>
+                               <% })  %>
+                            </select>
+                            <img src="/images/select.png" height="20" width="20" alt="Down arrow" class="select-arrow">
+                         </div>
+                      </div>
+                   </div>
+                   <div class="col-md-6">
+                      <div class="form-group fields">
+                         <label class="form-label">Contact Number</label>
+                         <input type="tel" name="phoneNo" id="phoneNo" class="form-control" placeholder="Enter your contact number" required>
+                      </div>
+                      <div class="form-group fields">
+                         <label class="form-label">Mentor</label>
+                         <div class="select-opt">
+                            <select class="form-control" id="mentor_id" name="mentor_id" required>
+                               <% mentor.forEach((mentors)=>{ %>
+                               <option value="" disabled selected hidden>Select mentor</option>
+                               <option value="<%= mentors.id %>"><%= mentors.name%></option>
+                               <% })  %>
+                            </select>
+                            <img src="/images/select.png" height="20" width="20" alt="Down arrow" class="select-arrow">
+                         </div>
+                      </div>
+                      <div class="form-group fields">
+                         <label class="form-label">Password</label>
+                         <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+                      </div>
+                      <div class="form-group fields">
+                         <label class="form-label"> Confirm Password</label>
+                         <input type="password" name="Cpassword" id="Cpassword" class="form-control" placeholder="Enter your password again" required>
+                      </div>
+                   </div>
+                </div>
+                <div class="login-btn">
+                   <button class="btn buttn" type="submit">Signup</button>
+                </div>
+             </form>
+          </section>
+       </div>
+    </div>
+ </div>
+ <script src="/js/wow.js"></script>
+ <script src="/js/jquery-1.12.4.js"></script>
+ <script src="/js/jquery.min.js"></script>
+ <script src="/js/bootstrap.min.js"></script>
+ <script src="/js/jquery-ui.js"></script>
+ <script>
+    var password = document.getElementById("password")
+   ,confirm_password = document.getElementById("Cpassword");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+
+    $( function() {
+      $( "#datepicker" ).datepicker();
+    } );
+    
+     new WOW().init();
+ </script>

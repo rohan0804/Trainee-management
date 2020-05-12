@@ -178,5 +178,50 @@
                  $('#myList li:lt('+x+')').show();
              });
          });
-         
+         var socket = io();
+         socket.on('notification',(data)=>{
+            let ulElement = document.querySelector('.notification');
+            let listElement = document.createElement('LI');
+            let spanElement = document.createElement('SPAN');
+            spanElement.classList.add('glyphicon');
+            spanElement.classList.add('glyphicon-hand-right');
+            let spanTextNode = document.createTextNode(data);
+            
+            listElement.appendChild(spanElement);
+            listElement.appendChild(spanTextNode);
+            ulElement.appendChild(listElement);
+         })
+         socket.on('event',(event)=>{
+            let divEventElement = document.querySelector('.event-card');
+            let sectionElement = document.createElement('SECTION');
+            sectionElement.classList.add('event');
+            let h3Element = document.createElement('H3');
+            h3Element.classList.add('event-info');
+            let h3TextNode = document.createTextNode(event.heading);
+            h3Element.appendChild(h3TextNode);
+            let pElement = document.createElement("P");
+            pElement.classList.add('event-date');
+            let pTextnode = document.createTextNode(event.date)
+            pElement.appendChild(pTextnode);
+            sectionElement.appendChild(h3Element);
+            sectionElement.appendChild(pElement);
+            divEventElement.appendChild(sectionElement);
+            
+         })
+         socket.on('announcement',data=>{
+            let divEventElement = document.querySelector('.announcement-card');
+            let sectionElement = document.createElement('SECTION');
+            sectionElement.classList.add('announcement');
+            let h3Element = document.createElement('H3');
+            h3Element.classList.add('announcement-heading');
+            let h3TextNode = document.createTextNode(data.announcementTitle);
+            h3Element.appendChild(h3TextNode);
+            let pElement = document.createElement("P");
+            pElement.classList.add('announcement-data');
+            let pTextnode = document.createTextNode(data.announcementDescription)
+            pElement.appendChild(pTextnode);
+            sectionElement.appendChild(h3Element);
+            sectionElement.appendChild(pElement);
+            divEventElement.appendChild(sectionElement);
+         })
       </script>

@@ -27,9 +27,6 @@ const Trainee = sequelize.define('trainee',{
         type:Sequelize.STRING,
         allowNull:true
     },
-    image_urlName:{
-        type:Sequelize.STRING
-    },
     image_url:{
         type:Sequelize.BLOB('long'),
         allowNull:true
