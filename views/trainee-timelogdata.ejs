@@ -1,0 +1,22 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Start Time</th>
+      <th scope="col">End Time</th>
+      <th scope="col">Task Memo</th>
+      <th scope="col">Cetogory</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%data.forEach(timelog=>{%>
+    <tr>
+      <td><%=timelog.date%></td>
+      <td><%=timelog.start_time%></td>
+      <td><%=timelog. end_time%></td>
+      <td><%=timelog.task_memo%></td>
+      <td><%=timelog.category%></td>
+      <%})%>
+    </tr>
+  </tbody>
+</table>

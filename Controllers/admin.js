@@ -35,9 +35,9 @@ const config = require('config');
   const auth = await Auth.create({
     email,password:hashedPassord,role_id:role.id
   })
-
   res.send('Admin  created Sucessfully');
  }
+
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -428,7 +428,13 @@ exports.deleteMentor=async (req,res,next)=>{try{
 };
 
 exports.getAddannouncement=async (req,res,next)=>{
-  res.render('announcement');
+  const announcements = await Announcement.findAll();
+  const announcementresult = announcements.map((announcement) => {
+    return announcement.dataValues;
+  });
+  res.render('announcements', {
+    announcements: announcementresult,
+  });
 };
 
 /**
@@ -495,7 +501,13 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  res.render('addEvents');
+  const events = await Event.findAll();
+  const eventsresult = events.map((event) => {
+    return event.dataValues;
+  });
+  res.render('events', {
+    events: eventsresult,
+  });
 };
 
 exports.postAddEvents = async(req,res)=>{
@@ -565,13 +577,8 @@ exports.adminDashboard = async(req,res)=>{
   console.log("inside admin dashboard");
   console.log(req.authId,req.roleId);
   const events = await Event.findAll();
-  const announcements=await Announcement.findAll();
-  // const result = events.map(event=>{
-  //   return event.dataValues
-  // });
- 
+  const announcements=await Announcement.findAll(); 
   const notifications = await Notification.findAll();
-  
 
   res.render('admin-dashboard',{
     notifications:notifications,

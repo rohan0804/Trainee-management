@@ -1,0 +1,113 @@
+
+<div class="loader-wrapper">
+         <div class="preloader" id="loader"></div>
+      </div>
+      <div class="page-content">
+         <div id="main">
+                  <div class="main-panel" >
+               <div class="wrapper">
+                    <h1 class="page-title">Performance of  <%=traineeName%></h1>
+                    <div class="row">
+                      <div class="col-sm-6 ">
+                        <h2 class="performance-card-head "><img src="/images/bar.png" width="22" height="22" alt="report"> Weekly Progress</h2>
+                          <div class="performance-card performance-table">
+                           <div id="chartContainer" class="chart-box"></div> 
+                         </div>  
+                      </div>
+                      <div class="col-sm-6">
+                              <h2 class="performance-card-head"><img src="/images/table.png" width="22" height="22" alt="blue bars"> Tests Report</h2>
+                        <div class="performance-card performance-table">
+                              <table class="table table-hover table-striped wow fadeIn" data-wow-duration="2s">
+                                <thead>
+                                  <tr>
+                                    <th>Test no.</th>
+                                    <th>Test name</th>
+                                    <th>Total marks</th>
+                                    <th>Marks obtained</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <%for(i=0;i<tests.length;i++){%>
+                                  <tr>
+                                    <td><%=i+1%></td>>
+                                    <td><%=tests[i].name%></td>
+                                    <td><%=tests[i].totalmarks%></td>
+                                    <td><%=test_marks_array[i]%></td>
+                                  </tr>
+                                    <%}%>
+                                  <tfoot>
+                                    <tr>
+                                      <td>Total</td>
+                                      <td></td>
+                                      <td><%=totalmarks%></td>
+                                      <td><%=scoredmarks%></td>
+                                    </tr> 
+                                  </tfoot>
+                                </tbody>
+                              </table>
+                          </div>
+                       </div>
+                    </div>                                             
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="/js/jquery.min.js"></script>
+      <script src="/js/bootstrap.min.js"></script>
+      <script src="/js/jquery-1.12.4.js"></script>
+      <script src="/js/canvasjs.min.js"></script>
+      <script src="/js/wow.js"></script>
+      <script>
+        console.log('<%=test_marks_array%>');
+         function openNav() {
+             if($(window).width() <= 1200)
+             {
+             document.getElementById("mysidenav").style.marginLeft="0";
+             document.getElementById("main").style.marginLeft="0";
+             document.getElementById("collapse").style.display ="none";
+              }
+              else{
+              document.getElementById("mysidenav").style.marginLeft="0";
+             document.getElementById("main").style.marginLeft="230px";
+             document.getElementById("collapse").style.display ="none";  
+              }
+          }
+          function closeNav(){
+             document.getElementById("mysidenav").style.marginLeft="-230px";
+             document.getElementById("main").style.marginLeft="0";
+             document.getElementById("collapse").style.display="inline-block";
+          }
+          new WOW().init();
+
+         $(window).on("load",function(){
+            $(".loader-wrapper").fadeOut("slow");
+         });
+    // jquery bar graph
+        window.onload = function () {
+
+var chart = new CanvasJS.Chart("chartContainer", {
+  animationEnabled: true,
+  theme: "light2", // "light1", "light2", "dark1", "dark2"
+  axisY: {
+    title: "Marks",
+    includeZero: false
+  },
+  axisX: {
+    title: "Weeks"
+  },
+  data: [{
+    type: "column",
+    yValueFormatString: "#,##0.0#",
+    dataPoints: [
+      { label: "Week 1", y: 70.0 }, 
+      { label: "Week 2", y: 60.00 },  
+      { label: "Week 3", y: 50.00 },
+      { label: "Week 4", y: 23.50 },  
+      { label: "Week 5", y: 10.00 },      
+    ]
+  }]
+});
+chart.render();
+
+}
+</script>

@@ -1,0 +1,37 @@
+<div class="container">
+    <div class="form-group">
+        <form onsubmit="return sendDoubt()" id='message-form'>
+            <% traineedoubts.forEach(traineedoubt=>{ %>
+            <div class="list-group-item list-group-item-action flex-column align-items-start ">
+                <section class="queries">
+                    <h3 class="question"> <%=traineedoubt.questions %> ?</h3>
+                    <span class="notify-time"><%=traineedoubt.createdAt %></span>
+                    <textarea class="form-control" id="answer" name="answer" placeholder="enter answer"></textarea>
+                    <button type="submit" class="btn btn-success submitEvent" value="submit">Send</button>
+                </section>
+            </div>
+            <%})%>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    var socket = io();
+    function sendDoubt() {
+        let http = new XMLHttpRequest();
+        let url = '/mentor/chat';
+        let answer = document.getElementById('answer').value;
+        let params = `answer=${answers}`;
+        http.open('POST', url, true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log("sent");
+                alert(" Your answer sent ");
+            }
+        }
+        http.send(params);
+        return true;
+    }
+</script>

@@ -86,4 +86,5 @@ router.post("/chat", traineeController.posttraineeDoubts);
 
 router.get("/dashboard", traineeController.gettraineeDashboard);
 
+router.get('/performance',traineeController.getPerformance);
 module.exports = router;

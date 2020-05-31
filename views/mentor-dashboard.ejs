@@ -1,0 +1,231 @@
+<header class="nav-container">
+  <div class="container-fluid">
+    <div class="header">
+      <span onclick="openNav()" id="collapse" class="bars-btn"
+        ><i class="fa fa-bars icon"></i
+      ></span>
+      <a class="brand" href="/mentor/dashboard" title="Website name"
+        >Zapbuild HRM</a
+      >
+    </div>
+    <ul class="links">
+      <li>
+        <a href="/" title="logout" class="white"
+          ><span class="glyphicon glyphicon-log-out"></span> Logout</a
+        >
+      </li>
+    </ul>
+  </div>
+</header>
+<aside class="sidenav" id="mysidenav">
+  <div class="overlay"></div>
+  <a
+    href="javascript:void(0)"
+    title="Click to close"
+    class="closebtn"
+    onclick="closeNav()"
+    >&times;</a
+  >
+  <div class="profile-photo">
+    <img
+      src="/images/profile.jpeg"
+      width="216"
+      height="233"
+      alt="user's profile pic"
+    />
+  </div>
+  <ul class="items">
+    <li><a href="/mentor/getAddTest" title="Add Test">Add Test</a></li>
+    <li>
+      <!-- mentor id is not available so i put 1 as static value  but we can retreive when the mentor log-->
+      <a href="/mentor/addPerformance/1" title="Add marks">Add marks</a>
+    </li>
+    <li>
+      <a href="/mentor/sendemail" title="Send Email To All Trainees"
+        >Send Email</a
+      >
+    </li>
+    <li>
+      <a href="/mentor/leaves/1" title="Trainee leaves">Trainee leaves</a>
+    </li>
+    <li>
+      <a href="javascript:void(0)" title="Resolve Queries">Resolve Queries</a>
+    </li>
+    <li>
+      <a href="/mentor/traineeTimelog/1" title="Trainees Timelog"
+        >Trainees Timelog</a
+      >
+    </li>
+    <li>
+      <a href="/mentor/checkPerformance/1" title="Check performance"
+        >Check performance</a
+      >
+    </li>
+  </ul>
+</aside>
+
+<div class="loader-wrapper">
+  <div class="preloader" id="loader"></div>
+</div>
+<div class="page-content">
+  <div id="main">
+    <div class="main-panel">
+      <div class="wrapper">
+        <h1 class="page-title">Dashboard</h1>
+        <div class="row">
+          <div class="col-md-8 col-sm-6">
+            <div class="column">
+              <div class="heading red">
+                <h2>My Questions and Queries</h2>
+              </div>
+              <div class="card-content">
+                <section class="queries">
+                  <h3 class="question">
+                    What kind of development are you currently doing?
+                  </h3>
+                  <p class="answer">
+                    Candidates should showcase their understanding for how their
+                    role fits into the bigger picture and helps the company
+                    grow," Halpin said. "For example, if a candidate works at an
+                    e-commerce organization, they should understand how the
+                    application they work on allows orders to be processed and
+                    helps track customer information.
+                  </p>
+                </section>
+                <section class="queries">
+                  <h3 class="question">
+                    What kind of development are you currently doing?
+                  </h3>
+                  <p class="answer">
+                    Candidates should showcase their understanding for how their
+                    role fits into the bigger picture and helps the company
+                    grow," Halpin said. "For example, if a candidate works at an
+                    e-commerce organization, they should understand how the
+                    application they work on allows orders to be processed and
+                    helps track customer information.
+                  </p>
+                </section>
+                <section class="queries">
+                  <h3 class="question">
+                    What kind of development are you currently doing?
+                  </h3>
+                  <p class="answer">
+                    Candidates should showcase their understanding for how their
+                    role fits into the bigger picture and helps the company
+                    grow," Halpin said. "For example, if a candidate works at an
+                    e-commerce organization, they should understand how the
+                    application they work on allows orders to be processed and
+                    helps track customer information.
+                  </p>
+                </section>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="column">
+              <div class="heading yellow">
+                <h2>Trainees List</h2>
+              </div>
+              <div class="search-bar">
+                <form action="">
+                  <input type="search" id="searchicon" class="disp-none" />
+                  <i class="fa fa-search" onclick="searchBar()"></i>
+                </form>
+              </div>
+              <div class="card-content" id="card">
+                <ul class="trainees-name" id="myList">
+                  <% if (traineeNames) { %> <% for (var i =0; i <
+                  traineeNames.length; i++ ) { %>
+                  <li style="font-size: larger;">
+                    <a href="javascript:void(0);" title="Lazaro Roan"
+                      ><%=traineeNames[i].name%></a
+                    >
+                  </li>
+                  <% } %> <%} else { %>
+                  <h2>No Trainee Registered Now!</h2>
+                  <% } %>
+                </ul>
+                <%if(traineeNames.length >6){%>
+                <div id="loadMore">
+                  <img
+                    style="position: absolute; bottom: 15px;"
+                    src="/images/more.png"
+                    width="15"
+                    height="15"
+                    title="show more"
+                    alt="Double arrow"
+                  />
+                </div>
+                <%}%>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8 col-sm-6">
+            <div class="column">
+              <div class="heading green">
+                <h2>Announcements</h2>
+              </div>
+              <div class="card-content">
+                <% if (announcements) { %> <% for (var i =0; i <
+                announcements.length; i++ ) { %>
+                <section class="announcement">
+                  <h3 class="announcement-heading">
+                    <%=announcements[i].announcementTitle%>
+                    <span class="announcement-data"
+                      ><%=announcements[i].createdAt%></span
+                    >
+                  </h3>
+                  <p style="font-size: 15px;" class="announcement-data">
+                    <%=announcements[i].announcementDescription%>
+                  </p>
+                </section>
+                <% } %> <%} else { %>
+                <h2>No Announcement Available Now!</h2>
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-sm-6">
+            <div class="column">
+              <div class="heading purple">
+                <h2>Upcoming events</h2>
+              </div>
+              <div class="card-content">
+                <% if (events) { %> <% for (var i =0; i < events.length; i++ ) {
+                %>
+                <section class="event">
+                  <h3 class="event-info"><%=events[i].heading%></h3>
+                  <p style="font-size: 15px;" class="event-date">
+                    <%=events[i].date%>
+                  </p>
+                </section>
+                <% } %> <%} else { %>
+                <h2>Not Events Available Now!</h2>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/dashboard-script.js"></script>
+<script>
+  $(document).ready(function () {
+    // $("#myList li").css("font-size", "larger");
+    let size_li = $("#myList li").size();
+    let x = 6;
+    $("#myList li:lt(" + x + ")").show();
+    $("#loadMore").click(function () {
+      x = x + 3 <= size_li ? x + 3 : size_li;
+      $("#myList li:lt(" + x + ")").show();
+    });
+  });
+  $(window).on("load", function () {
+    $(".loader-wrapper").fadeOut("slow");
+  });
+</script>
