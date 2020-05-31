@@ -51,9 +51,9 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
-app.use(authRouter);
-app.use(auth);
-app.use(roleBasedControl);
+// app.use(authRouter);
+// app.use(auth);
+// app.use(roleBasedControl);
 
 
 app.use(

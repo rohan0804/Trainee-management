@@ -1,4 +1,5 @@
 const path = require('path');
+const stream =require('stream');
 var csvParser = require('csv-parser');
 var fs = require('fs');
 const Record = require('../Models/csv');
@@ -13,13 +14,11 @@ const Announcement=require('../Models/announcement');
 const socket=require('socket.io');
 const Event = require('../Models/event');
 const Notification  = require('../Models/notifications');
-message = '';
 
 const io = require('../socket');
 
 const jwt = require('jsonwebtoken');
 const config = require('config');
-
 /**
  * @method : postAddRole
  * @author : Nishit Arora
@@ -28,16 +27,8 @@ const config = require('config');
  * @param : [params]
  */
 
- exports.postAddAdmin = async(req,res)=>{
-   const {email,password} = req.body;
-  const role = await Role.findOne({where:{name:"admin"}});
-  const hashedPassord  = await bcrypt.hash(password,12); 
-  const auth = await Auth.create({
-    email,password:hashedPassord,role_id:role.id
-  })
 
-  res.send('Admin  created Sucessfully');
- }
+
 exports.postAddRole = async (req, res, next) => {
   try {
     const { name } = req.body;
@@ -86,7 +77,20 @@ exports.postAddDepartment = async (req, res, next) => {
 
 exports.getTraineeSignup = async (req, res) => {
   const departments = await Department.findAll();
-  
+  const mentor = await Mentor.findAll();
+  const error = false,
+  messages=false;
+  const result = departments.map(department=>{
+    return department.dataValues
+  });
+  const results = mentor.map(trainees=>{
+    return trainees.dataValues
+  });
+  res.render('trainee-signup',{
+    error,messages,
+    departments:result,
+    mentor:results,
+  });
 };
 
 /**
@@ -100,17 +104,34 @@ exports.getTraineeSignup = async (req, res) => {
  */
 exports.postTraineeSignup = async (req, res) => {
   try {
-    const {name,email,password,phone_no,joining_date,last_date,department_id,image_url,
-      linkedin_profile,
-      mentor_id
-    } = req.body;
-    const hashPassword = await bcrypt.hash(password, 12);
+    const {name,email,password,Cpassword,phoneNo,dob,department_id,mentor_id} = req.body;
+    if(!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) throw {type:"email",error:"Invalid Email"};
+    if(!/^[A-Za-z]+/.test(name)) throw {type:"name",error:"invalid name"};
+    if(!password) throw {type:"password",error:"password cannot be empty"};
+    if(! /[2-9]{2}\d{8}/.test(phoneNo)) throw {type:"phoneNo",error:"contact number is not valid"};
+    if(password!=Cpassword){
+      return res.status(400).json({
+        status:"passwords are not same"
+      });
+    }
+    const departmentById = await Department.findOne({where:{id:department_id}});
+    if(!departmentById){
+      throw new Error("department doesn't exist");
+    }
+    const mentorById = await Mentor.findOne({where:{id:mentor_id}});
+    if(!mentorById){
+      throw new Error("mentor doesn't exist");
+    }
     const role = await Role.findOne({ where: { name: "trainee" } });
     const user = await Auth.findOne({ where: { email: email } });
     if (user) {
       throw new Error("user already exists");
     }
-    
+    const phone = await Trainee.findOne({where:{phone_no:phoneNo}});
+    if(phone){
+      throw new Error("phone number already exist");
+    }
+    const hashPassword = await bcrypt.hash(password, 12);
     const auth = await Auth.create({
       email: email,
       password: hashPassword,
@@ -118,31 +139,45 @@ exports.postTraineeSignup = async (req, res) => {
     });
     const trainee = await Trainee.create({
       name,
-      phone_no,
-      joining_date,
-      last_date,
-      phone_no,
-      department_id,
-      mentor_id,
-      image_url,
-      auth_id: auth.id,
-      linkedin_profile
+      joining_date:dob,
+      phone_no:phoneNo,
+      department_id:department_id,
+      mentor_id:mentor_id,
+      auth_id: auth.id
     });
-    
-    res.status(200).json({
-      response_code: 200,
-      status: "trainee created successfully",
-      result: auth,trainee,
-
+    const departments = await Department.findAll();
+    const mentor = await Mentor.findAll();
+    const result = departments.map(department=>{
+      return department.dataValues
     });
+    const results = mentor.map(trainees=>{
+      return trainees.dataValues
+    });  
+    const error=false,
+    messages = true;
+    res.render('trainee-signup',
+    {
+      error,messages,
+      departments:result,
+      mentor:results,
+    }
+    );  
   } catch (error) {
-    res.status(400).json({
-      response_code: 400,
-      status: "error occured",
-      error: error.stack
+    error=error;
+    const departments = await Department.findAll();
+    const mentor = await Mentor.findAll();
+    const result = departments.map(department=>{
+      return department.dataValues
+    });
+    const results = mentor.map(trainees=>{
+      return trainees.dataValues
+    });  
+    res.render('trainee-signup',{
+      error,
+      departments:result,
+      mentor:results,  
     });
   }
-  console.log(req.body);
 };
 
 /**
@@ -315,7 +350,6 @@ exports.postAddMentor = async (req, res) => {
     const role = await Role.findOne({ where: { name: "mentor" } });
     const departmentDetail = await Department.findOne({where:{name:department}});
     console.log(departmentDetail);
-    console.log(departmentDetail);
     const auth = await Auth.create({
       email: email,
       password: hashPassword,
@@ -328,17 +362,17 @@ exports.postAddMentor = async (req, res) => {
       auth_id: auth.id,
       department_id:departmentDetail.dataValues.id
     });
-    // console.log(mentorDetails);
-    // res.status(200).json({
-    //   response_code: 200,
-    //   status: "Mentor created successfully",
-    //   result: {
-    //     auth,
-    //     mentorDetails,
+    console.log(mentorDetails);
+    res.status(200).json({
+      response_code: 200,
+      status: "Mentor created successfully",
+      result: {
+        auth,
+        mentorDetails,
         
-    //   }
-    // });
-    res.redirect('/admin/dashboard');
+      }
+    });
+    // res.redirect('/admin/dashboard');
   }
   catch (error) {
     // res.status(400).json({
@@ -364,7 +398,7 @@ exports.getAddMentor = async(req,res)=>{
     return department.dataValues
   });
   console.log(result);
-  res.render('signup',{
+  res.render('mentor-signup',{
     departments:result
   });
 }
@@ -495,6 +529,7 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
+  
   res.render('addEvents');
 };
 
@@ -502,9 +537,9 @@ exports.postAddEvents = async(req,res)=>{
   try {
     console.log("post addevents ajax request");
     const {heading,description,date} = req.body;
-    console.log(heading);
     const event = await Event.create({heading,description,date});
     io.getio().emit('event',event);
+    console.log(io.getio().emit('event',event));
     res.status(200).json({
         response_code:200,
         status:"event created successfully",
@@ -518,9 +553,11 @@ exports.postAddEvents = async(req,res)=>{
         error:error.message
       })
   }
+  
 };
 
 exports.getRecord =async (req,res)=>{
+  message='';
   res.render('index',message);
 };
 
@@ -566,13 +603,19 @@ exports.adminDashboard = async(req,res)=>{
   console.log(req.authId,req.roleId);
   const events = await Event.findAll();
   const announcements=await Announcement.findAll();
-  // const result = events.map(event=>{
-  //   return event.dataValues
+  const departments= await Department.findAll();
+  const mentor = await Mentor.findAll();
+  // const trainees = await Trainee.findAll();
+  // const traineesResult = trainees.map(res=>{
+  //   res['departmentName'] = await departments
   // });
- 
+  const result = events.map(event=>{
+    return event.dataValues
+  });
+  const announcementresult = announcements.map(announcement=>{
+    return announcement.dataValues
+  });
   const notifications = await Notification.findAll();
-  
-
   res.render('admin-dashboard',{
     notifications:notifications,
     events:events,
@@ -656,4 +699,3 @@ exports.postNotifications = async(req,res)=>{
   }
   
 }
-

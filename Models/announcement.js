@@ -1,25 +1,26 @@
-const Sequelize = require("sequelize");
-const sequelize = require("../utils/database");
+const {Sequelize,DataTypes}=require('sequelize');
+const sequelize=require('../utils/database');
 
-const Announcement = sequelize.define("announcement", {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    allowNull: false,
-    primaryKey: true,
-  },
-  announcementTitle: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  announcementDescription: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  createdAt: {
-    type: Sequelize.DATEONLY,
-    allowNull: false,
-  },
+const Announcement=sequelize.define('announcement',{
+    id:{
+        type:DataTypes.INTEGER,
+        autoIncrement:true,
+        allowNull:false,
+        primaryKey:true
+    },
+    announcementTitle:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+    announcementDescription:{
+        type:DataTypes.STRING,
+        allowNull:false
+    },
+    announcementDate:{
+        type:DataTypes.DATEONLY,
+        allowNull:false,
+        defaultValue:DataTypes.NOW
+    }
 });
 
 module.exports = Announcement;
