@@ -675,7 +675,6 @@ exports.getCheckPerfromance = async (req, res, next) => {
   });
 };
 
-
 exports.getTraineeDoubts = async (req, res, next) => {
   const traineedoubts = await traineeDoubt.findAll();
   const traineedoubtresult = traineedoubts.map((traineedoubt) => {
@@ -686,7 +685,6 @@ exports.getTraineeDoubts = async (req, res, next) => {
     traineedoubts: traineedoubtresult,
   });
 };
-
 
 exports.posttraineeDoubts = async (req, res, next) => {
   try {
@@ -707,8 +705,7 @@ exports.posttraineeDoubts = async (req, res, next) => {
         handleError(err)
       )
     
-    io.getio().emit("getDoubtAnswer", { answers });
-   
+    io.getio().emit("getDoubtAnswer", { answers });   
     res.status(200).json({ status: "Send Doubts Answer!" });
   } catch (error) {
     res.status(400).json({ error: error.stack });
