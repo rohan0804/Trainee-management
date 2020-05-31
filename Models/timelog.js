@@ -7,23 +7,23 @@ const Timelog = sequelize.define("timelog", {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
   },
   start_time: {
     type: Sequelize.DATE,
-    allowNull: false
+    allowNull: false,
   },
   end_time: {
     type: Sequelize.DATE,
-    allowNull: false
+    allowNull: false,
   },
   date: {
     type: Sequelize.DATEONLY,
-    allowNull: false
+    allowNull: false,
   },
   task_memo: {
     type: Sequelize.STRING,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 });
 module.exports = Timelog;
