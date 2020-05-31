@@ -138,27 +138,7 @@ exports.postLeave = async (data) => {
   // moment(scope.modelValue, 'DD-MMM-YYYY HH:mm a', true).isValid()
 };
 
-// exports.postCategory = async (req, res) => {
-//     const { category, subCategory } = req.body;
-//     const Category = await Category.create({
-//         name: category
-//     })
-//     const SubCategory = await subCategory.create({
-//         name: subCategory
-//     });
-// }
-// exports.postTimelog = async (req, res, next) => {
-//     const { start_time, end_time, date, task_memo } = req.body;
-//     const categoryID = await Category.findOne({ where: { name: name } });
-//     const Timelog = await Timelog.create({
-//         start_time,
-//          end_time,
-//           date,
-//           task_memo,
-//            categoryname=categoryID.dataValues.name,
-//            subCategory=categoryID.dataValues.subCategoryname
-//     })
-// }
+
 
 exports.gettraineeDashboard = async (req, res) => {
   const events = await Event.findAll();
