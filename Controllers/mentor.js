@@ -13,7 +13,7 @@ const Event = require("../Models/event");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 const moment = require("moment");
-
+const traineeDoubt = require("../Models/traineedoubt");
 /**
  * @author : Rohan
  * @method : postaddtest
@@ -263,13 +263,112 @@ exports.findByName = async (req, res, next) => {
 };
 
 /**
- * @method : getLeaveRecords
- * @author : Mehak Dhiman
- * @description : To Retrive all data
+ * @method : sendMailToAllTrainees
+ * @author : Rohan
+ * @description : Mentor can check the timelog of a particular trainee
  * @return :
- * @param :[params-trainee_id]
- *
+ * @param :[traineeId]
  **/
+
+exports.checkTimelog = async (req, res, next) => {
+  try {
+    const traineeId = req.body.traineeId;
+    let data = [];
+    const timelogData = await Timelog.findAll({
+      raw: true,
+      order: [["date", "DESC"]],
+      where: { trainee_id: traineeId },
+    });
+    for (timelog of timelogData) {
+      console.log(timelog);
+      if (timelog.sub_category_id != null) {
+        let sub_category = await Sub_category.findAll({
+          raw: true,
+          attributes: ["name"],
+          where: { id: timelog.sub_category_id },
+        });
+        let category = await Category.findAll({
+          raw: true,
+          attributes: ["name"],
+          where: { id: timelog.category_id },
+        });
+        data.push({
+          date: timelog.date,
+          end_time:
+            timelog.end_time.getDate() +
+            " " +
+            timelog.end_time.getMonth() +
+            " " +
+            timelog.end_time.getFullYear() +
+            " " +
+            timelog.end_time.toLocaleTimeString(),
+          start_time:
+            timelog.start_time.getDate() +
+            " " +
+            timelog.start_time.getMonth() +
+            " " +
+            timelog.start_time.getFullYear() +
+            " " +
+            timelog.start_time.toLocaleTimeString(),
+          task_memo: timelog.task_memo,
+          sub_category: sub_category[0].name,
+          category: category[0].name,
+        });
+      } else {
+        let category = await Category.findAll({
+          raw: true,
+          attributes: ["name"],
+          where: { id: timelog.category_id },
+        });
+        data.push({
+          date: timelog.date,
+          start_time:
+            timelog.start_time.getDate() +
+            " " +
+            timelog.start_time.getMonth() +
+            " " +
+            timelog.start_time.getFullYear() +
+            " " +
+            timelog.start_time.toLocaleTimeString(),
+          end_time:
+            timelog.end_time.getDate() +
+            " " +
+            timelog.end_time.getMonth() +
+            " " +
+            timelog.end_time.getFullYear() +
+            " " +
+            timelog.end_time.toLocaleTimeString(),
+          task_memo: timelog.task_memo,
+          category: category[0].name,
+        });
+      }
+    }
+    // res.status(200).json({
+    //   status: true,
+    //   statusCode: res.statusCode,
+    //   data,
+    // });
+    res.render("trainee-timelogdata", {
+      data,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not find the timelog of trainee",
+      error,
+    });
+  }
+};
+
+/**
+ * @method : getAddDepartment
+ * @author : Rohan
+ * @description : To render the form for adding a department
+ * @return :
+ * @param :[]
+ **/
+
 exports.getSendEmail = async (req, res, next) => {
   res.render("sendemail");
 };
@@ -673,4 +772,41 @@ exports.getCheckPerfromance = async (req, res, next) => {
   res.render("performance", {
     trainees,
   });
+};
+
+exports.getTraineeDoubts = async (req, res, next) => {
+  const traineedoubts = await traineeDoubt.findAll();
+  const traineedoubtresult = traineedoubts.map((traineedoubt) => {
+    return traineedoubt.dataValues;
+  });
+
+  res.render("mentordoubtreply", {
+    traineedoubts: traineedoubtresult,
+  });
+};
+
+exports.posttraineeDoubts = async (req, res, next) => {
+  try {
+    console.log("sent query by ajax request");
+    const { answer } = req.body;
+    console.log(answer);
+    mentorId = 6;
+    const mentor = await Mentor.findOne({ where: { id: mentorId } });
+    const trainee = await Trainee.findAll({ where: { department_id: mentor.department_id } });
+    traineeDoubt.update(
+      { answers: answer },
+      { where: { answers: 'NULL' } }
+    )
+      .then(result =>
+        handleResult(result)
+      )
+      .catch(err =>
+        handleError(err)
+      )
+    
+    io.getio().emit("getDoubtAnswer", { answers });   
+    res.status(200).json({ status: "Send Doubts Answer!" });
+  } catch (error) {
+    res.status(400).json({ error: error.stack });
+  }
 };

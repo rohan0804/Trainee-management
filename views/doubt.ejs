@@ -12,12 +12,8 @@
 </div>
 <script>
     var socket = io();
-<<<<<<< HEAD
     socket.on('getTraineeDoubt', function (data) {
         const button = document.createElement('button');
-=======
-    socket.on('news',function (data) {
->>>>>>> c95dd16d2c45f7f2c0cc34218553ebe5e941a18f
         console.log(data);
         document.getElementById("doubt").innerHTML = data.doubt.questions;
          const answer = document.getElementById("answer");
@@ -28,12 +24,5 @@
              answers : answer.value
          })
     })
-<<<<<<< HEAD
 });
-=======
-    socket.on('get',function (data){
-        console.log("ygugughguygtu");
-        console.log(data);
-    });
->>>>>>> c95dd16d2c45f7f2c0cc34218553ebe5e941a18f
 </script>

@@ -158,11 +158,91 @@ exports.gettraineeDashboard = async (req, res) => {
     return traineedoubt.dataValues;
   });
 
-  console.log(traineedoubtresult);
   res.render("traineeDashboard", {
     events: eventsresult,
     announcements: announcementresult,
     notifications: notificationresult,
     traineedoubts: traineedoubtresult,
   });
+};
+
+
+exports.getPerformance=async (req,res,next)=>{
+  let totalmarks = 0,
+    skills = [],
+    percentage = 0,
+    grade = "",
+    test_marks_array = [],
+    scoredmarks = 0;
+  try {
+    const traineeId = req.authId;
+    const mentorId = await Trainee.findOne({
+      raw: true,
+      where: { id: traineeId },
+    });;
+    const trainee = await Trainee.findOne({
+      raw: true,
+      where: { id: traineeId },
+    });
+    console.log(trainee);
+    traineeName = trainee.name;
+    // console.log(mentorId);
+    // console.log(traineeId);
+    // const traineeRecords = await Performance.findAll({
+    //   raw: true,
+    //   where: {
+    //     trainee_id: traineeId,
+    //   },
+    // });
+    // console.log(traineeRecords);
+    const tests = await Test.findAll({
+      raw: true,
+      where: { mentor_id: mentorId },
+    });
+    // console.log(tests);
+
+    // traineeRecords.forEach((traineeRecord) => {
+    //   skills.push(traineeRecord.extra_skills);
+    // });
+    for (test of tests) {
+      totalmarks += test.totalmarks;
+      test_marks = await Performance.findAll({
+        raw: true,
+        where: {
+          [Op.and]: [{ trainee_id: traineeId }, { test_id: test.id }],
+        },
+      });
+      if (test_marks[0]) {
+        test_marks_array.push(test_marks[0].marks_obtained);
+        scoredmarks += test_marks[0].marks_obtained;
+      } else {
+        test_marks_array.push("absent");
+      }
+    }
+    //calculating the percentage
+    percentage = ((scoredmarks * 100) / totalmarks).toFixed(2);
+    if (percentage >= 90 && percentage <= 100) grade = "A";
+    else if (percentage >= 80 && percentage <= 89) grade = "B";
+    else if (percentage >= 60 && percentage <= 79) grade = "C";
+    else if (percentage >= 33 && percentage <= 59) grade = "D";
+    else if (percentage < 33) grade = "F";
+    res.render("traineeperformance", {
+      percentage,
+      grade,
+      totalmarks,
+      scoredmarks,
+      skills,
+      tests,
+      test_marks_array,
+      scoredmarks,
+      traineeName,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      statusCode: res.statusCode,
+      message: "could not find the trainee",
+      error,
+    });
+  }
 };

@@ -85,13 +85,15 @@
                            <div class="heading purple">
                               <h2>Upcoming events</h2>
                            </div>
-                           <div class="card-content">
-                              <%events.forEach(result=>{%>
-                              <section class="event">
-                                 <h3 class="event-info"><%=result.heading%></h3>
-                                 <p class="event-date"><%=result.date%></p>
-                              </section>
+                              
+                             <div class="card-content event-card">
+                              <% events.forEach(event=>{ %>
+                                <section class="event">
+                                  <h3 class="event-info"><%= event.heading%></h3>
+                                  <p class="event-date"> <%= event.description%></p>
+                                </section>
                               <%})%>
+                              
                            </div>
                         </div>
                      </div>
@@ -103,7 +105,7 @@
             <div class="overlay"></div>
             <a href="javascript:void(0)" title="Click to close" class="closebtn" onclick="closeNav()">&times;</a>
             <div class="profile-photo">
-               <img src="images/profile.jpeg" width="216" height="233" alt="user's profile pic" class="img-responsive">
+               <img src="/images/profile.jpeg" width="216" height="233" alt="user's profile pic" class="img-responsive">
             </div>
             <ul class="items">
                <li><a href="/admin/add/announcement" title="Add Announcements">Add Announcements</a></li>

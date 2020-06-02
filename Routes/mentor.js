@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const mentorcontroller = require("../Controllers/mentor");
-const {mentorDashboard} = require("../Controllers/mentor");
+const { mentorDashboard } = require("../Controllers/mentor");
 /**
  * @author : Rohan
  * @description : Mentor Routes
@@ -28,4 +28,6 @@ router.get("/dashboard", mentorcontroller.getDashboard);
 router.get("/sendemail", mentorcontroller.getSendEmail);
 router.get("/leaves/:id", mentorcontroller.getLeaveRecords);
 router.get("/checkPerformance/:mentorId", mentorcontroller.getCheckPerfromance);
+router.get("/chat", mentorcontroller.getTraineeDoubts);
+router.post("/chat", mentorcontroller.posttraineeDoubts);
 module.exports = router;

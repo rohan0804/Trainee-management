@@ -1,9 +1,232 @@
-<form  onsubmit=" return sendNotification()">
-    <input class="form-control" type="text" name="message" id="message" placeholder="enter message">
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-<script>
-    var socket = io();
+<div class="loader-wrapper">
+    <div class="preloader" id="loader"></div>
+ </div>
+ <div class="page-content">
+    <div id="main">
+       <header class="nav-container">
+             <div class="container-fluid">
+                <div class="header">
+                   <span onclick="openNav()" id="collapse" class="bars-btn"><i class="fa fa-bars icon"></i></span>
+                   <a class="brand" href="javascript:void(0);" title="Website name">Zapbuild HRM</a> 
+                </div>
+                <ul class="links">
+                   <li><a href="javascript:void(0);" title="logout" class="white"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                </ul>
+             </div>
+       </header>
+       <div class="main-panel" >
+          <div class="wrapper">
+             <h1 class="page-title">Send Notification</h1>
+             <div class="row">
+               <div class="col-md-8">
+                 <form class="input-group notify-form" onsubmit=" return sendNotification()">
+                   <textarea class="form-control custom-control textarea" id="message" rows="2" placeholder="Type here.."></textarea> 
+                   <button class="btn buttn" type="submit">Send</button>
+                 </form>
+               </div>
+             </div>
+             <div class="row">
+               <div class="col-md-8">
+                 <div class="column-notify">
+                   <div class="card-content">
+                     <table class="table table-striped  notify-table">
+                       <thead>
+                         <tr>
+                           <th>
+                              <div class="Checkbox">
+                                 <input type="checkbox" id="selectall"/>
+                                 <div class="Checkbox-visible">
+                             </div>
+                           </th>
+                           <th> Image</th>
+                           <th>Name</th>
+                           <th>Department</th>
+                         </tr>
+                       </thead>
+                       <tbody>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div>
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div> 
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div> 
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div> 
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div> 
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div> 
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                         <tr>
+                           <td>
+                             <div class="Checkbox">
+                                 <input type="checkbox" class="selectedId" name="selectedId"/>
+                                 <div class="Checkbox-visible">
+                             </div> 
+                           </td>
+                           <td>
+                             <div class="trainee-image">  
+                               <img src="images/trainee.png" width="40" height="40" class="img-responsive">
+                             </div>
+                           </td>
+                           <td>Shubham Mehra</td>
+                           <td>Business department</td>
+                         </tr>
+                       </tbody>
+                     </table>
+                   </div>
+                 </div>
+               </div>
+               <div class="col-md-4">
+                 <div class="column-notify">
+                   <h2 class="notify-list"> Notifications</h2>
+                   <div class="card-content">
+                     <ul class="notification">
+                         <li><span class="glyphicon glyphicon-hand-right"></span>Test is on monday.<div class="notify-time">1.00 pm</div></li>
+                         <li><span class="glyphicon glyphicon-hand-right"></span>Collect your nametags.<div class="notify-time">11.00 am</div></li>
+                         <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.<div class="notify-time">4.00 pm</div></li>
+                         <li><span class="glyphicon glyphicon-hand-right"></span>Today is a seminar at 4pm.<div class="notify-time">6.00 pm</div></li>
+                       </ul>
+                   </div>
+                 </div>
+               </div>
+             </div>
+          </div>
+       </div>
+    </div>
+    <aside class="sidenav" id="mysidenav">
+       <div class="overlay"></div>
+       <a href="javascript:void(0)" title="Click to close" class="closebtn" onclick="closeNav()">&times;</a>
+       <div class="profile-photo">
+          <img src="images/profile.jpeg" width="216" height="233" alt="user's profile pic" class="img-responsive">
+       </div>
+       <ul class="items">
+          <li><a href="javascript:void(0)" title="Add Announcements">Add Announcements</a></li>
+          <li><a href="javascript:void(0)" title="Resolve Queries">Add Mentor</a></li>
+          <li><a href="javascript:void(0)" title="Trainees Timelog">Trainee leaves</a></li>
+          <li><a href="javascript:void(0)" title="Syllabus">Add Department</a></li>
+          <li><a href="javascript:void(0)" title="Add Events">Add Events</a></li>
+          <li><a href="javascript:void(0)" title="Add marks">Add Trainee</a></li>
+          <li><a href="javascript:void(0)" title="Send Email">Send Notifications</a></li>
+       </ul>
+    </aside>
+ </div>
+ 
+ <script>
+    function openNav() {
+        if($(window).width() <= 1200)
+        {
+        document.getElementById("mysidenav").style.marginLeft="0";
+        document.getElementById("main").style.marginLeft="0";
+        document.getElementById("collapse").style.display ="none";
+         }
+         else{
+         document.getElementById("mysidenav").style.marginLeft="0";
+        document.getElementById("main").style.marginLeft="230px";
+        document.getElementById("collapse").style.display ="none";  
+         }
+     }
+     function closeNav(){
+        document.getElementById("mysidenav").style.marginLeft="-230px";
+        document.getElementById("main").style.marginLeft="0";
+        document.getElementById("collapse").style.display="inline-block";
+     }         
+    $(window).on("load",function(){
+       $(".loader-wrapper").fadeOut("slow");
+    });
+   
+   new WOW().init();
+
+ // select all checkbox
+   $(document).ready(function () {
+   $('#selectall').click(function () {
+   $('.selectedId').prop('checked', this.checked);
+   });
+
+   $('.selectedId').change(function () {
+   var check = ($('.selectedId').filter(":checked").length == $('.selectedId').length);
+   $('#selectall').prop("checked", check);
+ });
+});
+
+var socket = io();
     function sendNotification(){
         let message = document.getElementById('message').value;
         let xhttp  = new XMLHttpRequest();
@@ -20,4 +243,4 @@
     return true;
     }
     
-</script>
+ </script>

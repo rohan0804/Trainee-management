@@ -11,7 +11,6 @@ const Trainee = require("../Models/trainee");
 const bcrypt = require("bcryptjs");
 const Sequelize = require('sequelize');
 const Announcement=require('../Models/announcement');
-const socket=require('socket.io');
 const Event = require('../Models/event');
 const Notification  = require('../Models/notifications');
 
@@ -27,7 +26,15 @@ const config = require('config');
  * @param : [params]
  */
 
-
+ exports.postAddAdmin = async(req,res)=>{
+ const {email,password} = req.body;
+  const role = await Role.findOne({where:{name:"admin"}});
+  const hashedPassord  = await bcrypt.hash(password,12); 
+  const auth = await Auth.create({
+    email,password:hashedPassord,role_id:role.id
+  })
+  res.send('Admin  created Sucessfully');
+ }
 
 exports.postAddRole = async (req, res, next) => {
   try {
@@ -462,7 +469,13 @@ exports.deleteMentor=async (req,res,next)=>{try{
 };
 
 exports.getAddannouncement=async (req,res,next)=>{
-  res.render('announcement');
+  const announcements = await Announcement.findAll();
+  const announcementresult = announcements.map((announcement) => {
+    return announcement.dataValues;
+  });
+  res.render('announcements', {
+    announcements: announcementresult,
+  });
 };
 
 /**
@@ -529,8 +542,13 @@ exports.deleteAddannouncement=async (req,res)=>{
 }
 
 exports.getAddEvents = async(req,res)=>{
-  
-  res.render('addEvents');
+  const events = await Event.findAll();
+  const eventsresult = events.map((event) => {
+    return event.dataValues;
+  });
+  res.render('events', {
+    events: eventsresult,
+  });
 };
 
 exports.postAddEvents = async(req,res)=>{
@@ -602,20 +620,9 @@ exports.adminDashboard = async(req,res)=>{
   console.log("inside admin dashboard");
   console.log(req.authId,req.roleId);
   const events = await Event.findAll();
-  const announcements=await Announcement.findAll();
-  const departments= await Department.findAll();
-  const mentor = await Mentor.findAll();
-  // const trainees = await Trainee.findAll();
-  // const traineesResult = trainees.map(res=>{
-  //   res['departmentName'] = await departments
-  // });
-  const result = events.map(event=>{
-    return event.dataValues
-  });
-  const announcementresult = announcements.map(announcement=>{
-    return announcement.dataValues
-  });
+  const announcements=await Announcement.findAll(); 
   const notifications = await Notification.findAll();
+
   res.render('admin-dashboard',{
     notifications:notifications,
     events:events,
