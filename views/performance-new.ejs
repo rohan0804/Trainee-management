@@ -57,57 +57,42 @@
       <script src="/js/jquery-1.12.4.js"></script>
       <script src="/js/canvasjs.min.js"></script>
       <script src="/js/wow.js"></script>
+      <script src="/js/sidebar.js"></script>
       <script>
-        console.log('<%=test_marks_array%>');
-         function openNav() {
-             if($(window).width() <= 1200)
-             {
-             document.getElementById("mysidenav").style.marginLeft="0";
-             document.getElementById("main").style.marginLeft="0";
-             document.getElementById("collapse").style.display ="none";
-              }
-              else{
-              document.getElementById("mysidenav").style.marginLeft="0";
-             document.getElementById("main").style.marginLeft="230px";
-             document.getElementById("collapse").style.display ="none";  
-              }
+        let data=[],
+           weeklyPercentage;
+         weeklyPercentage='<%=weeklyPercentage%>'.split(',');
+         weeklyPercentage=weeklyPercentage.map(Number);
+        for(i=0;i<weeklyPercentage.length;i++){
+          if(weeklyPercentage[i] == 0){
+            data.push({
+            label: `Week ${i+1}`, y: 0.00
+          })  
           }
-          function closeNav(){
-             document.getElementById("mysidenav").style.marginLeft="-230px";
-             document.getElementById("main").style.marginLeft="0";
-             document.getElementById("collapse").style.display="inline-block";
-          }
-          new WOW().init();
-
-         $(window).on("load",function(){
-            $(".loader-wrapper").fadeOut("slow");
-         });
+          else{
+          data.push({
+            label: `Week ${i+1}`, y: weeklyPercentage[i]
+          })  
+        }
+        }
     // jquery bar graph
         window.onload = function () {
-
-var chart = new CanvasJS.Chart("chartContainer", {
-  animationEnabled: true,
-  theme: "light2", // "light1", "light2", "dark1", "dark2"
-  axisY: {
-    title: "Marks",
-    includeZero: false
-  },
-  axisX: {
-    title: "Weeks"
-  },
-  data: [{
-    type: "column",
-    yValueFormatString: "#,##0.0#",
-    dataPoints: [
-      { label: "Week 1", y: 70.0 }, 
-      { label: "Week 2", y: 60.00 },  
-      { label: "Week 3", y: 50.00 },
-      { label: "Week 4", y: 23.50 },  
-      { label: "Week 5", y: 10.00 },      
-    ]
-  }]
-});
-chart.render();
-
-}
+            var chart = new CanvasJS.Chart("chartContainer", {
+              animationEnabled: true,
+              theme: "light2", // "light1", "light2", "dark1", "dark2"
+              axisY: {
+                title: "(Percentage %)",
+                includeZero: false
+              },
+              data: [{
+                type: "column",
+                yValueFormatString: "#,##0.0#",
+                showInLegend: true, 
+                legendMarkerColor: "grey",
+                legendText: "WEEKS",
+                dataPoints: data
+              }]
+            });
+            chart.render();
+            }
 </script>

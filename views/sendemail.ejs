@@ -1,17 +1,48 @@
-<div class="container">
-  <form action="/mentor/sendMailToTrainees/1" method="POST">
-    <div class="form-group">
-      <label for="mailtext">Enter E-Mail:</label>
-      <textarea
-        class="form-control"
-        id="mailtext"
-        rows="3"
-        name="mailtext"
-        required
-      ></textarea>
-    </div>
-    <button class="btn btn-primary" name="btn" type="submit">
-      Send E-Mail
-    </button>
-  </form>
+<div class="loader-wrapper">
+  <div class="preloader" id="loader"></div>
 </div>
+<div class="page-content">
+  <div id="main">
+    <div class="main-panel">
+      <div class="wrapper">
+        <h1 class="page-title">Send Email</h1>
+        <div class="add-container wow fadeInUp">
+          <form action="/mentor/sendMailToTrainees/1" method="POST">
+            <div class="form-group fields">
+              <label for="reason" class="form-label">Mail Description</label>
+              <textarea
+                class="form-control textarea"
+                rows="6"
+                id="mailtext"
+                name="mailtext"
+                placeholder="Type here.."
+                required
+              ></textarea>
+            </div>
+            <button class="btn buttn" id="btn" type="submit">
+              Send E-Mail
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/wow.js"></script>
+<script src="/js/sidebar.js"></script>
+<script src="https://unpkg.com/notie"></script>
+<script>
+  let btn = document.getElementById("btn");
+  if ("<%=status%>" === "true") {
+    notie.alert({
+      position: "bottom",
+      time: 4,
+      type: "success",
+      text: "<h2>Mail send Successfully To All Trainees</h2>",
+    });
+  }
+  console.log(typeof "<%=status%>");
+</script>

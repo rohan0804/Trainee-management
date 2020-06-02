@@ -39,24 +39,6 @@ inputBox.onkeyup = () => {
     );
   });
 };
-
-//helper functions author @ komal
-function openNav() {
-  if ($(window).width() <= 1200) {
-    document.getElementById("mysidenav").style.width = "230px";
-    document.getElementById("main").style.marginLeft = "0";
-    document.getElementById("collapse").style.display = "none";
-  } else {
-    document.getElementById("mysidenav").style.width = "230px";
-    document.getElementById("main").style.marginLeft = "230px";
-    document.getElementById("collapse").style.display = "none";
-  }
-}
-function closeNav() {
-  document.getElementById("mysidenav").style.width = "0";
-  document.getElementById("main").style.marginLeft = "0";
-  document.getElementById("collapse").style.display = "inline-block";
-}
 function searchBar() {
   var element = document.getElementById("searchicon");
   var cname = element.className;

@@ -9,7 +9,13 @@ const expressLayouts = require("express-ejs-layouts");
 const multer = require("multer");
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads");
+    if (file.fieldname === "syllabuss") {
+      cb(null, "uploads/syllabuss");
+    } else if (file.fieldname === "testfile") {
+      cb(null, "uploads/tests");
+    } else {
+      cb(null, "uploads/imagess");
+    }
   },
   filename: (req, file, cb) => {
     cb(null, new Date().toISOString() + "-" + file.originalname);
@@ -42,7 +48,14 @@ app.use(expressLayouts);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("syllabuss")
+  multer({ storage: fileStorage, fileFilter: fileFilter }).fields([
+    {
+      name: "syllabuss",
+    },
+    {
+      name: "testfile",
+    },
+  ])
 );
 
 app.use(bodyParser.json());

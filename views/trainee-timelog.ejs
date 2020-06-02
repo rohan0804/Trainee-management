@@ -1,18 +1,49 @@
-<div class="container">
-  <h1>Select Trainee:</h1>
-  <hr />
-  <form action="/mentor/checkTimelog" method="POST">
-    <div class="form-group">
-      <label for="Trainee">Select Trainee:</label>
-      <select class="form-control" id="traineeId" name="traineeId">
-        <option value="selected" selected>select trainee</option>
-        <%trainees.forEach((trainee)=>{%>
-        <option value="<%=trainee.id%>"><%=trainee.name%></option>
-        <%})%>
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary mb-2">
-      Check Timelog
-    </button>
-  </form>
+<div class="loader-wrapper">
+  <div class="preloader" id="loader"></div>
 </div>
+<div class="page-content">
+  <div id="main">
+    <div class="main-panel">
+      <div class="wrapper">
+        <h1 class="page-title">Check Timelog</h1>
+        <div class="add-container wow fadeInUp">
+          <form action="/mentor/checkTimelog" method="POST">
+            <div class="form-group fields">
+              <label class="form-label">Select Trainee</label>
+              <div class="select-opt">
+                <select class="form-control" id="traineeId" name="traineeId">
+                  <option value="" selected>Select Trainee</option>
+                  <%trainees.forEach((trainee)=>{%>
+                  <option value="<%=trainee.id%>"><%=trainee.name%></option>
+                  <%})%>
+                </select>
+                <img
+                  src="/images/select.png"
+                  height="20"
+                  width="20"
+                  alt="Down arrow"
+                  class="select-arrow"
+                />
+              </div>
+            </div>
+            <button class="btn buttn" id="btn" type="submit">Check</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/wow.js"></script>
+<script src="/js/sidebar.js"></script>
+<script>
+  let btn = document.getElementById("btn");
+  let select = document.getElementById("traineeId");
+  btn.addEventListener("click", () => {
+    if (select.value === "") {
+      alert("Please select an item from the list and then proceed!");
+    }
+  });
+</script>

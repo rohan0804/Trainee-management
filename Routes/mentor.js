@@ -26,5 +26,8 @@ router.post("/addDepartment", mentorcontroller.postAddDeprtment);
 router.get("/dashboard", mentorcontroller.getDashboard);
 router.get("/sendemail", mentorcontroller.getSendEmail);
 router.get("/leaves/:id", mentorcontroller.getLeaveRecords);
-router.get("/checkPerformance/:mentorId", mentorcontroller.getCheckPerfromance);
+router.get(
+  "/checkPerformance/:departmentId",
+  mentorcontroller.getCheckPerfromance
+);
 module.exports = router;
