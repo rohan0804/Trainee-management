@@ -1,3 +1,4 @@
+<%-include('sidenav')%>
 <div class="loader-wrapper">
   <div class="preloader" id="loader"></div>
 </div>
@@ -47,6 +48,7 @@
           class="form-control"
           name="duration"
           id="duration"
+          autocomplete="off"
           placeholder="00:00:00"
           required
         />
@@ -74,11 +76,17 @@
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/jquery-1.12.4.js"></script>
 <script src="/js/bootstrap-datepicker.min.js"></script>
+<script src="/js/bootstrap-clockpicker.min.js"></script>
 <script src="/js/sidebar.js"></script>
 <script src="https://unpkg.com/notie"></script>
 <script>
   $(function () {
     $("#datepicker").datepicker({ dateFormat: "yy-mm-dd" });
+    $("#duration").clockpicker({
+      // twelvehour: true,
+      donetext: "Done",
+      vibrate: true,
+    });
   });
   if ("<%=status%>" === "true") {
     notie.alert({
@@ -88,5 +96,4 @@
       text: "<h2>Test Added Successfully</h2>",
     });
   }
-  console.log(typeof "<%=status%>");
 </script>

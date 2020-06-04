@@ -1,3 +1,4 @@
+<%-include('sidenav')%>
 <div class="loader-wrapper">
   <div class="preloader" id="loader"></div>
 </div>
@@ -26,7 +27,9 @@
                 />
               </div>
             </div>
-            <button class="btn buttn" id="btn" type="submit">Check</button>
+            <button class="btn buttn" id="btn" type="submit">
+              Check Timelog
+            </button>
           </form>
         </div>
       </div>
@@ -41,8 +44,9 @@
 <script>
   let btn = document.getElementById("btn");
   let select = document.getElementById("traineeId");
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", (e) => {
     if (select.value === "") {
+      e.preventDefault();
       alert("Please select an item from the list and then proceed!");
     }
   });

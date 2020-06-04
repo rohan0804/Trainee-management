@@ -591,7 +591,8 @@ exports.getPerformance = async (req, res, next) => {
 /**
  * @method : getTraineeTimelog
  * @author : Rohan
- * @description : To render the view  to mentor for select the trainee
+ * @description : To render the trainee-timelog view to mentor for check a
+ * timelog of a particular trainee.
  * @return :
  * @param :[]
  **/
@@ -677,6 +678,15 @@ exports.getLeaveRecords = async (req, res) => {
     });
   }
 };
+
+/**
+ * @method : getCheckPerfromance
+ * @author : Rohan
+ * @description : To render the performance view to mentor for adding a performance of trainee.
+ * @return :
+ * @param :[params-trainee_id]
+ *
+ **/
 
 exports.getCheckPerfromance = async (req, res, next) => {
   const departmentId = req.params.departmentId;
