@@ -5,16 +5,16 @@ const Mentor = sequelize.define("mentor", {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
   },
   name: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
   },
   phoneNo: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false,
-    unique: true
-  }
+    unique: true,
+  },
 });
 module.exports = Mentor;

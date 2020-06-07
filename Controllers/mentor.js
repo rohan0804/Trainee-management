@@ -43,11 +43,6 @@ exports.postAddTest = async (req, res, next) => {
         status: true,
       });
     }
-    // res.status(201).json({
-    //   status: true,
-    //   statusCode: res.statusCode,
-    //   createdtest,
-    // });
   } catch (error) {
     res.status(400).json({
       status: false,

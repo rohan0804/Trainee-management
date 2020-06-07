@@ -6,7 +6,12 @@
   <h1 class="page-title">Assign a test:</h1>
   <hr />
   <div class="add-container wow fadeInUp">
-    <form action="/mentor/addtest" method="POST" enctype="multipart/form-data">
+    <form
+      action="/mentor/addtest"
+      method="POST"
+      enctype="multipart/form-data"
+      id="form"
+    >
       <div class="form-group">
         <label for="name">Name</label>
         <input
@@ -14,32 +19,46 @@
           class="form-control"
           id="name"
           name="name"
-          required
+          placeholder="test name.."
+          autocomplete="off"
+          onfocus="changeColor(this)"
+          onkeyup="validateInputsOnKeyUp(this)"
         />
+        <small class="error">Error</small>
+        <i class="fa fa-check-circle"></i>
+        <i class="fa fa-exclamation-circle"></i>
       </div>
       <div class="form-group">
-        <label for="date">Date</label>
+        <label for="datepicker">Date</label>
         <input
           type="text"
           name="date"
           id="datepicker"
           class="form-control datepicker"
-          placeholder="YYYY/MM/DD"
+          onfocus="changeColor(this)"
+          placeholder="yyyy-mm-dd"
           data-date-format="yyyy-mm-dd"
           autocomplete="off"
-          required
+          readonly
         />
+        <small class="error">Error</small>
+        <i class="fa fa-check-circle"></i>
+        <i class="fa fa-exclamation-circle"></i>
       </div>
       <div class="form-group">
-        <label for="description">Questions File</label>
+        <label for="file">Questions File</label>
         <input
           type="file"
           name="testfile"
           id="file"
           class="form-control"
           placeholder="Choose file"
-          required
+          onfocus="changeColor(this)"
         />
+        <small class="error">Error</small>
+        <i class="fa fa-check-circle"></i>
+        <i class="fa fa-exclamation-circle"></i>
+        <small class="error">Error</small>
       </div>
       <div class="form-group">
         <label for="duration">Duration</label>
@@ -47,11 +66,16 @@
           type="text"
           class="form-control"
           name="duration"
+          readonly
           id="duration"
           autocomplete="off"
           placeholder="00:00:00"
-          required
+          onfocus="changeColor(this)"
         />
+        <small class="error"></small>
+        <i class="fa fa-check-circle"></i>
+        <i class="fa fa-exclamation-circle"></i>
+        <small class="error"></small>
       </div>
       <div class="form-group">
         <label for="totalmarks">Total Marks</label>
@@ -60,8 +84,14 @@
           class="form-control"
           name="totalmarks"
           id="totalmarks"
-          required
+          placeholder="total-marks.."
+          autocomplete="off"
+          onfocus="changeColor(this)"
+          onkeyup="validateInputsOnKeyUp(this)"
         />
+        <small class="error"></small>
+        <i class="fa fa-check-circle"></i>
+        <i class="fa fa-exclamation-circle"></i>
       </div>
       <input type="hidden" name="mentor_id" value="1" />
       <button type="submit" class="btn buttn" id="addtestbtn">
@@ -81,13 +111,32 @@
 <script src="https://unpkg.com/notie"></script>
 <script>
   $(function () {
-    $("#datepicker").datepicker({ dateFormat: "yy-mm-dd" });
-    $("#duration").clockpicker({
-      // twelvehour: true,
-      donetext: "Done",
-      vibrate: true,
-    });
+    $("#datepicker")
+      .datepicker({
+        onSelect: function (date) {
+          $(this).change();
+        },
+        dateFormat: "yy-mm-dd",
+      })
+      .on("change", function (e) {
+        console.log(e.target.parentElement.className);
+        e.target.parentElement.className = "form-group success";
+      });
+    $("#duration")
+      .clockpicker({
+        onSelect: function (time) {
+          $(this).change();
+        },
+        // twelvehour: true,
+        donetext: "Done",
+        vibrate: true,
+      })
+      .on("change", function (e) {
+        console.log(e.target.parentElement.className);
+        e.target.parentElement.className = "form-group success";
+      });
   });
+
   if ("<%=status%>" === "true") {
     notie.alert({
       position: "bottom",
@@ -95,5 +144,135 @@
       type: "success",
       text: "<h2>Test Added Successfully</h2>",
     });
+  }
+
+  let form = document.getElementById("form"),
+    name = document.getElementById("name"),
+    date = document.getElementById("datepicker"),
+    file = document.getElementById("file"),
+    duration = document.getElementById("duration"),
+    totalMarks = document.getElementById("totalmarks"),
+    btn = document.getElementById("addtestbtn");
+  // let inputs = document.getElementsByClassName("form-control");
+  file.addEventListener("change", (e) => {
+    console.log(e.target.parentElement.className);
+    e.target.parentElement.className = "form-group success";
+  });
+  function changeColor(e) {
+    if (e.parentElement.classList.contains("error")) {
+      e.parentElement.classList.remove("error");
+    }
+  }
+
+  btn.addEventListener("click", (e) => {
+    checkEmptyInputs(e);
+  });
+
+  function checkEmptyInputs(e) {
+    checkForEmptyAndValidatedInput(name, "Testname cannot be blank", e);
+    checkForEmptyAndValidatedInput(date, "Date cannot be blank", e);
+    checkForEmptyAndValidatedInput(file, "File cannot be blank", e);
+    checkForEmptyAndValidatedInput(duration, "Duration cannot be blank", e);
+    checkForEmptyAndValidatedInput(totalMarks, "Totalmarks cannot be blank", e);
+  }
+
+  function checkForEmptyAndValidatedInput(input, msg, e) {
+    if (checkIsEmpty(input.value)) {
+      setErrorFor(input, msg);
+      e.preventDefault();
+    } else {
+      // console.log(input.id);
+      if (input.id === "name" && validateName(input.id))
+        console.log("name successfully validated");
+      else if (input.id === "datepicker") {
+        console.log("date successfully validated");
+      } else if (input.id === "totalmarks" && validateTotalmarks(input.id)) {
+        console.log("totalmarks successfully validated");
+      } else if (input.id === "duration") {
+        console.log("duration successfully validated");
+      } else if (input.id === "file") {
+        console.log("file successfully validated");
+      } else {
+        e.preventDefault();
+      }
+    }
+  }
+
+  function validateInputsOnKeyUp(e) {
+    // console.log(e.id);
+    switch (e.id) {
+      case "name": {
+        validateName(e.id);
+        break;
+      }
+      case "totalmarks": {
+        validateTotalmarks(e.id);
+        break;
+      }
+    }
+  }
+
+  function validateName(id) {
+    // console.log(id);
+    let input = document.getElementById(id),
+      value = input.value;
+    // console.log(value);
+    if (value.length === 0) {
+      setErrorFor(input, "Testname cannot be blank");
+    } else {
+      if (/^[a-z\d\-_\s]+$/i.test(value)) {
+        setSuccessFor(input);
+        return true;
+      } else {
+        setErrorFor(input, "Testname doesn't contain special characters");
+        return false;
+      }
+    }
+  }
+
+  function validateDate() {
+    console.log("validate date");
+  }
+
+  function validateFile() {
+    console.log("validated file");
+  }
+
+  function validateDuration() {
+    console.log("validate duration");
+  }
+
+  function validateTotalmarks(id) {
+    let input = document.getElementById(id),
+      value = input.value;
+    if (value.length === 0) {
+      setErrorFor(input, "Totalmarks cannot be blank");
+    } else {
+      var reg = new RegExp("^[0-9]+$");
+      if (reg.test(value)) {
+        setSuccessFor(input);
+        return true;
+      } else {
+        setErrorFor(input, "Totalmarks only contain numeric values");
+        return false;
+      }
+    }
+  }
+
+  function setErrorFor(input, msg) {
+    const formGroup = input.parentElement;
+    const small = formGroup.querySelector("small");
+    small.innerText = msg;
+    formGroup.className = "form-group error";
+  }
+
+  function setSuccessFor(input) {
+    const formGroup = input.parentElement;
+    formGroup.className = "form-group success";
+  }
+
+  function checkIsEmpty(value) {
+    if (value === "") return true;
+    else return false;
   }
 </script>
