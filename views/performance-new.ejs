@@ -62,17 +62,18 @@
         let data=[],
            weeklyPercentage;
          weeklyPercentage='<%=weeklyPercentage%>'.split(',');
-         weeklyPercentage=weeklyPercentage.map(Number);
-        for(i=weeklyPercentage.length-1;i>=0;i--){
+         weeklyPercentage=weeklyPercentage.map(Number),
+         j=1;
+        for(i=weeklyPercentage.length-1; i>=0 ; i--){
           if(weeklyPercentage[i] == 0){
             data.push({
-            label: `Week ${i+1}`, y: 0.00
+            label: `Week ${j++}`, y: 0.00
           })  
           }
           else{
           data.push({
-            label: `Week ${i+1}`, y: weeklyPercentage[i]
-          })  
+            label: `Week ${j++}`, y: weeklyPercentage[i]
+          })
         }
         }
     // jquery bar graph

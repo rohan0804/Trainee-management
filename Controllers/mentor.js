@@ -90,6 +90,7 @@ exports.postcheckperformance = async (req, res, next) => {
       raw: true,
       where: { mentor_id: mentorId },
     });
+    // console.log(tests);
     for (test of tests) {
       totalmarks += test.totalmarks;
       test_marks = await Performance.findAll({
@@ -106,7 +107,9 @@ exports.postcheckperformance = async (req, res, next) => {
         test_marks_array.push("absent");
       }
     }
-    for (i = tests.length - 1; i >= tests.length - 5; i--) {
+
+    let len = tests.length >= 5 ? tests.length - 5 : 0;
+    for (i = tests.length - 1; i >= len; i--) {
       if (test_marks_array[i] !== "absent") {
         scoredMarks = test_marks_array[i];
         total = tests[i].totalmarks;
@@ -116,7 +119,6 @@ exports.postcheckperformance = async (req, res, next) => {
         weeklyPercentage.push("0.00");
       }
     }
-    // console.log(weeklyPercentage);
     //calculating the percentage
     percentage = ((scoredmarks * 100) / totalmarks).toFixed(2);
     if (percentage >= 90 && percentage <= 100) grade = "A";
@@ -691,4 +693,50 @@ exports.getCheckPerfromance = async (req, res, next) => {
   res.render("performance", {
     trainees,
   });
+};
+
+/**
+ * @method : testTotalMarks
+ * @author : Rohan
+ * @description : To get the particular test data.
+ * @return :
+ * @param :[testId]
+ *
+ **/
+
+exports.testTotalMarks = async (req, res, next) => {
+  const testId = req.body.value;
+  // console.log(testId);
+  if (testId !== "") {
+    const data = await Test.findOne({ raw: true, where: { id: testId } });
+    // console.log(data);
+    res.send(data);
+  }
+};
+
+/**
+ * @method : getCheckPerfromance
+ * @author : Rohan
+ * @description : To ge the latest performance,skills of trainee.
+ * @return :
+ * @param :[traineeId]
+ *
+ **/
+
+exports.traineeSkills = async (req, res, next) => {
+  // console.log(req.body);
+  const traineeId = req.body.value;
+  const traineeData = await Performance.findOne({
+    raw: true,
+    where: {
+      trainee_id: traineeId,
+    },
+    order: [["createdAt", "DESC"]],
+  });
+  if (traineeData) {
+    // console.log(traineeData);
+    res.send(traineeData);
+  } else {
+    res.send("enter extraa skills..");
+  }
 };

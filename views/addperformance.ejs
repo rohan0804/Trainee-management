@@ -16,9 +16,15 @@
                 id="skills"
                 name="skills"
                 class="form-control"
-                placeholder="Enter skills"
+                placeholder="select trainee to find the skills.."
                 required
+                autocomplete="off"
+                readonly
+                onfocus="changeColor(this)"
               />
+              <small class="error">Error</small>
+              <i style="top: 41px;" class="fa fa-check-circle"></i>
+              <i style="top: 41px;" class="fa fa-exclamation-circle"></i>
             </div>
             <div class="form-group fields">
               <label class="form-label">Total Marks</label>
@@ -27,9 +33,14 @@
                 id="totalmarks"
                 name="totalmarks"
                 class="form-control"
-                placeholder="Enter total marks"
+                placeholder="select test to find the total marks.."
                 required
+                autocomplete="off"
+                readonly
               />
+              <small class="error">Error</small>
+              <i style="top: 41px;" class="fa fa-check-circle"></i>
+              <i style="top: 41px;" class="fa fa-exclamation-circle"></i>
             </div>
             <div class="form-group fields">
               <label class="form-label">Obtained Marks</label>
@@ -38,9 +49,15 @@
                 id="obtainedmarks"
                 name="obtainedmarks"
                 class="form-control"
-                placeholder="Enter total marks"
+                placeholder="Enter marks obtained by trainee"
                 required
+                autocomplete="off"
+                onfocus="changeColor(this)"
+                onkeyup="validateObtainedMarks(this)"
               />
+              <small class="error">Error</small>
+              <i style="top: 41px;" class="fa fa-check-circle"></i>
+              <i style="top: 41px;" class="fa fa-exclamation-circle"></i>
             </div>
             <div class="form-group fields">
               <label class="form-label">Select Trainee</label>
@@ -56,13 +73,9 @@
                   <option value="<%=trainee.id%>"><%=trainee.name%></option>
                   <%})%>
                 </select>
-                <img
-                  src="/images/select.png"
-                  height="20"
-                  width="20"
-                  alt="Down arrow"
-                  class="select-arrow"
-                />
+                <small class="error">Error</small>
+                <i style="top: 8px;" class="fa fa-check-circle"></i>
+                <i style="top: 8px;" class="fa fa-exclamation-circle"></i>
               </div>
             </div>
             <div class="form-group fields">
@@ -74,16 +87,12 @@
                   <option value="<%=test.id%>"><%=test.name%></option>
                   <%})%>
                 </select>
-                <img
-                  src="/images/select.png"
-                  height="20"
-                  width="20"
-                  alt="Down arrow"
-                  class="select-arrow"
-                />
+                <small class="error">Error</small>
+                <i style="top: 8px;" class="fa fa-check-circle"></i>
+                <i style="top: 8px;" class="fa fa-exclamation-circle"></i>
               </div>
             </div>
-            <button class="btn buttn" type="submit" id="addtestbtn">
+            <button class="btn buttn" type="submit" id="btn">
               Add Performance
             </button>
           </form>
@@ -98,3 +107,131 @@
 <script src="/js/canvasjs.min.js"></script>
 <script src="/js/wow.js"></script>
 <script src="/js/sidebar.js"></script>
+<script>
+  let selectedTest = document.getElementById("Test"),
+    totalMarks = document.getElementById("totalmarks"),
+    selectedTrainee = document.getElementById("Trainee"),
+    skills = document.getElementById("skills"),
+    btn = document.getElementById("btn"),
+    obtainedMarks = document.getElementById("obtainedmarks");
+
+  selectedTest.addEventListener("change", () => {
+    let value = selectedTest.value;
+    totalMarks.removeAttribute("readonly");
+    if (value !== "") {
+      $.post("/mentor/getTestMarks", { value }, (responseData) => {
+        totalMarks.value = responseData.totalmarks;
+        setSuccessFor(totalMarks);
+        setSuccessFor(selectedTest);
+        selectedTest.style.border = "1px solid #2ecc71";
+        totalMarks.setAttribute("readonly", true);
+      });
+    } else {
+      totalMarks.value = "";
+      totalMarks.placeholder = "select test to find the total marks..";
+      totalMarks.parentElement.classList.remove("success");
+      totalMarks.setAttribute("readonly", true);
+    }
+  });
+
+  selectedTrainee.addEventListener("change", () => {
+    let value = selectedTrainee.value;
+    if (value !== "") {
+      $.post("/mentor/getTraineeSkills", { value }, (responseData) => {
+        if (responseData.extra_skills) {
+          skills.value = responseData.extra_skills;
+          setSuccessFor(skills);
+          setSuccessFor(selectedTrainee);
+          selectedTrainee.style.border = "1px solid #2ecc71";
+          selectedTrainee.parentElement.className = "form-group success";
+          skills.removeAttribute("readonly");
+        } else {
+          skills.value = "";
+          skills.placeholder = "enter extra skills..";
+          skills.parentElement.classList.remove("success");
+          skills.removeAttribute("readonly");
+          selectedTrainee.style.border = "1px solid #2ecc71";
+        }
+      });
+    } else {
+      skills.setAttribute("readonly", true);
+      skills.placeholder = "select trainee to find the skills..";
+    }
+  });
+
+  btn.addEventListener("click", (e) => {
+    checkEmptyInputs(e);
+  });
+
+  function checkEmptyInputs(e) {
+    checkForEmptyAndValidatedInput(skills, "Skills cannot be blank", e);
+    checkForEmptyAndValidatedInput(totalMarks, "Totalmarks cannot be blank", e);
+    checkForEmptyAndValidatedInput(
+      obtainedMarks,
+      "Obtainedmarks cannot be blank",
+      e
+    );
+    checkForEmptyAndValidatedInput(
+      selectedTrainee,
+      "Select trainee cannot be blank",
+      e
+    );
+    checkForEmptyAndValidatedInput(
+      selectedTest,
+      "Select test cannot be blank",
+      e
+    );
+  }
+
+  function checkForEmptyAndValidatedInput(input, msg, e) {
+    if (checkIsEmpty(input.value)) {
+      setErrorFor(input, msg);
+      e.preventDefault();
+    }
+  }
+
+  function setErrorFor(input, msg) {
+    const formGroup = input.parentElement;
+    const small = formGroup.querySelector("small");
+    small.innerText = msg;
+    formGroup.className = "form-group error";
+  }
+
+  function setSuccessFor(input) {
+    const formGroup = input.parentElement;
+    formGroup.className = "form-group success";
+  }
+
+  function checkIsEmpty(value) {
+    if (value === "") return true;
+    else return false;
+  }
+
+  function changeColor(e) {
+    if (e.parentElement.classList.contains("error")) {
+      e.parentElement.classList.remove("error");
+    }
+  }
+
+  function validateObtainedMarks(e) {
+    let input = document.getElementById(e.id),
+      value = input.value,
+      totalMarksValue = totalMarks.value;
+    if (value.length === 0) {
+      setErrorFor(input, "Obtained-marks cannot be blank");
+    } else {
+      var reg = new RegExp("^[0-9]+$");
+      if (parseInt(value) > parseInt(totalMarksValue)) {
+        setErrorFor(input, "Obtained-marks must be less then the total marks");
+        return false;
+      }
+      if (reg.test(value)) {
+        setSuccessFor(input);
+        return true;
+      } else {
+        setErrorFor(input, "Obtained-marks only contain numeric values");
+        return false;
+      }
+    }
+  }
+</script>

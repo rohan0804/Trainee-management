@@ -20,6 +20,8 @@ router.post(
   "/sendMailToTrainees/:mentorId",
   mentorcontroller.sendMailToAllTrainees
 );
+router.post("/getTestMarks", mentorcontroller.testTotalMarks);
+router.post("/getTraineeSkills", mentorcontroller.traineeSkills);
 router.post("/checkTimelog", mentorcontroller.checkTimelog);
 router.get("/addDepartment", mentorcontroller.getAddDepartment);
 router.post("/addDepartment", mentorcontroller.postAddDeprtment);

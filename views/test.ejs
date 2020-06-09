@@ -158,6 +158,7 @@
     console.log(e.target.parentElement.className);
     e.target.parentElement.className = "form-group success";
   });
+
   function changeColor(e) {
     if (e.parentElement.classList.contains("error")) {
       e.parentElement.classList.remove("error");
@@ -182,17 +183,15 @@
       e.preventDefault();
     } else {
       // console.log(input.id);
-      if (input.id === "name" && validateName(input.id))
+      if (
+        (input.id === "name" && validateName(input.id)) ||
+        (input.id === "totalmarks" && validateTotalmarks(input.id)) ||
+        input.id === "datepicker" ||
+        input.id === "duration" ||
+        input.id === "file"
+      )
         console.log("name successfully validated");
-      else if (input.id === "datepicker") {
-        console.log("date successfully validated");
-      } else if (input.id === "totalmarks" && validateTotalmarks(input.id)) {
-        console.log("totalmarks successfully validated");
-      } else if (input.id === "duration") {
-        console.log("duration successfully validated");
-      } else if (input.id === "file") {
-        console.log("file successfully validated");
-      } else {
+      else {
         e.preventDefault();
       }
     }
@@ -228,18 +227,6 @@
         return false;
       }
     }
-  }
-
-  function validateDate() {
-    console.log("validate date");
-  }
-
-  function validateFile() {
-    console.log("validated file");
-  }
-
-  function validateDuration() {
-    console.log("validate duration");
   }
 
   function validateTotalmarks(id) {
