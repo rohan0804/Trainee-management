@@ -271,7 +271,8 @@ table{
     height:120px;
     width:120px;
     margin-left:30px;
-    overflow:hidden;
+	overflow:hidden;
+	cursor: pointer
 }
 .sidenav a {
 	animation: sidenav 3s;

@@ -7,14 +7,19 @@
     onclick="closeNav()"
     >&times;</a
   >
-  <div class="profile-photo">
-    <img
-      src="/images/profile.jpeg"
-      width="216"
-      height="233"
-      alt="user's profile pic"
-    />
-  </div>
+  <!-- <a href="/mentor/mentorProfile"> -->
+  <form action="/mentor/mentorProfile" method="POST" name="mentorProfile">
+    <div class="profile-photo" id="imgdiv">
+      <img
+        src="/images/profile.jpeg"
+        width="216"
+        height="233"
+        alt="user's profile pic"
+        style="max-width: 100%; height: auto;"
+      />
+    </div>
+  </form>
+  <!-- </a> -->
   <ul class="items">
     <li><a href="/mentor/getAddTest" title="Add Test">Add Test</a></li>
     <li>
@@ -44,3 +49,9 @@
     </li>
   </ul>
 </aside>
+<script>
+  let imgDiv = document.getElementById("imgdiv");
+  imgDiv.addEventListener("click", (e) => {
+    document.forms[0].submit();
+  });
+</script>

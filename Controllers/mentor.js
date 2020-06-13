@@ -39,9 +39,7 @@ exports.postAddTest = async (req, res, next) => {
       mentor_id: mentor_id,
     });
     if (createdtest) {
-      res.render("test", {
-        status: true,
-      });
+      res.redirect(`/mentor/dashboard?testCreated=${true}`);
     }
   } catch (error) {
     res.status(400).json({
@@ -192,11 +190,7 @@ exports.postAddPerformance = async (req, res, next) => {
       test_id: test,
       trainee_id: trainee,
     });
-    res.status(201).json({
-      status: true,
-      statusCode: res.statusCode,
-      newperformance,
-    });
+    res.redirect(`/mentor/dashboard?performanceAdded=${true}`);
   } catch (error) {
     res.status(400).json({
       status: false,
@@ -316,7 +310,7 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
       mailOptions = getmailoptions(email, text);
       const transporter = nodemailer.createTransport({
         service: "gmail",
-        secure: true,
+        // secure: true,
         auth: {
           user: "rohanshrivastav1999@gmail.com",
           pass: "rohan@2099",
@@ -337,16 +331,10 @@ exports.sendMailToAllTrainees = async (req, res, next) => {
         }
       });
     });
-    res.render("sendemail", {
-      status: true,
-    });
-    // setTimeout(() => {
-    //   res.status(200).json({
-    //     status: true,
-    //     statusCode: res.statusCode,
-    //     trainees,
-    //   });
-    // }, 5000);
+    // res.render("sendemail", {
+    //   status: true,
+    // });
+    res.redirect(`/mentor/dashboard?emailSend=${true}`);
   } catch (error) {
     res.status(400).json({
       status: false,
@@ -374,6 +362,10 @@ exports.checkTimelog = async (req, res, next) => {
       order: [["date", "DESC"]],
       where: { trainee_id: traineeId },
     });
+    console.log(timelogData);
+    if (timelogData.length == 0) {
+      return res.send("<h3>Timelog Data is empty</h3>");
+    }
     for (timelog of timelogData) {
       // console.log(timelog);
       if (timelog.sub_category_id != null) {
@@ -575,6 +567,7 @@ exports.getPerformance = async (req, res, next) => {
     res.render("addperformance", {
       trainees,
       tests,
+      status: false,
     });
   } catch (error) {
     res.status(400).json({
@@ -706,16 +699,14 @@ exports.getCheckPerfromance = async (req, res, next) => {
 
 exports.testTotalMarks = async (req, res, next) => {
   const testId = req.body.value;
-  // console.log(testId);
   if (testId !== "") {
     const data = await Test.findOne({ raw: true, where: { id: testId } });
-    // console.log(data);
     res.send(data);
   }
 };
 
 /**
- * @method : getCheckPerfromance
+ * @method : traineeSkills
  * @author : Rohan
  * @description : To ge the latest performance,skills of trainee.
  * @return :
@@ -738,5 +729,49 @@ exports.traineeSkills = async (req, res, next) => {
     res.send(traineeData);
   } else {
     res.send("enter extraa skills..");
+  }
+};
+
+/**
+ * @method : postMentorProfile
+ * @author : Rohan
+ * @description : To render the mentor-profile view to the mentor.
+ * @return :
+ * @param :[traineeId]
+ *
+ **/
+
+exports.postMentorProfile = async (req, res, next) => {
+  const mentor_id = 1;
+  let department, authData;
+  const mentorData = await Mentor.findOne({
+    raw: true,
+    where: {
+      id: mentor_id,
+    },
+  });
+  if (mentorData) {
+    department = await Department.findOne({
+      raw: true,
+      where: {
+        id: mentorData.department_id,
+      },
+    });
+    authData = await Auth.findOne({
+      raw: true,
+      where: {
+        id: mentorData.auth_id,
+      },
+      attributes: ["email"],
+    });
+  }
+  // console.log(authData);
+  if (mentorData) {
+    res.render("mentor-profile", {
+      name: mentorData.name,
+      phoneno: mentorData.phoneNo,
+      department: department.name,
+      email: authData.email,
+    });
   }
 };

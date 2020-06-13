@@ -1,8 +1,54 @@
 let arr = [];
 let lis = document.getElementById("myList").querySelectorAll("li");
 let inputBox = document.getElementById("searchicon");
+
+const urlParams = new URLSearchParams(window.location.search);
+const myParam = urlParams.get("performanceAdded");
+const myParam2 = urlParams.get("testCreated");
+const myParam3 = urlParams.get("emailSend");
+
 for (i = 0; i < lis.length; i++) {
   arr.push(lis[i].textContent.trim());
+}
+
+if (myParam === "true") {
+  notie.alert({
+    position: "bottom",
+    time: 3,
+    type: "success",
+    text: "<h2>Performance Added Successfully</h2>",
+  });
+  var myNewURL = refineURL();
+  window.history.pushState("params removed", "Title", "/" + myNewURL);
+}
+
+if (myParam2 === "true") {
+  notie.alert({
+    position: "bottom",
+    time: 3,
+    type: "success",
+    text: "<h2>Test Created Successfully</h2>",
+  });
+  var myNewURL = refineURL();
+  window.history.pushState("params removed", "Title", "/" + myNewURL);
+}
+
+if (myParam3 === "true") {
+  notie.alert({
+    position: "bottom",
+    time: 3,
+    type: "success",
+    text: "<h2>Mail Send Successfully To All The Trainees</h2>",
+  });
+  var myNewURL = refineURL();
+  window.history.pushState("params removed", "Title", "/" + myNewURL);
+}
+
+function refineURL() {
+  var currURL = window.location.href;
+  var afterDomain = currURL.substring(currURL.lastIndexOf("/") + 1);
+  var beforeQueryString = afterDomain.split("?")[0];
+  return beforeQueryString;
 }
 
 inputBox.onkeyup = () => {
@@ -39,6 +85,7 @@ inputBox.onkeyup = () => {
     );
   });
 };
+
 function searchBar() {
   var element = document.getElementById("searchicon");
   var cname = element.className;

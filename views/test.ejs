@@ -119,7 +119,7 @@
         dateFormat: "yy-mm-dd",
       })
       .on("change", function (e) {
-        console.log(e.target.parentElement.className);
+        // console.log(e.target.parentElement.className);
         e.target.parentElement.className = "form-group success";
       });
     $("#duration")
@@ -132,19 +132,10 @@
         vibrate: true,
       })
       .on("change", function (e) {
-        console.log(e.target.parentElement.className);
+        // console.log(e.target.parentElement.className);
         e.target.parentElement.className = "form-group success";
       });
   });
-
-  if ("<%=status%>" === "true") {
-    notie.alert({
-      position: "bottom",
-      time: 3,
-      type: "success",
-      text: "<h2>Test Added Successfully</h2>",
-    });
-  }
 
   let form = document.getElementById("form"),
     name = document.getElementById("name"),
@@ -155,7 +146,7 @@
     btn = document.getElementById("addtestbtn");
   // let inputs = document.getElementsByClassName("form-control");
   file.addEventListener("change", (e) => {
-    console.log(e.target.parentElement.className);
+    // console.log(e.target.parentElement.className);
     e.target.parentElement.className = "form-group success";
   });
 

@@ -63,21 +63,26 @@
               </div>
               <div class="search-bar">
                 <form action="">
-                  <input type="search" id="searchicon" class="disp-none" />
+                  <input
+                    type="search"
+                    id="searchicon"
+                    autocomplete="off"
+                    class="disp-none"
+                  />
                   <i class="fa fa-search" onclick="searchBar()"></i>
                 </form>
               </div>
               <div class="card-content" id="card">
                 <ul class="trainees-name" id="myList">
-                  <% if (traineeNames) { %> <% for (var i =0; i <
+                  <% if (traineeNames.length > 0) { %> <% for (var i =0; i <
                   traineeNames.length; i++ ) { %>
                   <li style="font-size: larger;">
-                    <a href="javascript:void(0);" title="Lazaro Roan"
-                      ><%=traineeNames[i].name%></a
-                    >
+                    <a href="javascript:void(0);"><%=traineeNames[i].name%></a>
                   </li>
                   <% } %> <%} else { %>
-                  <h2>No Trainee Registered Now!</h2>
+                  <h3 style="color: #055e93;" class="bg-warning">
+                    No Trainee Registered Now!
+                  </h3>
                   <% } %>
                 </ul>
                 <%if(traineeNames.length >6){%>
@@ -101,7 +106,7 @@
                 <h2>Announcements</h2>
               </div>
               <div class="card-content">
-                <% if (announcements) { %> <% for (var i =0; i <
+                <% if (announcements.length > 0) { %> <% for (var i =0; i <
                 announcements.length; i++ ) { %>
                 <section class="announcement">
                   <h3 class="announcement-heading">
@@ -115,7 +120,9 @@
                   </p>
                 </section>
                 <% } %> <%} else { %>
-                <h2>No Announcement Available Now!</h2>
+                <h3 style="color: #055e93;" class="bg-warning">
+                  No Announcements Available Now!
+                </h3>
                 <% } %>
               </div>
             </div>
@@ -126,8 +133,8 @@
                 <h2>Upcoming events</h2>
               </div>
               <div class="card-content">
-                <% if (events) { %> <% for (var i =0; i < events.length; i++ ) {
-                %>
+                <% if (events.length > 0) { %> <% for (var i =0; i <
+                events.length; i++ ) { %>
                 <section class="event">
                   <h3 class="event-info"><%=events[i].heading%></h3>
                   <p style="font-size: 15px;" class="event-date">
@@ -135,7 +142,9 @@
                   </p>
                 </section>
                 <% } %> <%} else { %>
-                <h2>Not Events Available Now!</h2>
+                <h3 style="color: #055e93;" class="bg-warning">
+                  No Events Available Now!
+                </h3>
                 <% } %>
               </div>
             </div>
@@ -145,6 +154,8 @@
     </div>
   </div>
 </div>
+
+<script src="https://unpkg.com/notie"></script>
 <script src="/js/wow.js"></script>
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>

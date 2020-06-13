@@ -26,6 +26,7 @@
                   class="select-arrow"
                 />
               </div>
+              <small></small>
             </div>
             <input type="hidden" name="mentorId" value="1" />
             <button class="btn buttn" type="submit" id="btn">Check</button>
@@ -43,9 +44,28 @@
 <script>
   let btn = document.getElementById("btn");
   let select = document.getElementById("Trainee");
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", (e) => {
     if (select.value === "") {
-      alert("Please select an item from the list and then proceed!");
+      // alert("Please select an item from the list and then proceed!");
+      setErrorFor(
+        select,
+        "Please select an item from the list and then proceed!"
+      );
+      e.preventDefault();
     }
   });
+  select.addEventListener("change", (e) => {
+    if (select.value !== "") {
+      select.parentElement.style.border = "1px solid  #2ecc71";
+      select.parentElement.parentElement.classList.remove("error");
+    } else {
+      select.parentElement.style.border = "";
+    }
+  });
+  function setErrorFor(input, msg) {
+    const formGroup = input.parentElement.parentElement;
+    const small = formGroup.querySelector("small");
+    small.innerText = msg;
+    formGroup.className = "form-group error";
+  }
 </script>

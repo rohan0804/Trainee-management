@@ -10,7 +10,7 @@
         <div class="add-container wow fadeInUp">
           <form action="/mentor/sendMailToTrainees/1" method="POST">
             <div class="form-group fields">
-              <label for="reason" class="form-label">Mail Description</label>
+              <label for="mailtext" class="form-label">Mail Description</label>
               <textarea
                 class="form-control textarea"
                 rows="6"
@@ -18,7 +18,12 @@
                 name="mailtext"
                 placeholder="Type here.."
                 required
+                onfocus="changeColor(this)"
+                onkeyup="validateEmailText(this)"
               ></textarea>
+              <small class="error">Error</small>
+              <i class="fa fa-check-circle"></i>
+              <i class="fa fa-exclamation-circle"></i>
             </div>
             <button class="btn buttn" id="btn" type="submit">
               Send E-Mail
@@ -36,7 +41,62 @@
 <script src="/js/sidebar.js"></script>
 <script src="https://unpkg.com/notie"></script>
 <script>
-  let btn = document.getElementById("btn");
+  let btn = document.getElementById("btn"),
+    mailtext = document.getElementById("mailtext");
+
+  btn.addEventListener("click", (e) => {
+    checkEmptyInputs(e);
+  });
+
+  function checkEmptyInputs(e) {
+    checkForEmptyAndValidatedInput(
+      mailtext,
+      "Mail description cannot be blank",
+      e
+    );
+  }
+
+  function checkForEmptyAndValidatedInput(input, msg, e) {
+    if (checkIsEmpty(input.value)) {
+      setErrorFor(input, msg);
+      e.preventDefault();
+    }
+  }
+
+  function setErrorFor(input, msg) {
+    const formGroup = input.parentElement;
+    const small = formGroup.querySelector("small");
+    small.innerText = msg;
+    formGroup.className = "form-group error";
+  }
+
+  function setSuccessFor(input) {
+    const formGroup = input.parentElement;
+    formGroup.className = "form-group success";
+  }
+
+  function checkIsEmpty(value) {
+    if (value === "") return true;
+    else return false;
+  }
+
+  function changeColor(e) {
+    if (e.parentElement.classList.contains("error")) {
+      e.parentElement.classList.remove("error");
+    }
+  }
+  function validateEmailText(e) {
+    let input = document.getElementById(e.id),
+      value = input.value;
+    // console.log(value);
+    if (value.length === 0) {
+      setErrorFor(input, "Mail description cannot be blank");
+      input.style.border = "1px solid  #e74c3c";
+    } else {
+      setSuccessFor(input);
+      input.style.border = "1px solid  #2ecc71";
+    }
+  }
   if ("<%=status%>" === "true") {
     notie.alert({
       position: "bottom",

@@ -32,4 +32,6 @@ router.get(
   "/checkPerformance/:departmentId",
   mentorcontroller.getCheckPerfromance
 );
+router.post("/mentorProfile", mentorcontroller.postMentorProfile);
+
 module.exports = router;

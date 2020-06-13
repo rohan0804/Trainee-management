@@ -1,0 +1,46 @@
+<%-include('sidenav')%>
+<div class="loader-wrapper">
+  <div class="preloader" id="loader"></div>
+</div>
+<div class="page-content">
+  <div id="main">
+    <div class="main-panel">
+      <div class="wrapper">
+        <h1 class="page-title">Mentor Profile</h1>
+        <div class="profile-container">
+          <div class="text-center">
+            <img
+              src="/images/profile.jpeg"
+              width="216"
+              height="233"
+              alt="user's profile pic"
+              class="trainee-profile-img"
+            />
+            <h2 class="profile-name"><%=name%></h2>
+          </div>
+          <table class="table profile-table">
+            <tbody>
+              <tr>
+                <td>Contact no.</td>
+                <td><%=phoneno%></td>
+              </tr>
+              <tr>
+                <td>Department.</td>
+                <td><%=department%></td>
+              </tr>
+              <tr>
+                <td>Email.</td>
+                <td><%=email%></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/wow.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery-1.12.4.js"></script>
+<script src="/js/sidebar.js"></script>
